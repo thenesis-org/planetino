@@ -1,0 +1,120 @@
+# MAP - backart2 map format.
+#
+#    v [x] [y] [z]        - Define a vertex with floating-point 
+#                           coords (x,y,z).
+#    mtllib [filename]    - Load materials from an external .mtl 
+#                           file.
+#    usemtl [name]        - Use the named material (loaded from a 
+#                           .mtl file) for the next floor, ceiling,
+#                           or wall.
+#    ambientLightIntensity 
+#        [value]          - Defines the ambient light intensity
+#                           for the next room, from 0 to 1.
+#    pointlight [v]       - Defines a point light located at the  
+#        [intensity]        specfied vector. Optionally, light
+#        [falloff]          intesity and falloff distance can
+#                           be specified.
+#    player [v] [angle]   - Specifies the starting location of the
+#                           player and optionally a starting 
+#                           angle, in radians, around the y-axis.
+#    obj [uniqueName]     - Defines an object from an external
+#        [filename] [v]     OBJ file. The unique name allows this
+#        [angle]            object to be uniquely identfied, but
+#                           can be "null" if no unique name is 
+#                           needed. The filename is an external
+#                           OBJ file. Optionally, the starting 
+#                           angle, in radians, around the y-axis 
+#                           can be specified.
+#    room [name]          - Defines a new room, optionally giving
+#                           the room a name. A room consists of
+#                           vertical walls, a horizontal floor
+#                           and a horizontal ceiling. Concave rooms
+#                           are currently not supported, but can be
+#                           simulated by adjacent convex rooms.
+#    floor [height]       - Defines the height of the floor of 
+#                           the current room, using the current
+#                           material. The current material can
+#                           be null, in which case no floor 
+#                           polygon is created. The floor can be
+#                           above the ceiling, in which case a 
+#                           "pillar" or "block" structure is 
+#                           created, rather than a "room".
+#    ceil [height]        - Defines the height of the ceiling of 
+#                           the current room, using the current
+#                           material. The current material can
+#                           be null, in which case no ceiling
+#                           polygon is created. The ceiling can be
+#                           below the floor, in which case a 
+#                           "pillar" or "block" structure is 
+#                           created, rather than a "room".
+#    wall [x] [z]         - Defines a wall vertex in a room using
+#         [bottom] [top]    the specified x and z coordinates.
+#                           Walls should be defined in clockwise 
+#                           order. If "bottom" and "top" is not
+#                           defined, the floor and ceiling height
+#                           are used. If the current material is
+#                           null, or bottom is equal to top, no
+#                           wall polygon is created.
+
+
+# load materials
+mtllib textures.mtl
+
+# player start location
+# player <v> [angle in radians]
+v 384 0 64
+player -1 3.1415927
+
+# start room
+ambientLightIntensity .8
+room startRoom
+usemtl texture_F
+floor 0 
+usemtl texture_G
+ceil 256
+usemtl texture_H
+wall 256 -1024
+wall 256 1024 0 32
+wall 1024 1024
+wall 1024 -1024 
+
+v 384 70 350
+obj bot1 cacao-cube.obj3d -1 0.7
+
+#v 384 100 100
+#obj aggressivebot1 aggressivebot.obj3d -1 
+
+v 384 192 64 
+pointlight -1 1 384
+
+# light in each corner
+v 128 448 512 
+pointlight -1 1 256
+v 768 448 512 
+pointlight -1 1 256
+v 128 448 896 
+pointlight -1 1 256
+v 768 448 896 
+pointlight -1 1 256
+
+v 1050 300 700 
+pointlight -1 1 150
+
+v 1250 300 700 
+pointlight -1 1 150
+
+v 1450 300 700 
+pointlight -1 1 150
+
+v 1650 300 700 
+pointlight -1 1 150
+
+v 1850 300 700 
+pointlight -1 1 150
+
+v 1850 300 900 
+pointlight -1 1 150
+
+v 1850 300 1100 
+pointlight -1 1 150
+

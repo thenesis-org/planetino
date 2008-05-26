@@ -1,0 +1,96 @@
+# MAP - backart2 map format.
+#
+#    v [x] [y] [z]        - Define a vertex with floating-point 
+#                           coords (x,y,z).
+#    mtllib [filename]    - Load materials from an external .mtl 
+#                           file.
+#    usemtl [name]        - Use the named material (loaded from a 
+#                           .mtl file) for the next floor, ceiling,
+#                           or wall.
+#    ambientLightIntensity 
+#        [value]          - Defines the ambient light intensity
+#                           for the next room, from 0 to 1.
+#    pointlight [v]       - Defines a point light located at the  
+#        [intensity]        specfied vector. Optionally, light
+#        [falloff]          intesity and falloff distance can
+#                           be specified.
+#    player [v] [angle]   - Specifies the starting location of the
+#                           player and optionally a starting 
+#                           angle, in radians, around the y-axis.
+#    obj [uniqueName]     - Defines an object from an external
+#        [filename] [v]     OBJ file. The unique name allows this
+#        [angle]            object to be uniquely identfied, but
+#                           can be "null" if no unique name is 
+#                           needed. The filename is an external
+#                           OBJ file. Optionally, the starting 
+#                           angle, in radians, around the y-axis 
+#                           can be specified.
+#    room [name]          - Defines a new room, optionally giving
+#                           the room a name. A room consists of
+#                           vertical walls, a horizontal floor
+#                           and a horizontal ceiling. Concave rooms
+#                           are currently not supported, but can be
+#                           simulated by adjacent convex rooms.
+#    floor [height]       - Defines the height of the floor of 
+#                           the current room, using the current
+#                           material. The current material can
+#                           be null, in which case no floor 
+#                           polygon is created. The floor can be
+#                           above the ceiling, in which case a 
+#                           "pillar" or "block" structure is 
+#                           created, rather than a "room".
+#    ceil [height]        - Defines the height of the ceiling of 
+#                           the current room, using the current
+#                           material. The current material can
+#                           be null, in which case no ceiling
+#                           polygon is created. The ceiling can be
+#                           below the floor, in which case a 
+#                           "pillar" or "block" structure is 
+#                           created, rather than a "room".
+#    wall [x] [z]         - Defines a wall vertex in a room using
+#         [bottom] [top]    the specified x and z coordinates.
+#                           Walls should be defined in clockwise 
+#                           order. If "bottom" and "top" is not
+#                           defined, the floor and ceiling height
+#                           are used. If the current material is
+#                           null, or bottom is equal to top, no
+#                           wall polygon is created.
+
+
+# load materials
+mtllib textures.mtl
+
+# define a room
+ambientLightIntensity .5
+room MainRoom
+
+usemtl roof1
+floor 0
+
+usemtl roof2
+ceil 300
+
+# define walls
+# a wall is defined from this vertex to the next vertex
+usemtl wall1
+wall 0 150
+wall 0 450
+wall 800 450
+wall 800 300
+wall 500 300
+wall 500 75 
+
+
+# define lights
+v 400 200 100
+pointlight -1 1 300
+v 700 200 400
+pointlight -1 .5 1000
+v 65 200 385
+pointlight -1 1 100
+
+
+# specify the starting location of the player
+v 400 0 300
+player -1
+
