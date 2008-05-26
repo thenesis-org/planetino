@@ -41,7 +41,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.thenesis.planetino2.engine.shooter3D;
+package org.thenesis.planetino2.game;
 
 import java.util.Enumeration;
 import java.util.Vector;

@@ -44,9 +44,9 @@
 package org.thenesis.planetino2.ai;
 
 import org.thenesis.planetino2.ai.pattern.AimPattern;
-import org.thenesis.planetino2.engine.shooter3D.MessageQueue;
 import org.thenesis.planetino2.game.CollisionDetection;
 import org.thenesis.planetino2.game.GameObject;
+import org.thenesis.planetino2.game.MessageQueue;
 import org.thenesis.planetino2.game.Physics;
 import org.thenesis.planetino2.math3D.PolygonGroup;
 import org.thenesis.planetino2.math3D.Vector3D;

@@ -46,6 +46,7 @@ package org.thenesis.planetino2.engine.shooter3D;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
+import org.thenesis.planetino2.game.Player;
 import org.thenesis.planetino2.graphics.Color;
 import org.thenesis.planetino2.graphics3D.Overlay;
 import org.thenesis.planetino2.math3D.ViewWindow;
