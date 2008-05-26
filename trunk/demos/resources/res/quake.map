@@ -1,0 +1,434 @@
+# MAP - backart2 map format.
+#
+#    v [x] [y] [z]        - Define a vertex with floating-point 
+#                           coords (x,y,z).
+#    mtllib [filename]    - Load materials from an external .mtl 
+#                           file.
+#    usemtl [name]        - Use the named material (loaded from a 
+#                           .mtl file) for the next floor, ceiling,
+#                           or wall.
+#    ambientLightIntensity 
+#        [value]          - Defines the ambient light intensity
+#                           for the next room, from 0 to 1.
+#    pointlight [v]       - Defines a point light located at the  
+#        [intensity]        specfied vector. Optionally, light
+#        [falloff]          intesity and falloff distance can
+#                           be specified.
+#    player [v] [angle]   - Specifies the starting location of the
+#                           player and optionally a starting 
+#                           angle, in radians, around the y-axis.
+#    obj [uniqueName]     - Defines an object from an external
+#        [filename] [v]     OBJ file. The unique name allows this
+#        [angle]            object to be uniquely identfied, but
+#                           can be "null" if no unique name is 
+#                           needed. The filename is an external
+#                           OBJ file. Optionally, the starting 
+#                           angle, in radians, around the y-axis 
+#                           can be specified.
+#    room [name]          - Defines a new room, optionally giving
+#                           the room a name. A room consists of
+#                           vertical walls, a horizontal floor
+#                           and a horizontal ceiling. Concave rooms
+#                           are currently not supported, but can be
+#                           simulated by adjacent convex rooms.
+#    floor [height]       - Defines the height of the floor of 
+#                           the current room, using the current
+#                           material. The current material can
+#                           be null, in which case no floor 
+#                           polygon is created. The floor can be
+#                           above the ceiling, in which case a 
+#                           "pillar" or "block" structure is 
+#                           created, rather than a "room".
+#    ceil [height]        - Defines the height of the ceiling of 
+#                           the current room, using the current
+#                           material. The current material can
+#                           be null, in which case no ceiling
+#                           polygon is created. The ceiling can be
+#                           below the floor, in which case a 
+#                           "pillar" or "block" structure is 
+#                           created, rather than a "room".
+#    wall [x] [z]         - Defines a wall vertex in a room using
+#         [bottom] [top]    the specified x and z coordinates.
+#                           Walls should be defined in clockwise 
+#                           order. If "bottom" and "top" is not
+#                           defined, the floor and ceiling height
+#                           are used. If the current material is
+#                           null, or bottom is equal to top, no
+#                           wall polygon is created.
+
+
+# load materials
+mtllib quake.mtl
+
+# player start location
+# player <v> [angle in radians]
+v 384 0 64
+player -1 3.1415927
+
+# start room
+ambientLightIntensity .2
+room startRoom
+usemtl roof1
+floor 0 
+usemtl roof2
+ceil 256
+usemtl wall1
+wall 256 0
+wall 256 384 0 32
+wall 512 384
+wall 512 0 
+
+v 384 192 64 
+pointlight -1 1 384
+
+# first room
+room ridgeToEastRoom
+usemtl null
+floor 512
+usemtl roof2
+ceil 384
+usemtl null
+wall 896 850
+wall 896 550
+wall 896 512
+usemtl wall1
+wall 880 550
+wall 880 850
+wall 896 896
+
+room firstRoom
+usemtl roof1
+floor 32
+usemtl roof2
+ceil 512
+usemtl wall1
+wall 256 384
+wall 128 384
+wall 0 512
+wall 0 896
+wall 128 1024
+wall 384 1024 192 512
+wall 640 1024 
+wall 768 1024
+wall 896 896 32 384
+wall 896 850 32 192
+wall 896 550 32 384
+wall 896 512 
+wall 768 384
+wall 512 384 256 512
+
+# light in each corner
+v 128 448 512 
+pointlight -1 1 256
+v 768 448 512 
+pointlight -1 1 256
+v 128 448 896 
+pointlight -1 1 256
+v 768 448 896 
+pointlight -1 1 256
+
+v 500 32 800
+obj scaredybot1 scaredybot.obj3d -1 
+v 400 32 800
+obj scaredybot2 scaredybot.obj3d -1 
+v 300 32 800
+obj scaredybot3 scaredybot.obj3d -1 
+
+# south hall
+ambientLightIntensity .15
+room southHall
+usemtl roof1
+floor 0
+usemtl roof2
+ceil 192
+usemtl wall1
+wall 384 1024
+wall 384 1280 0 32
+wall 640 1280
+wall 640 1024 0 32
+
+# south room
+ambientLightIntensity .3
+room southRoom
+usemtl roof1
+floor 32
+usemtl roof2
+ceil 512
+usemtl wall1
+wall 640 1280 192 512
+wall 384 1280
+wall 0 1280
+wall 0 1500 192 512
+wall 0 1800
+wall 0 2048
+wall 1024 2048
+wall 1024 1800 256 512
+wall 1024 1500
+wall 1024 1280
+
+v 512 256 1600
+pointlight -1 .5 500
+
+v 950 32 1302
+obj null cube.obj3d -1 
+v 950 32 1350
+obj null cube.obj3d -1 
+v 900 32 1308
+obj null cube.obj3d -1 .5
+v 951 64 1303 
+obj null cube.obj3d -1 .2
+
+v 100 32 1500
+obj aggressivebot1 aggressivebot.obj3d -1 
+v 100 32 1700
+obj aggressivebot2 aggressivebot.obj3d -1 
+v 100 32 1900
+obj aggressivebot3 aggressivebot.obj3d -1 
+
+# hall to west room
+ambientLightIntensity .15
+room westHall1
+usemtl texture_H
+floor 0
+usemtl roof2
+ceil 192
+usemtl wall1
+wall 0 1800 0 32
+usemtl texture_G
+wall 0 1500
+wall -100 1500
+wall -500 1280 0 0
+wall -800 1280
+wall -700 1550
+
+v -750 0 1300
+obj null cube.obj3d -1 .2
+
+room westHall2 
+usemtl texture_H
+floor 0
+usemtl roof2
+ceil 192
+usemtl texture_G
+wall -800 1280 0 0
+wall -500 1280
+wall -200 1024 0 0
+wall -500 1024
+
+v -350 150 900
+pointlight -1 .6 800
+
+# west room
+ambientLightIntensity .2
+room westRoomPillar1
+usemtl texture_G
+floor 384 
+ceil 0
+wall -300 500
+wall -400 500
+wall -400 600
+wall -300 600
+
+room westRoomPillar2
+floor 384 
+ceil 0
+wall -800 500
+wall -900 500
+wall -900 600
+wall -800 600
+
+ambientLightIntensity .15
+room westRoom
+usemtl texture_H
+floor 0 
+usemtl texture_I
+ceil 384
+usemtl texture_F
+wall -500 1024 192 384
+wall -200 1024
+wall -50 800
+wall -50 200
+wall -400 200
+wall -800 200
+wall -1200 200
+wall -1200 800
+
+v -700 0 550
+obj bot1 averagebot.obj3d -1 1.57
+v -500 0 550
+obj bot2 averagebot.obj3d -1 1.57
+v -1100 300 300
+pointlight -1 .6 600
+
+# south east hall
+ambientLightIntensity .15
+usemtl texture_H
+room step
+floor 32 
+ceil 0
+wall 3072 1500
+wall 2816 1500
+wall 2816 1550
+wall 3072 1550
+
+room southEastHall
+usemtl texture_H
+floor 0
+usemtl roof2
+ceil 256
+usemtl wall1
+wall 1024 1500 0 32
+usemtl texture_G
+wall 1024 1800
+wall 1536 1800 
+wall 2048 1800
+wall 2560 1800
+wall 3072 1800
+usemtl texture_H
+wall 3072 1500 32 64
+usemtl wall1
+wall 2816 1500
+wall 2000 1500 0 0
+wall 1700 1500
+
+v 3000 0 1750
+obj bot3 averagebot.obj3d -1
+
+# far east room
+ambientLightIntensity .2
+room farEastRoom
+usemtl texture_H
+floor 64
+usemtl roof2
+ceil 384
+usemtl roof2
+wall 2816 1500 256 384
+usemtl texture_G
+wall 3072 1500
+wall 3300 1350
+wall 3300 1100
+wall 3072 950
+wall 2816 950
+wall 2600 1100
+wall 2600 1350
+
+v 2950 200 1225
+pointlight -1 1 500
+v 3050 64 1000
+obj null cube.obj3d -1 
+v 3050 64 1050
+obj null cube.obj3d -1 
+v 3100 64 1055
+obj null cube.obj3d -1 .5
+v 3050 96 1000.5 
+obj null cube.obj3d -1 .2
+
+# steps
+ambientLightIntensity .2
+usemtl texture_G
+room step1
+floor 32
+ceil 0
+wall 1700 1500
+wall 2000 1500
+wall 2000 1450
+wall 1700 1450
+room step2
+floor 64
+ceil 32
+wall 1700 1450
+wall 2000 1450
+wall 2000 1400
+wall 1700 1400
+room step3
+floor 96
+ceil 64
+wall 1700 1400
+wall 2000 1400
+wall 2000 1350
+wall 1700 1350
+room step4
+floor 128
+ceil 96
+wall 1700 1350
+wall 2000 1350
+wall 2000 1300
+wall 1700 1300
+room step5
+floor 160
+ceil 128
+wall 1700 1300
+wall 2000 1300
+wall 2000 1250
+wall 1700 1250
+room step6
+floor 192
+ceil 160
+wall 1700 1250
+wall 2000 1250
+wall 2000 1200
+wall 1700 1200
+
+v 1850 300 1400 
+pointlight -1 .75 400
+
+room stepRoof
+usemtl roof1
+floor 0
+usemtl roof2
+ceil 384
+wall 1700 1500 256 384
+usemtl wall1
+wall 2000 1500
+wall 2000 1200 160 192
+wall 1700 1200
+room stepHall
+usemtl roof1
+floor 192
+usemtl roof2
+ceil 384
+usemtl wall1
+wall 1700 1200 0 0
+wall 2000 1200
+wall 2000 550
+wall 1700 550 0 0
+wall 1700 850
+
+v 1850 192 700
+obj bot4 averagebot.obj3d -1
+v 1850 192 1000
+obj bot5 averagebot.obj3d -1
+
+# east hall
+room eastHall
+usemtl roof1
+floor 192
+usemtl roof2
+ceil 384
+usemtl wall1
+wall 1700 850 0 0
+wall 1700 550
+wall 896 550 0 0
+wall 896 850
+
+v 1050 300 700 
+pointlight -1 1 150
+
+v 1250 300 700 
+pointlight -1 1 150
+
+v 1450 300 700 
+pointlight -1 1 150
+
+v 1650 300 700 
+pointlight -1 1 150
+
+v 1850 300 700 
+pointlight -1 1 150
+
+v 1850 300 900 
+pointlight -1 1 150
+
+v 1850 300 1100 
+pointlight -1 1 150
+
