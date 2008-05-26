@@ -43,9 +43,11 @@
  */
 package org.thenesis.planetino2.ai;
 
-import org.thenesis.planetino2.engine.shooter3D.Player;
 import org.thenesis.planetino2.game.GameObject;
-import org.thenesis.planetino2.math3D.*;
+import org.thenesis.planetino2.game.Player;
+import org.thenesis.planetino2.math3D.MovingTransform3D;
+import org.thenesis.planetino2.math3D.PolygonGroup;
+import org.thenesis.planetino2.math3D.Vector3D;
 import org.thenesis.planetino2.util.MoreMath;
 
 /**
