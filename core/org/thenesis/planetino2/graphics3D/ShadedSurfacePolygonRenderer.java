@@ -46,8 +46,7 @@ package org.thenesis.planetino2.graphics3D;
 import java.util.Enumeration;
 import java.util.Vector;
 
-import javax.microedition.lcdui.Graphics;
-
+import org.thenesis.planetino2.graphics.Graphics;
 import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.graphics3D.texture.ShadedSurface;
 import org.thenesis.planetino2.graphics3D.texture.Texture;

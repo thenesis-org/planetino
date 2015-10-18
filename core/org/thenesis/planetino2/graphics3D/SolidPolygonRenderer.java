@@ -43,9 +43,8 @@
  */
 package org.thenesis.planetino2.graphics3D;
 
-import javax.microedition.lcdui.Graphics;
-
 import org.thenesis.planetino2.graphics.Color;
+import org.thenesis.planetino2.graphics.Graphics;
 import org.thenesis.planetino2.math3D.SolidPolygon3D;
 import org.thenesis.planetino2.math3D.Transform3D;
 import org.thenesis.planetino2.math3D.ViewWindow;

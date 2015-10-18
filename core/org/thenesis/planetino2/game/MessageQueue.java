@@ -46,10 +46,9 @@ package org.thenesis.planetino2.game;
 import java.util.Enumeration;
 import java.util.Vector;
 
-import javax.microedition.lcdui.Font;
-import javax.microedition.lcdui.Graphics;
-
 import org.thenesis.planetino2.graphics.Color;
+import org.thenesis.planetino2.graphics.Graphics;
+import org.thenesis.planetino2.graphics.Toolkit;
 import org.thenesis.planetino2.graphics3D.Overlay;
 import org.thenesis.planetino2.math3D.ViewWindow;
 
@@ -130,7 +129,7 @@ public class MessageQueue implements Overlay {
 		//        int x = window.getLeftOffset() + window.getWidth() -
 		//            fontHeight/4;
 
-		int fontHeight = Font.getDefaultFont().getHeight();
+		int fontHeight = g.getFont().getHeight();
 		int x = window.getLeftOffset();
 		int y = window.getTopOffset();
 
@@ -140,7 +139,7 @@ public class MessageQueue implements Overlay {
 		while (i.hasMoreElements()) {
 			String text = ((Message) i.nextElement()).text;
 			//System.out.println(text);
-			g.drawString(text, x, y, Graphics.TOP | Graphics.LEFT);
+			g.drawString(text, x, y);
 			y += fontHeight;
 		}
 

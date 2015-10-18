@@ -45,11 +45,9 @@ package org.thenesis.planetino2.engine;
 
 import java.util.Vector;
 
-import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Font;
-import javax.microedition.lcdui.Graphics;
-
 import org.thenesis.planetino2.graphics.Color;
+import org.thenesis.planetino2.graphics.Font;
+import org.thenesis.planetino2.graphics.Graphics;
 import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.graphics3D.Overlay;
 import org.thenesis.planetino2.graphics3D.PolygonRenderer;
@@ -109,6 +107,7 @@ public abstract class GameCore3D extends GameCore {
 		this.inputManager = inputManager;
 	}
 
+	@Override
 	public void init() {
 		super.init();
 
@@ -149,20 +148,20 @@ public abstract class GameCore3D extends GameCore {
 		//
 		//        inputManager.mapToKey(timeSmoothingToggle, KeyEvent.VK_T);
 
-		inputManager.mapToKey(goForward, 'r');
-		inputManager.mapToKey(goForward, Canvas.KEY_NUM2);
-		inputManager.mapToKey(goBackward, 'a');
-		inputManager.mapToKey(goBackward, Canvas.KEY_NUM8);
-		inputManager.mapToKey(goLeft, 'z');
-		inputManager.mapToKey(goLeft, Canvas.KEY_NUM4);
-		inputManager.mapToKey(goRight, 'e');
-		inputManager.mapToKey(goRight, Canvas.KEY_NUM6);
-		inputManager.mapToKey(goUp, Canvas.KEY_NUM3);
-		inputManager.mapToKey(goDown, Canvas.KEY_NUM1);
-		inputManager.mapToMouse(turnLeft, InputManager.MOUSE_MOVE_LEFT);
-		inputManager.mapToMouse(turnRight, InputManager.MOUSE_MOVE_RIGHT);
-		inputManager.mapToMouse(tiltUp, InputManager.MOUSE_MOVE_UP);
-		inputManager.mapToMouse(tiltDown, InputManager.MOUSE_MOVE_DOWN);
+//		inputManager.mapToKey(goForward, 'r');
+//		inputManager.mapToKey(goForward, Canvas.KEY_NUM2);
+//		inputManager.mapToKey(goBackward, 'a');
+//		inputManager.mapToKey(goBackward, Canvas.KEY_NUM8);
+//		inputManager.mapToKey(goLeft, 'z');
+//		inputManager.mapToKey(goLeft, Canvas.KEY_NUM4);
+//		inputManager.mapToKey(goRight, 'e');
+//		inputManager.mapToKey(goRight, Canvas.KEY_NUM6);
+//		inputManager.mapToKey(goUp, Canvas.KEY_NUM3);
+//		inputManager.mapToKey(goDown, Canvas.KEY_NUM1);
+//		inputManager.mapToMouse(turnLeft, InputManager.MOUSE_MOVE_LEFT);
+//		inputManager.mapToMouse(turnRight, InputManager.MOUSE_MOVE_RIGHT);
+//		inputManager.mapToMouse(tiltUp, InputManager.MOUSE_MOVE_UP);
+//		inputManager.mapToMouse(tiltDown, InputManager.MOUSE_MOVE_DOWN);
 
 		// create the polygon renderer
 		createPolygonRenderer();
@@ -203,6 +202,7 @@ public abstract class GameCore3D extends GameCore {
 
 	}
 
+	@Override
 	public void update(long elapsedTime) {
 
 		drawInstructionsTime += elapsedTime;
@@ -306,6 +306,7 @@ public abstract class GameCore3D extends GameCore {
 		}
 	}
 
+	@Override
 	public void draw(Graphics g) {
 		int viewX1 = viewWindow.getLeftOffset();
 		int viewY1 = viewWindow.getTopOffset();
@@ -377,15 +378,14 @@ public abstract class GameCore3D extends GameCore {
 			
 			System.out.println("drawInstructions");
 
-			g.drawString("Use the mouse/arrow keys to move. " + "Press Esc to exit.", 5, fontSize, Graphics.TOP
-					| Graphics.LEFT);
+			g.drawString("Use the mouse/arrow keys to move. " + "Press Esc to exit.", 5, fontSize);
 		}
 		// (you may have to turn off the BufferStrategy in
 		// ScreenManager for more accurate tests)
 		if (drawFrameRate) {
 			g.setColor(Color.WHITE.getRGB());
 			calcFrameRate();
-			g.drawString(frameRate + " frames/sec", 5, screen.getHeight() - 5, Graphics.TOP | Graphics.LEFT);
+			g.drawString(frameRate + " frames/sec", 5, screen.getHeight() - 5);
 		}
 
 		// draw overlays

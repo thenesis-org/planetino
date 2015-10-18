@@ -45,9 +45,8 @@ package org.thenesis.planetino2.bsp2D;
 
 import java.util.Hashtable;
 
-import javax.microedition.lcdui.Graphics;
-
 import org.thenesis.planetino2.game.GameObjectManager;
+import org.thenesis.planetino2.graphics.Graphics;
 import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.graphics3D.ScanConverter;
 import org.thenesis.planetino2.graphics3D.SortedScanConverter;

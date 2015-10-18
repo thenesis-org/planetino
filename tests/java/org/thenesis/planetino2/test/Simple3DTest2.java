@@ -43,13 +43,12 @@
  */
 package org.thenesis.planetino2.test;
 
+import java.awt.Canvas;
 import java.util.Vector;
-
-import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Graphics;
 
 import org.thenesis.planetino2.engine.GameCore;
 import org.thenesis.planetino2.graphics.Color;
+import org.thenesis.planetino2.graphics.Graphics;
 import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.graphics3D.PolygonRenderer;
 import org.thenesis.planetino2.graphics3D.SolidPolygonRenderer;

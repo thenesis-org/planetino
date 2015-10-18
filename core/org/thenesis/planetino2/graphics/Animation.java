@@ -45,8 +45,6 @@ package org.thenesis.planetino2.graphics;
 
 import java.util.Vector;
 
-import javax.microedition.lcdui.Image;
-
 /**
  The Animation class manages a series of images (frames) and
  the amount of time to display each frame.

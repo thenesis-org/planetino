@@ -45,11 +45,11 @@ package org.thenesis.planetino2.graphics3D.texture;
 
 import java.io.IOException;
 
-import javax.microedition.lcdui.Image;
-
 import org.thenesis.planetino2.graphics.Color;
 import org.thenesis.planetino2.graphics.DirectColorModel;
+import org.thenesis.planetino2.graphics.Image;
 import org.thenesis.planetino2.graphics.IndexColorModel;
+import org.thenesis.planetino2.graphics.Toolkit;
 
 /**
  The Texture class is an sabstract class that represents a
@@ -104,7 +104,7 @@ public abstract class Texture {
 	public static Texture createTexture(String path, String filename, boolean shaded) {
 
 		try {
-			Image image = Image.createImage(path + filename);
+			Image image = Toolkit.getInstance().createImage(path + filename);
 
 			return createTexture(image, shaded);
 
@@ -147,7 +147,7 @@ public abstract class Texture {
 		if (shaded) {
 
 			int[] rgb888Data = new int[width * height];
-			image.getRGB(rgb888Data, 0, width, 0, 0, width, height);
+			image.getRGB(rgb888Data, 0, 0, width, height);
 
 			return new ShadedTexture(rgb888Data, countbits(width - 1), countbits(height - 1), new DirectColorModel(32,
 					0x00FF0000, 0x0000FF00, 0x000000FF));
@@ -170,7 +170,7 @@ public abstract class Texture {
 		} else {
 
 			int[] rgb888Data = new int[width * height];
-			image.getRGB(rgb888Data, 0, width, 0, 0, width, height);
+			image.getRGB(rgb888Data, 0, 0, width, height);
 			return new PowerOf2Texture(rgb888Data, countbits(width - 1), countbits(height - 1));
 
 			//			short[] rgb565Data = new short[width * height];	
@@ -237,7 +237,7 @@ public abstract class Texture {
 		// Do conversion for each line
 		for (int j = 0; j < h; j++) {
 			// getRGB(int[] rgbData, int offset, int scanlength, int x, int y, int width, int height)
-			src.getRGB(rgbData, 0, w, 0, j, w, 1);
+			src.getRGB(rgbData, 0, j, w, 1);
 
 			for (int i = 0; i < w; i++) {
 
@@ -277,7 +277,7 @@ public abstract class Texture {
 		// Do conversion for each line
 		for (int j = 0; j < h; j++) {
 			// getRGB(int[] rgbData, int offset, int scanlength, int x, int y, int width, int height)
-			src.getRGB(rgbData, 0, w, 0, 0, w, 1);
+			src.getRGB(rgbData, 0, 0, w, 1);
 
 			for (int i = 0; i < w; i++) {
 

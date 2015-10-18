@@ -46,8 +46,7 @@ package org.thenesis.planetino2.game;
 import java.util.Enumeration;
 import java.util.Vector;
 
-import javax.microedition.lcdui.Graphics;
-
+import org.thenesis.planetino2.graphics.Graphics;
 import org.thenesis.planetino2.math3D.Rectangle;
 
 /**

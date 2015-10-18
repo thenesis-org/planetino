@@ -43,22 +43,18 @@
  */
 package org.thenesis.planetino2.demo;
 
-import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.game.GameCanvas;
-import javax.microedition.midlet.MIDlet;
-import javax.microedition.midlet.MIDletStateChangeException;
+import java.awt.Canvas;
+import java.awt.event.KeyEvent;
 
+import org.thenesis.planetino2.graphics.Graphics;
 import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.input.InputManager;
 
-public class PlanetinoDemo extends MIDlet {
+public class DemoAWT  {
 
-	private Display display;
 
 	//@Override
-	protected void destroyApp(boolean unconditional) throws MIDletStateChangeException {
+	protected void destroyApp(boolean unconditional) {
 		// TODO Auto-generated method stub
 	}
 
@@ -68,13 +64,12 @@ public class PlanetinoDemo extends MIDlet {
 	}
 
 	//@Override
-	protected void startApp() throws MIDletStateChangeException {
-		display = Display.getDisplay(this);
+	protected void startApp() {
 
-		final ScreenImpl screenImpl = new ScreenImpl(false);
+		final ScreenImpl screenImpl = new ScreenImpl();
 		InputManager inputManager = new InputManager() {
 			public String getKeyName(int keyCode) {
-				return screenImpl.getKeyName(keyCode);
+				return KeyEvent.getKeyText(keyCode);
 			}
 		};
 		screenImpl.setInputManager(inputManager);
@@ -82,18 +77,28 @@ public class PlanetinoDemo extends MIDlet {
 		DemoEngine engine = new DemoEngine(screenImpl, inputManager) {
 			public void init() {
 				super.init();
-				this.inputManager.mapToKey(goForward, screenImpl.getKeyCode(Canvas.UP));
-				this.inputManager.mapToKey(goBackward, screenImpl.getKeyCode(Canvas.DOWN));
-				this.inputManager.mapToKey(goLeft, screenImpl.getKeyCode(Canvas.LEFT));
-				this.inputManager.mapToKey(goRight, screenImpl.getKeyCode(Canvas.RIGHT));
-				this.inputManager.mapToKey(goUp, screenImpl.getKeyCode(Canvas.GAME_A));
-				this.inputManager.mapToKey(goDown, screenImpl.getKeyCode(Canvas.GAME_B));
-				this.inputManager.mapToMouse(fire, InputManager.MOUSE_BUTTON_1);
-				this.inputManager.mapToKey(jump, screenImpl.getKeyCode(Canvas.GAME_C));
+				
+				//inputManager.mapToKey(exit, KeyEvent.VK_ESCAPE);
+				inputManager.mapToKey(goForward, KeyEvent.VK_W);
+				inputManager.mapToKey(goForward, KeyEvent.VK_UP);
+				inputManager.mapToKey(goBackward, KeyEvent.VK_S);
+				inputManager.mapToKey(goBackward, KeyEvent.VK_DOWN);
+				inputManager.mapToKey(goLeft, KeyEvent.VK_A);
+				inputManager.mapToKey(goLeft, KeyEvent.VK_LEFT);
+				inputManager.mapToKey(goRight, KeyEvent.VK_D);
+				inputManager.mapToKey(goRight, KeyEvent.VK_RIGHT);
+				inputManager.mapToKey(goUp, KeyEvent.VK_PAGE_UP);
+				inputManager.mapToKey(goDown, KeyEvent.VK_PAGE_DOWN);
+				inputManager.mapToMouse(turnLeft, InputManager.MOUSE_MOVE_LEFT);
+				inputManager.mapToMouse(turnRight, InputManager.MOUSE_MOVE_RIGHT);
+				inputManager.mapToMouse(tiltUp, InputManager.MOUSE_MOVE_UP);
+				inputManager.mapToMouse(tiltDown, InputManager.MOUSE_MOVE_DOWN);
+				
+				inputManager.mapToMouse(fire, InputManager.MOUSE_BUTTON_1);
+				inputManager.mapToKey(jump, KeyEvent.VK_SPACE);
+				
 			}
 		};
-
-		display.setCurrent(screenImpl);
 
 		Thread engineThread = new Thread(engine);
 		engineThread.start();
@@ -101,57 +106,6 @@ public class PlanetinoDemo extends MIDlet {
 
 	}
 
-	class ScreenImpl extends GameCanvas implements Screen {
 
-		private InputManager inputManager;
-
-		protected ScreenImpl(boolean suppressKeyEvents) {
-			super(suppressKeyEvents);
-			//System.out.println("[DEBUG] ScreenImpl.<init> :" + getWidth() + " " + getHeight());
-		}
-
-		public void setInputManager(InputManager inputManager) {
-			this.inputManager = inputManager;
-		}
-
-		public Graphics getGraphics() {
-			return super.getGraphics();
-		}
-
-		public void restoreScreen() {
-			// TODO Auto-generated method stub
-		}
-
-		public void update() {
-			flushGraphics();
-		}
-
-		protected void keyPressed(int keyCode) {
-			inputManager.keyPressed(keyCode);
-		}
-
-		protected void keyReleased(int keyCode) {
-			inputManager.keyReleased(keyCode);
-		}
-
-		protected void pointerDragged(int x, int y) {
-			inputManager.pointerDragged(x, y);
-		}
-
-		protected void pointerPressed(int x, int y) {
-			inputManager.pointerPressed(x, y);
-		}
-
-		protected void pointerReleased(int x, int y) {
-			inputManager.pointerReleased();
-		}
-
-	}
-
-	class InputManagerImpl extends InputManager {
-		public String getKeyName(int keyCode) {
-			return null;
-		}
-	}
 
 }

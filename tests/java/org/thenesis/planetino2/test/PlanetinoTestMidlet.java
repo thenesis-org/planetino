@@ -45,11 +45,11 @@ package org.thenesis.planetino2.test;
 
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.game.GameCanvas;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
+import org.thenesis.planetino2.graphics.Graphics;
 import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.input.InputManager;
 

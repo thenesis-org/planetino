@@ -43,7 +43,8 @@
  */
 package org.thenesis.planetino2.graphics;
 
-import javax.microedition.lcdui.Graphics;
+
+
 
 /**
  The ScreenManager class manages initializing and displaying

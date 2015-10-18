@@ -43,7 +43,7 @@
  */
 package org.thenesis.planetino2.game;
 
-import javax.microedition.lcdui.Graphics;
+import org.thenesis.planetino2.graphics.Graphics;
 
 /**
  The GameObjectRenderer interface provides a method for

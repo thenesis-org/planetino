@@ -48,7 +48,6 @@ import java.util.Random;
 import java.util.Vector;
 
 import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Graphics;
 
 import org.thenesis.planetino2.engine.GameCore3D;
 import org.thenesis.planetino2.engine.shooter3D.Blast;
@@ -57,6 +56,7 @@ import org.thenesis.planetino2.game.GameObject;
 import org.thenesis.planetino2.game.GameObjectManager;
 import org.thenesis.planetino2.game.GameObjectRenderer;
 import org.thenesis.planetino2.game.SimpleGameObjectManager;
+import org.thenesis.planetino2.graphics.Graphics;
 import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.graphics3D.ZBufferedRenderer;
 import org.thenesis.planetino2.graphics3D.texture.ShadedTexture;

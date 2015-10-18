@@ -47,8 +47,6 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Vector;
 
-import javax.microedition.lcdui.Graphics;
-
 import org.thenesis.planetino2.bsp2D.BSPRenderer;
 import org.thenesis.planetino2.bsp2D.BSPTree;
 import org.thenesis.planetino2.bsp2D.MapLoader;
@@ -60,6 +58,7 @@ import org.thenesis.planetino2.game.GameObjectRenderer;
 import org.thenesis.planetino2.game.GridGameObjectManager;
 import org.thenesis.planetino2.game.Player;
 import org.thenesis.planetino2.graphics.Color;
+import org.thenesis.planetino2.graphics.Graphics;
 import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.input.InputManager;
 import org.thenesis.planetino2.math3D.PointLight3D;

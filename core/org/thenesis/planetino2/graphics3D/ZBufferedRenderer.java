@@ -45,10 +45,9 @@ package org.thenesis.planetino2.graphics3D;
 
 import java.util.Hashtable;
 
-import javax.microedition.lcdui.Graphics;
-
 import org.thenesis.planetino2.game.GameObject;
 import org.thenesis.planetino2.game.GameObjectRenderer;
+import org.thenesis.planetino2.graphics.Graphics;
 import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.graphics3D.texture.PowerOf2Texture;
 import org.thenesis.planetino2.graphics3D.texture.ShadedSurface;

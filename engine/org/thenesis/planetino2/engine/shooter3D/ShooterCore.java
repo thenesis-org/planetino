@@ -46,11 +46,8 @@ package org.thenesis.planetino2.engine.shooter3D;
 import java.io.IOException;
 import java.util.Vector;
 
-import javax.microedition.lcdui.Canvas;
-
 import org.thenesis.planetino2.bsp2D.BSPRenderer;
 import org.thenesis.planetino2.engine.GameCore3D;
-import org.thenesis.planetino2.game.GameObject;
 import org.thenesis.planetino2.game.GameObjectManager;
 import org.thenesis.planetino2.game.Player;
 import org.thenesis.planetino2.graphics.Screen;
@@ -96,8 +93,9 @@ public abstract class ShooterCore extends GameCore3D {
 
 	public void init() {
 		
-		inputManager.mapToKey(jump, Canvas.KEY_NUM9);
-		inputManager.mapToKey(fire, Canvas.KEY_NUM5);
+		// FIXME
+		//inputManager.mapToKey(jump, Canvas.KEY_NUM9);
+		//inputManager.mapToKey(fire, Canvas.KEY_NUM5);
 
 		// set up the local lights for the model.
 		float ambientLightIntensity = .8f;

@@ -45,10 +45,10 @@ package org.thenesis.planetino2.engine;
 
 import java.io.IOException;
 
-import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
-
+import org.thenesis.planetino2.graphics.Graphics;
+import org.thenesis.planetino2.graphics.Image;
 import org.thenesis.planetino2.graphics.Screen;
+import org.thenesis.planetino2.graphics.Toolkit;
 
 
 /**
@@ -135,7 +135,7 @@ public abstract class GameCore implements Runnable {
 
 
     public Image loadImage(String fileName) throws IOException {
-        return Image.createImage(fileName);
+        return Toolkit.getInstance().createImage(fileName);
     }
 
 

@@ -43,7 +43,7 @@
  */
 package org.thenesis.planetino2.graphics;
 
-import javax.microedition.lcdui.Image;
+
 
 public class Sprite {
 

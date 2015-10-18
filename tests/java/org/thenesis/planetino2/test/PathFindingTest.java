@@ -47,9 +47,6 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Vector;
 
-import javax.microedition.lcdui.Font;
-import javax.microedition.lcdui.Graphics;
-
 import org.thenesis.planetino2.bsp2D.BSPRenderer;
 import org.thenesis.planetino2.bsp2D.BSPTree;
 import org.thenesis.planetino2.bsp2D.BSPTreeBuilderWithPortals;
@@ -62,6 +59,7 @@ import org.thenesis.planetino2.game.GameObjectRenderer;
 import org.thenesis.planetino2.game.GridGameObjectManager;
 import org.thenesis.planetino2.game.Player;
 import org.thenesis.planetino2.graphics.Color;
+import org.thenesis.planetino2.graphics.Graphics;
 import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.input.InputManager;
 import org.thenesis.planetino2.math3D.PointLight3D;
@@ -108,8 +106,8 @@ public class PathFindingTest extends ShooterCore {
 		g.setColor(Color.BLACK.getRGB());
 		g.fillRect(0, 0, screen.getWidth(), screen.getHeight());
 		g.setColor(Color.WHITE.getRGB());
-		int fontHeight = Font.getDefaultFont().getHeight();
-		g.drawString("Loading...", 5, screen.getHeight() - fontHeight, Graphics.TOP | Graphics.LEFT);
+		int fontHeight = g.getFont().getHeight();
+		g.drawString("Loading...", 5, screen.getHeight() - fontHeight);
 		screen.update();
 
 		float ambientLightIntensity = .2f;

@@ -43,11 +43,10 @@
  */
 package org.thenesis.planetino2.engine.shooter3D;
 
-import javax.microedition.lcdui.Font;
-import javax.microedition.lcdui.Graphics;
-
 import org.thenesis.planetino2.game.Player;
 import org.thenesis.planetino2.graphics.Color;
+import org.thenesis.planetino2.graphics.Font;
+import org.thenesis.planetino2.graphics.Graphics;
 import org.thenesis.planetino2.graphics3D.Overlay;
 import org.thenesis.planetino2.math3D.ViewWindow;
 
@@ -82,14 +81,14 @@ public class HeadsUpDisplay implements Overlay {
 
 	public void draw(Graphics g, ViewWindow window) {
 
-		Font font = Font.getDefaultFont();
+		Font font = g.getFont();
 		int fontHeight = font.getHeight();
 		int spacing = fontHeight / 5;
 
 		// draw health value (number)
 		String str = Integer.toString((int) Math.floor(displayedHealth + 0.5d));
 		g.setColor(Color.WHITE.getRGB());
-		g.drawString(str, 0, 0, Graphics.TOP | Graphics.LEFT);
+		g.drawString(str, 0, 0);
 
 		// draw health bar
 		int x = font.charsWidth(str.toCharArray(), 0, str.length()) + spacing * 2;
