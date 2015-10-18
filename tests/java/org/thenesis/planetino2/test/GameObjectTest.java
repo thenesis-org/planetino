@@ -47,8 +47,6 @@ import java.io.IOException;
 import java.util.Random;
 import java.util.Vector;
 
-import javax.microedition.lcdui.Canvas;
-
 import org.thenesis.planetino2.engine.GameCore3D;
 import org.thenesis.planetino2.engine.shooter3D.Blast;
 import org.thenesis.planetino2.engine.shooter3D.Bot;
@@ -123,9 +121,6 @@ public class GameObjectTest extends GameCore3D {
 
 	public void init() {
 		super.init();
-
-		inputManager.mapToKey(fire, Canvas.KEY_NUM5);
-		inputManager.mapToMouse(fire, Canvas.FIRE);
 	}
 
 	public void createPolygons() {

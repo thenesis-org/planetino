@@ -43,130 +43,55 @@
  */
 package org.thenesis.planetino2.test;
 
-import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.game.GameCanvas;
-import javax.microedition.midlet.MIDlet;
-import javax.microedition.midlet.MIDletStateChangeException;
+import java.awt.event.KeyEvent;
 
-import org.thenesis.planetino2.graphics.Graphics;
+import org.thenesis.planetino2.backend.awt.AWTToolkit;
+import org.thenesis.planetino2.engine.GameCore3D;
+import org.thenesis.planetino2.engine.shooter3D.ShooterCore;
 import org.thenesis.planetino2.graphics.Screen;
+import org.thenesis.planetino2.graphics.Toolkit;
 import org.thenesis.planetino2.input.InputManager;
 
-public class PlanetinoTestMidlet extends MIDlet {
+public class PlanetinoTestMidlet  {
 
-	private Display display;
-
-	//@Override
-	protected void destroyApp(boolean unconditional) throws MIDletStateChangeException {
-		// TODO Auto-generated method stub
-
-	}
-
-	//@Override
-	protected void pauseApp() {
-		// TODO Auto-generated method stub
-
-	}
-
-	//@Override
-	protected void startApp() throws MIDletStateChangeException {
-		display = Display.getDisplay(this);
-
-		final ScreenImpl screenImpl = new ScreenImpl(false);
-		InputManager inputManager = new InputManager() {
-			public String getKeyName(int keyCode) {
-				return screenImpl.getKeyName(keyCode);
-			}
-		};
-		screenImpl.setInputManager(inputManager);
-
-		//Simple3DTest2 engine = new Simple3DTest2(screenImpl, inputManager);
-		//TextureMapTest2 engine = new TextureMapTest2(screenImpl, inputManager);
-		//GameObjectTest engine = new GameObjectTest(screenImpl, inputManager);
-		//CollisionTest engine = new CollisionTest(screenImpl, inputManager);
-		//CollisionTestWithSliding engine = new CollisionTestWithSliding(screenImpl, inputManager);
-		//PathFindingTest engine = new PathFindingTest(screenImpl, inputManager);
-		//EvolutionTest engine = new EvolutionTest(screenImpl, inputManager);
-		//AIBotTest engine = new AIBotTest(screenImpl, inputManager);
-
-		TestEngine engine = new TestEngine(screenImpl, inputManager) {
-			public void init() {
-				super.init();
-				this.inputManager.mapToKey(goForward, screenImpl.getKeyCode(Canvas.UP));
-				this.inputManager.mapToKey(goBackward, screenImpl.getKeyCode(Canvas.DOWN));
-				this.inputManager.mapToKey(goLeft, screenImpl.getKeyCode(Canvas.LEFT));
-				this.inputManager.mapToKey(goRight, screenImpl.getKeyCode(Canvas.RIGHT));
-				this.inputManager.mapToKey(goUp, screenImpl.getKeyCode(Canvas.GAME_A));
-				this.inputManager.mapToKey(goDown, screenImpl.getKeyCode(Canvas.GAME_B));
-				this.inputManager.mapToMouse(fire, InputManager.MOUSE_BUTTON_1);
-				this.inputManager.mapToKey(jump, screenImpl.getKeyCode(Canvas.GAME_C));
-			}
-		};
-
-		display.setCurrent(screenImpl);
-
+	
+	public static void main(String[] args) {
+		Toolkit.setToolkit(new AWTToolkit());
+		
+		Screen screen = Toolkit.getInstance().getScreen();
+		InputManager inputManager = Toolkit.getInstance().getInputManager();
+		
+		//inputManager.mapToKey(exit, KeyEvent.VK_ESCAPE);
+		inputManager.mapToKey(GameCore3D.goForward, KeyEvent.VK_W);
+		inputManager.mapToKey(GameCore3D.goForward, KeyEvent.VK_UP);
+		inputManager.mapToKey(GameCore3D.goBackward, KeyEvent.VK_S);
+		inputManager.mapToKey(GameCore3D.goBackward, KeyEvent.VK_DOWN);
+		inputManager.mapToKey(GameCore3D.goLeft, KeyEvent.VK_A);
+		inputManager.mapToKey(GameCore3D.goLeft, KeyEvent.VK_LEFT);
+		inputManager.mapToKey(GameCore3D.goRight, KeyEvent.VK_D);
+		inputManager.mapToKey(GameCore3D.goRight, KeyEvent.VK_RIGHT);
+		inputManager.mapToKey(GameCore3D.goUp, KeyEvent.VK_PAGE_UP);
+		inputManager.mapToKey(GameCore3D.goDown, KeyEvent.VK_PAGE_DOWN);
+		inputManager.mapToMouse(GameCore3D.turnLeft, InputManager.MOUSE_MOVE_LEFT);
+		inputManager.mapToMouse(GameCore3D.turnRight, InputManager.MOUSE_MOVE_RIGHT);
+		inputManager.mapToMouse(GameCore3D.tiltUp, InputManager.MOUSE_MOVE_UP);
+		inputManager.mapToMouse(GameCore3D.tiltDown, InputManager.MOUSE_MOVE_DOWN);
+		inputManager.mapToMouse(ShooterCore.fire, InputManager.MOUSE_BUTTON_1);
+		inputManager.mapToKey(ShooterCore.jump, KeyEvent.VK_SPACE);
+		
+		//TestEngine engine = new TestEngine(screen, inputManager);
+		//Simple3DTest2 engine = new Simple3DTest2(screen, inputManager);
+				//TextureMapTest2 engine = new TextureMapTest2(screen, inputManager);
+				//GameObjectTest engine = new GameObjectTest(screen, inputManager);
+				//CollisionTest engine = new CollisionTest(screen, inputManager);
+				//CollisionTestWithSliding engine = new CollisionTestWithSliding(screen, inputManager);
+				//PathFindingTest engine = new PathFindingTest(screen, inputManager);
+				//EvolutionTest engine = new EvolutionTest(screen, inputManager);
+				AIBotTest engine = new AIBotTest(screen, inputManager);
+		
 		Thread engineThread = new Thread(engine);
 		engineThread.start();
-		//engine.run();
-
 	}
 
-	class ScreenImpl extends GameCanvas implements Screen {
-
-		private InputManager inputManager;
-
-		protected ScreenImpl(boolean suppressKeyEvents) {
-			super(suppressKeyEvents);
-			System.out.println("[DEBUG] ScreenImpl.<init> :" + getWidth() + " " + getHeight());
-		}
-
-		public void setInputManager(InputManager inputManager) {
-			this.inputManager = inputManager;
-		}
-
-		public Graphics getGraphics() {
-			return super.getGraphics();
-		}
-
-		public void restoreScreen() {
-			// TODO Auto-generated method stub
-
-		}
-
-		public void update() {
-			flushGraphics();
-		}
-
-		protected void keyPressed(int keyCode) {
-			inputManager.keyPressed(keyCode);
-		}
-
-		protected void keyReleased(int keyCode) {
-			inputManager.keyReleased(keyCode);
-		}
-
-		protected void pointerDragged(int x, int y) {
-			inputManager.pointerDragged(x, y);
-		}
-
-		protected void pointerPressed(int x, int y) {
-			inputManager.pointerPressed(x, y);
-		}
-
-		protected void pointerReleased(int x, int y) {
-			inputManager.pointerReleased();
-		}
-
-	}
-
-	class InputManagerImpl extends InputManager {
-
-		public String getKeyName(int keyCode) {
-
-			return null;
-		}
-
-	}
 
 }

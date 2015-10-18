@@ -71,7 +71,7 @@ public class AWTScreen implements Screen, KeyListener, MouseListener, MouseMotio
 	}
 
 	public void update() {
-		frame.repaint();
+		panel.repaint();
 	}
 
 	public int getWidth() {

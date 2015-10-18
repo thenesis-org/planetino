@@ -24,7 +24,7 @@ public class AWTImage implements Image {
 	}
 
 	public void getRGB(int[] rgbData, int x, int y, int width, int height) {
-		bufferedImage.getRaster().getPixels(x, y, width, height, rgbData);
+		bufferedImage.getRGB(0, 0, width, height, rgbData, 0, width);
 	}
 
 }

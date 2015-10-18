@@ -2,6 +2,9 @@ package org.thenesis.planetino2.backend.awt;
 
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.io.InputStream;
+
+import javax.imageio.ImageIO;
 
 import org.thenesis.planetino2.graphics.Font;
 import org.thenesis.planetino2.graphics.Image;
@@ -17,7 +20,8 @@ public class AWTToolkit extends Toolkit {
 	
 	@Override
 	public Image createImage(String path) throws IOException {
-		java.awt.Image nativeImage = java.awt.Toolkit.getDefaultToolkit().createImage(path);
+		InputStream is = getClass().getResourceAsStream(path);
+		java.awt.Image nativeImage =  ImageIO.read(is);
 		return new AWTImage(nativeImage);
 	}
 

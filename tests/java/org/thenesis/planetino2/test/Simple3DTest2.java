@@ -47,6 +47,7 @@ import java.awt.Canvas;
 import java.util.Vector;
 
 import org.thenesis.planetino2.engine.GameCore;
+import org.thenesis.planetino2.engine.GameCore3D;
 import org.thenesis.planetino2.graphics.Color;
 import org.thenesis.planetino2.graphics.Graphics;
 import org.thenesis.planetino2.graphics.Screen;
@@ -60,7 +61,7 @@ import org.thenesis.planetino2.math3D.Transform3D;
 import org.thenesis.planetino2.math3D.Vector3D;
 import org.thenesis.planetino2.math3D.ViewWindow;
 
-public class Simple3DTest2 extends GameCore {
+public class Simple3DTest2 extends GameCore3D {
 
 	//	public static void main(String[] args) {
 	//        new Simple3DTest2().run();
@@ -97,7 +98,7 @@ public class Simple3DTest2 extends GameCore {
 	private GameAction tiltRight = new GameAction("tiltRight");
 
 	public Simple3DTest2(Screen screen, InputManager inputManager) {
-		super(screen);
+		super(screen, inputManager);
 		this.inputManager = inputManager;
 	}
 
@@ -108,33 +109,6 @@ public class Simple3DTest2 extends GameCore {
 		//            screen.getFullScreenWindow());
 		//        inputManager.setRelativeMouseMode(true);
 		//        inputManager.setCursor(InputManager.INVISIBLE_CURSOR);
-		//
-		//inputManager.mapToKey(exit, KeyEvent.VK_ESCAPE);
-		inputManager.mapToKey(goForward, Canvas.UP);
-		inputManager.mapToKey(goForward, Canvas.KEY_NUM2);
-		inputManager.mapToKey(goBackward, Canvas.DOWN);
-		inputManager.mapToKey(goBackward, Canvas.KEY_NUM8);
-		inputManager.mapToKey(goLeft, Canvas.LEFT);
-		inputManager.mapToKey(goLeft, Canvas.KEY_NUM4);
-		inputManager.mapToKey(goRight, Canvas.RIGHT);
-		inputManager.mapToKey(goRight, Canvas.KEY_NUM6);
-		inputManager.mapToKey(goUp, Canvas.GAME_A);
-		inputManager.mapToKey(goUp, Canvas.KEY_NUM3);
-		inputManager.mapToKey(goDown, Canvas.GAME_B);
-		inputManager.mapToKey(goDown, Canvas.KEY_NUM1);
-		inputManager.mapToMouse(turnLeft, InputManager.MOUSE_MOVE_LEFT);
-		inputManager.mapToMouse(turnRight, InputManager.MOUSE_MOVE_RIGHT);
-		inputManager.mapToMouse(tiltUp, InputManager.MOUSE_MOVE_UP);
-		inputManager.mapToMouse(tiltDown, InputManager.MOUSE_MOVE_DOWN);
-
-		//        inputManager.mapToKey(tiltLeft, KeyEvent.VK_INSERT);
-		//        inputManager.mapToKey(tiltRight, KeyEvent.VK_DELETE);
-		//        inputManager.mapToKey(smallerView, KeyEvent.VK_SUBTRACT);
-		//        inputManager.mapToKey(smallerView, KeyEvent.VK_MINUS);
-		//        inputManager.mapToKey(largerView, KeyEvent.VK_ADD);
-		//        inputManager.mapToKey(largerView, KeyEvent.VK_PLUS);
-		//        inputManager.mapToKey(largerView, KeyEvent.VK_EQUALS);
-		//        inputManager.mapToKey(frameRateToggle, KeyEvent.VK_R);
 
 		// create the polygon renderer
 		createPolygonRenderer();

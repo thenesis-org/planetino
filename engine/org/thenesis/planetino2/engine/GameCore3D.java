@@ -87,18 +87,18 @@ public abstract class GameCore3D extends GameCore {
 	private GameAction smallerView = new GameAction("smallerView", GameAction.DETECT_INITAL_PRESS_ONLY);
 	private GameAction largerView = new GameAction("largerView", GameAction.DETECT_INITAL_PRESS_ONLY);
 	private GameAction frameRateToggle = new GameAction("frameRateToggle", GameAction.DETECT_INITAL_PRESS_ONLY);
-	protected GameAction goForward = new GameAction("goForward");
-	protected GameAction goBackward = new GameAction("goBackward");
-	protected GameAction goUp = new GameAction("goUp");
-	protected GameAction goDown = new GameAction("goDown");
-	protected GameAction goLeft = new GameAction("goLeft");
-	protected GameAction goRight = new GameAction("goRight");
-	protected GameAction turnLeft = new GameAction("turnLeft");
-	protected GameAction turnRight = new GameAction("turnRight");
-	protected GameAction tiltUp = new GameAction("tiltUp");
-	protected GameAction tiltDown = new GameAction("tiltDown");
-	protected GameAction tiltLeft = new GameAction("tiltLeft");
-	protected GameAction tiltRight = new GameAction("tiltRight");
+	public static GameAction goForward = new GameAction("goForward");
+	public static GameAction goBackward = new GameAction("goBackward");
+	public static GameAction goUp = new GameAction("goUp");
+	public static GameAction goDown = new GameAction("goDown");
+	public static GameAction goLeft = new GameAction("goLeft");
+	public static GameAction goRight = new GameAction("goRight");
+	public static GameAction turnLeft = new GameAction("turnLeft");
+	public static GameAction turnRight = new GameAction("turnRight");
+	public static GameAction tiltUp = new GameAction("tiltUp");
+	public static GameAction tiltDown = new GameAction("tiltDown");
+	public static GameAction tiltLeft = new GameAction("tiltLeft");
+	public static GameAction tiltRight = new GameAction("tiltRight");
 	protected GameAction timeSmoothingToggle = new GameAction("timeSmoothingToggle",
 			GameAction.DETECT_INITAL_PRESS_ONLY);
 

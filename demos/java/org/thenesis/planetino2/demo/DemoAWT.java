@@ -43,68 +43,49 @@
  */
 package org.thenesis.planetino2.demo;
 
-import java.awt.Canvas;
 import java.awt.event.KeyEvent;
 
-import org.thenesis.planetino2.graphics.Graphics;
+import org.thenesis.planetino2.backend.awt.AWTToolkit;
+import org.thenesis.planetino2.engine.GameCore3D;
+import org.thenesis.planetino2.engine.shooter3D.ShooterCore;
 import org.thenesis.planetino2.graphics.Screen;
+import org.thenesis.planetino2.graphics.Toolkit;
 import org.thenesis.planetino2.input.InputManager;
 
 public class DemoAWT  {
-
-
-	//@Override
-	protected void destroyApp(boolean unconditional) {
-		// TODO Auto-generated method stub
-	}
-
-	//@Override
-	protected void pauseApp() {
-		// TODO Auto-generated method stub
-	}
-
-	//@Override
-	protected void startApp() {
-
-		final ScreenImpl screenImpl = new ScreenImpl();
-		InputManager inputManager = new InputManager() {
-			public String getKeyName(int keyCode) {
-				return KeyEvent.getKeyText(keyCode);
-			}
-		};
-		screenImpl.setInputManager(inputManager);
-
-		DemoEngine engine = new DemoEngine(screenImpl, inputManager) {
-			public void init() {
-				super.init();
-				
-				//inputManager.mapToKey(exit, KeyEvent.VK_ESCAPE);
-				inputManager.mapToKey(goForward, KeyEvent.VK_W);
-				inputManager.mapToKey(goForward, KeyEvent.VK_UP);
-				inputManager.mapToKey(goBackward, KeyEvent.VK_S);
-				inputManager.mapToKey(goBackward, KeyEvent.VK_DOWN);
-				inputManager.mapToKey(goLeft, KeyEvent.VK_A);
-				inputManager.mapToKey(goLeft, KeyEvent.VK_LEFT);
-				inputManager.mapToKey(goRight, KeyEvent.VK_D);
-				inputManager.mapToKey(goRight, KeyEvent.VK_RIGHT);
-				inputManager.mapToKey(goUp, KeyEvent.VK_PAGE_UP);
-				inputManager.mapToKey(goDown, KeyEvent.VK_PAGE_DOWN);
-				inputManager.mapToMouse(turnLeft, InputManager.MOUSE_MOVE_LEFT);
-				inputManager.mapToMouse(turnRight, InputManager.MOUSE_MOVE_RIGHT);
-				inputManager.mapToMouse(tiltUp, InputManager.MOUSE_MOVE_UP);
-				inputManager.mapToMouse(tiltDown, InputManager.MOUSE_MOVE_DOWN);
-				
-				inputManager.mapToMouse(fire, InputManager.MOUSE_BUTTON_1);
-				inputManager.mapToKey(jump, KeyEvent.VK_SPACE);
-				
-			}
-		};
-
+	
+	public static void main(String[] args) {
+		Toolkit.setToolkit(new AWTToolkit());
+		
+		Screen screen = Toolkit.getInstance().getScreen();
+		InputManager inputManager = Toolkit.getInstance().getInputManager();
+		
+		//inputManager.mapToKey(exit, KeyEvent.VK_ESCAPE);
+		inputManager.mapToKey(GameCore3D.goForward, KeyEvent.VK_W);
+		inputManager.mapToKey(GameCore3D.goForward, KeyEvent.VK_UP);
+		inputManager.mapToKey(GameCore3D.goBackward, KeyEvent.VK_S);
+		inputManager.mapToKey(GameCore3D.goBackward, KeyEvent.VK_DOWN);
+		inputManager.mapToKey(GameCore3D.goLeft, KeyEvent.VK_A);
+		inputManager.mapToKey(GameCore3D.goLeft, KeyEvent.VK_LEFT);
+		inputManager.mapToKey(GameCore3D.goRight, KeyEvent.VK_D);
+		inputManager.mapToKey(GameCore3D.goRight, KeyEvent.VK_RIGHT);
+		inputManager.mapToKey(GameCore3D.goUp, KeyEvent.VK_PAGE_UP);
+		inputManager.mapToKey(GameCore3D.goDown, KeyEvent.VK_PAGE_DOWN);
+		inputManager.mapToMouse(GameCore3D.turnLeft, InputManager.MOUSE_MOVE_LEFT);
+		inputManager.mapToMouse(GameCore3D.turnRight, InputManager.MOUSE_MOVE_RIGHT);
+		inputManager.mapToMouse(GameCore3D.tiltUp, InputManager.MOUSE_MOVE_UP);
+		inputManager.mapToMouse(GameCore3D.tiltDown, InputManager.MOUSE_MOVE_DOWN);
+		inputManager.mapToMouse(ShooterCore.fire, InputManager.MOUSE_BUTTON_1);
+		inputManager.mapToKey(ShooterCore.jump, KeyEvent.VK_SPACE);
+		
+		DemoEngine engine = new DemoEngine(screen, inputManager);
+		
 		Thread engineThread = new Thread(engine);
 		engineThread.start();
-		//engine.run();
-
 	}
+
+
+	
 
 
 

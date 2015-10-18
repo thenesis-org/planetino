@@ -69,8 +69,8 @@ public abstract class ShooterCore extends GameCore3D {
 	private static final float CAMERA_HEIGHT = 100;
 	private static final float BULLET_HEIGHT = 75;
 
-	protected GameAction fire = new GameAction("fire", GameAction.DETECT_INITAL_PRESS_ONLY);
-	protected GameAction jump = new GameAction("jump", GameAction.DETECT_INITAL_PRESS_ONLY);
+	public static GameAction fire = new GameAction("fire", GameAction.DETECT_INITAL_PRESS_ONLY);
+	public static GameAction jump = new GameAction("jump", GameAction.DETECT_INITAL_PRESS_ONLY);
 
 	protected GameObjectManager gameObjectManager;
 	protected PolygonGroup blastModel;

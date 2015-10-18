@@ -47,8 +47,6 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Vector;
 
-import javax.microedition.lcdui.FontImpl;
-
 import org.thenesis.planetino2.ai.AIBot;
 import org.thenesis.planetino2.ai.Brain;
 import org.thenesis.planetino2.ai.pattern.AimPattern;
@@ -116,9 +114,7 @@ public class TestEngine extends ShooterCore {
 		//loader.setObjectLights(lights, ambientLightIntensity);
 
 		try {
-			//bspTree = loader.loadMap("/res/", "cacao_demo.map");
-			bspTree = loader.loadMap("/res/", "cacao_demo2.map");
-			//bspTree = loader.loadMap("/res/", "classpath_hall.map");
+			bspTree = loader.loadMap("/res/", "cacao_demo.map");
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
