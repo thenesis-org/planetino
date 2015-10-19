@@ -1,10 +1,15 @@
 package org.thenesis.planetino2.backend.awt;
 
+import java.awt.AWTException;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.io.InputStream;
 
 import javax.imageio.ImageIO;
+import javax.swing.SwingUtilities;
 
 import org.thenesis.planetino2.graphics.Font;
 import org.thenesis.planetino2.graphics.Image;
@@ -45,13 +50,68 @@ public class AWTToolkit extends Toolkit {
 	@Override
 	public InputManager getInputManager() {
 		if (inputManager == null) {
-			inputManager = new InputManager() {
-				public String getKeyName(int keyCode) {
-					return KeyEvent.getKeyText(keyCode);
-				}
-			};
+			inputManager = new AWTInputManager();
 		}
 		return inputManager;
+	}
+	
+	class AWTInputManager extends InputManager {
+		
+		private Robot robot;
+		/**
+		 * An invisible cursor.
+		 */
+		private Cursor INVISIBLE_CURSOR;
+		
+		public AWTInputManager() {
+			INVISIBLE_CURSOR = java.awt.Toolkit.getDefaultToolkit().createCustomCursor(java.awt.Toolkit.getDefaultToolkit().getImage(""), new java.awt.Point(0, 0), "invisible");
+		}
+		
+		public String getKeyName(int keyCode) {
+			return KeyEvent.getKeyText(keyCode);
+		}
+
+		@Override
+		public void setRelativeMouseMode(boolean mode) {
+			if (mode) {
+				try {
+					robot = new Robot();
+					mouseLocation.x = awtScreen.panel.getWidth() / 2;
+				    mouseLocation.y = awtScreen.panel.getHeight() / 2;
+					recenterMouse();
+				} catch (AWTException e) {
+					isRelativeMouseModeEnabled = false;
+					e.printStackTrace();
+				}
+				isRelativeMouseModeEnabled = true;
+			} else {
+				isRelativeMouseModeEnabled = false;
+			}
+			
+		}
+
+		@Override
+		protected void recenterMouse() {
+			if (isRelativeMouseModeEnabled) {
+				java.awt.Point p = new java.awt.Point(awtScreen.panel.getWidth() / 2, awtScreen.panel.getHeight() / 2);
+				SwingUtilities.convertPointToScreen(p, (Component)awtScreen.panel);
+				isRecentering = true;
+				centerLocation.x = p.x;
+				centerLocation.y = p.y;
+				robot.mouseMove(p.x, p.y);
+			}
+		}
+
+		@Override
+		public void showCursor(boolean enabled) {
+			if (enabled) {
+				awtScreen.panel.setCursor(Cursor.getDefaultCursor());
+			} else {
+				awtScreen.panel.setCursor(INVISIBLE_CURSOR);
+			}
+			
+		}
+		
 	}
 
 }

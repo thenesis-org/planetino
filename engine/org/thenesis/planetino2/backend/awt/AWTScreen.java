@@ -16,7 +16,7 @@ import org.thenesis.planetino2.input.InputManager;
 
 public class AWTScreen implements Screen, KeyListener, MouseListener, MouseMotionListener {
 
-	private Panel panel;
+	Panel panel;
 	private Frame frame;
 
 	private int screenWidth = 640;

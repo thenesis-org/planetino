@@ -79,6 +79,9 @@ public class PlanetinoTestMidlet  {
 		inputManager.mapToMouse(ShooterCore.fire, InputManager.MOUSE_BUTTON_1);
 		inputManager.mapToKey(ShooterCore.jump, KeyEvent.VK_SPACE);
 		
+		inputManager.setRelativeMouseMode(true);
+		inputManager.showCursor(false);
+		
 		//TestEngine engine = new TestEngine(screen, inputManager);
 		//Simple3DTest2 engine = new Simple3DTest2(screen, inputManager);
 				//TextureMapTest2 engine = new TextureMapTest2(screen, inputManager);

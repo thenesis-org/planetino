@@ -76,9 +76,10 @@ public abstract class InputManager {
 	private GameAction[] keyActions = new GameAction[NUM_KEY_CODES];
 	private GameAction[] mouseActions = new GameAction[NUM_MOUSE_CODES];
 
-	private Point mouseLocation;
-	private Point centerLocation;
-	private boolean isRecentering;
+	protected Point mouseLocation;
+	protected Point centerLocation;
+	protected boolean isRecentering;
+	protected boolean isRelativeMouseModeEnabled = false;
 
 	/**
 	 Creates a new InputManager that listens to input from the
@@ -90,6 +91,8 @@ public abstract class InputManager {
 		centerLocation = new Point();
 
 	}
+	
+	public abstract void showCursor(boolean enabled);
 
 	/**
 	 Sets whether realtive mouse mode is on or not. For
@@ -98,7 +101,9 @@ public abstract class InputManager {
 	 is measured. In normal mode, the mouse is free to move
 	 about the screen.
 	 */
-	public void setRelativeMouseMode(boolean mode) {
+	public abstract void setRelativeMouseMode(boolean mode);
+	
+	//public void setRelativeMouseMode(boolean mode) {
 		//        if (mode == isRelativeMouseMode()) {
 		//            return;
 		//        }
@@ -118,14 +123,14 @@ public abstract class InputManager {
 		//        else {
 		//            robot = null;
 		//        }
-	}
+	//}
 
 	/**
 	 Returns whether or not relative mouse mode is on.
 	 */
-	public boolean isRelativeMouseMode() {
+	public final boolean isRelativeMouseMode() {
 		//return (robot != null);
-		return false;
+		return isRelativeMouseModeEnabled;
 	}
 
 	/**
@@ -265,16 +270,18 @@ public abstract class InputManager {
 	 <p>Note that use of the Robot class may not be available
 	 on all platforms.
 	 */
-	private synchronized void recenterMouse() {
-		//        if (robot != null && comp.isShowing()) {
-		//            centerLocation.x = comp.getWidth() / 2;
-		//            centerLocation.y = comp.getHeight() / 2;
-		//            SwingUtilities.convertPointToScreen(centerLocation,
-		//                comp);
-		//            isRecentering = true;
-		//            robot.mouseMove(centerLocation.x, centerLocation.y);
-		//        }
-	}
+	protected abstract void recenterMouse();
+	
+//	private synchronized void recenterMouse() {
+//		//        if (robot != null && comp.isShowing()) {
+//		//            centerLocation.x = comp.getWidth() / 2;
+//		//            centerLocation.y = comp.getHeight() / 2;
+//		//            SwingUtilities.convertPointToScreen(centerLocation,
+//		//                comp);
+//		//            isRecentering = true;
+//		//            robot.mouseMove(centerLocation.x, centerLocation.y);
+//		//        }
+//	}
 
 	private GameAction getKeyAction(int keyCode) {
 		//System.out.println("getKeyAction: " + keyCode);
@@ -342,9 +349,7 @@ public abstract class InputManager {
 	// from the MouseMotionListener interface
 	public synchronized void pointerDragged(int x, int y) {
 		// this event is from re-centering the mouse - ignore it
-		if (isRecentering) //&&
-		//centerLocation.x == e.getX() &&
-		//centerLocation.y == e.getY())
+		if (isRecentering) //&& centerLocation.x == x && centerLocation.y == y)
 		{
 			isRecentering = false;
 		} else {
