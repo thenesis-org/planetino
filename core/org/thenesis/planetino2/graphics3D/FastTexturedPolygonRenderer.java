@@ -360,7 +360,7 @@ public class FastTexturedPolygonRenderer extends PolygonRenderer {
 			System.out.println("[DEBUG] FastTexturedPolygonRenderer.ShadedTextureZRenderer.render()");
 
 			ShadedTexture texture = (ShadedTexture) currentTexture;
-			int[] buffer = texture.getRawData();
+			//int[] buffer = texture.getRawData();
 			int widthBits = texture.getWidthBits();
 			int widthMask = texture.getWidthMask();
 			int heightBits = texture.getHeightBits();
@@ -389,9 +389,9 @@ public class FastTexturedPolygonRenderer extends PolygonRenderer {
 					int dty = (nextTy - ty) >> INTERP_SIZE_BITS;
 					int endOffset = offset + INTERP_SIZE;
 					while (offset < endOffset) {
-						doubleBufferData[offset++] = buffer[((tx >> SCALE_BITS) & widthMask)
-								+ (((ty >> SCALE_BITS) & heightMask) << widthBits)];
-						//doubleBufferData[offset++] = texture.getColor(tx >> SCALE_BITS, ty >> SCALE_BITS);
+//						doubleBufferData[offset++] = buffer[((tx >> SCALE_BITS) & widthMask)
+//								+ (((ty >> SCALE_BITS) & heightMask) << widthBits)];
+						doubleBufferData[offset++] = texture.getColor(tx >> SCALE_BITS, ty >> SCALE_BITS);
 						//doubleBufferData[offset++] = 0xFF55FF00 + offset + tx;
 						tx += dtx;
 						ty += dty;
@@ -409,9 +409,9 @@ public class FastTexturedPolygonRenderer extends PolygonRenderer {
 					int dty = (nextTy - ty) / interpSize;
 					int endOffset = offset + interpSize;
 					while (offset < endOffset) {
-						doubleBufferData[offset++] = buffer[((tx >> SCALE_BITS) & widthMask)
-								+ (((ty >> SCALE_BITS) & heightMask) << widthBits)];
-						//doubleBufferData[offset++] = texture.getColor(tx >> SCALE_BITS, ty >> SCALE_BITS);
+//						doubleBufferData[offset++] = buffer[((tx >> SCALE_BITS) & widthMask)
+//								+ (((ty >> SCALE_BITS) & heightMask) << widthBits)];
+						doubleBufferData[offset++] = texture.getColor(tx >> SCALE_BITS, ty >> SCALE_BITS);
 						//doubleBufferData[offset++] = 0xFFFFFF00 + offset + tx;
 						tx += dtx;
 						ty += dty;
@@ -441,7 +441,7 @@ public class FastTexturedPolygonRenderer extends PolygonRenderer {
 
 			ShadedSurface texture = (ShadedSurface) currentTexture;
 			ShadedTexture srcTexture = texture.getSourceTexture();
-			int[] buffer = srcTexture.getRawData();
+			//int[] buffer = srcTexture.getRawData();
 			int widthBits = srcTexture.getWidthBits();
 			int widthMask = srcTexture.getWidthMask();
 			int heightBits = srcTexture.getHeightBits();
@@ -470,9 +470,9 @@ public class FastTexturedPolygonRenderer extends PolygonRenderer {
 					int dty = (nextTy - ty) >> INTERP_SIZE_BITS;
 					int endOffset = offset + INTERP_SIZE;
 					while (offset < endOffset) {
-						doubleBufferData[offset++] = buffer[((tx >> SCALE_BITS) & widthMask)
-								+ (((ty >> SCALE_BITS) & heightMask) << widthBits)];
-						//doubleBufferData[offset++] = texture.getColor(tx >> SCALE_BITS, ty >> SCALE_BITS);
+//						doubleBufferData[offset++] = buffer[((tx >> SCALE_BITS) & widthMask)
+//								+ (((ty >> SCALE_BITS) & heightMask) << widthBits)];
+						doubleBufferData[offset++] = texture.getColor(tx >> SCALE_BITS, ty >> SCALE_BITS);
 						//doubleBufferData[offset++] = 0xFF0000FF + offset + tx;
 						tx += dtx;
 						ty += dty;
@@ -498,9 +498,9 @@ public class FastTexturedPolygonRenderer extends PolygonRenderer {
 					int dty = (nextTy - ty) / interpSize;
 					int endOffset = offset + interpSize;
 					while (offset < endOffset) {
-						doubleBufferData[offset++] = buffer[((tx >> SCALE_BITS) & widthMask)
-								+ (((ty >> SCALE_BITS) & heightMask) << widthBits)];
-						//doubleBufferData[offset++] = texture.getColor(tx >> SCALE_BITS, ty >> SCALE_BITS);
+//						doubleBufferData[offset++] = buffer[((tx >> SCALE_BITS) & widthMask)
+//								+ (((ty >> SCALE_BITS) & heightMask) << widthBits)];
+						doubleBufferData[offset++] = texture.getColor(tx >> SCALE_BITS, ty >> SCALE_BITS);
 						//doubleBufferData[offset++] = 0xFF00FF + offset + tx;
 						tx += dtx;
 						ty += dty;

@@ -213,9 +213,9 @@ public class ZBufferedRenderer extends ShadedSurfacePolygonRenderer implements G
 					int endOffset = offset + INTERP_SIZE;
 					while (offset < endOffset) {
 						if (zBuffer.checkDepth(offset, (short) (depth >> SCALE_BITS))) {
-							doubleBufferData[offset] = buffer[((tx >> SCALE_BITS) & widthMask)
-									+ (((ty >> SCALE_BITS) & heightMask) << widthBits)];
-							//doubleBufferData[offset] = texture.getColor(tx >> SCALE_BITS, ty >> SCALE_BITS);
+//							doubleBufferData[offset] = buffer[((tx >> SCALE_BITS) & widthMask)
+//									+ (((ty >> SCALE_BITS) & heightMask) << widthBits)];
+							doubleBufferData[offset] = texture.getColor(tx >> SCALE_BITS, ty >> SCALE_BITS);
 							//doubleBufferData[offset] = Color.convertRBG565To888(texture.getColor(tx >> SCALE_BITS, ty >> SCALE_BITS));
 							//doubleBufferData[offset] = 0xFFFFFF00;
 						}
@@ -271,11 +271,11 @@ public class ZBufferedRenderer extends ShadedSurfacePolygonRenderer implements G
 			//			}
 
 			ShadedTexture texture = (ShadedTexture) currentTexture;
-			int[] buffer = texture.getRawData();
-			int widthBits = texture.getWidthBits();
-			int widthMask = texture.getWidthMask();
-			int heightBits = texture.getHeightBits();
-			int heightMask = texture.getHeightMask();
+//			int[] buffer = texture.getRawData();
+//			int widthBits = texture.getWidthBits();
+//			int widthMask = texture.getWidthMask();
+//			int heightBits = texture.getHeightBits();
+//			int heightMask = texture.getHeightMask();
 
 			float u = SCALE * a.getDotProduct(viewPos);
 			float v = SCALE * b.getDotProduct(viewPos);
@@ -303,9 +303,9 @@ public class ZBufferedRenderer extends ShadedSurfacePolygonRenderer implements G
 					int endOffset = offset + INTERP_SIZE;
 					while (offset < endOffset) {
 						if (zBuffer.checkDepth(offset, (short) (depth >> SCALE_BITS))) {
-							doubleBufferData[offset] = buffer[((tx >> SCALE_BITS) & widthMask)
-									+ (((ty >> SCALE_BITS) & heightMask) << widthBits)];
-							//doubleBufferData[offset] = texture.getColor(tx >> SCALE_BITS, ty >> SCALE_BITS);
+//							doubleBufferData[offset] = buffer[((tx >> SCALE_BITS) & widthMask)
+//									+ (((ty >> SCALE_BITS) & heightMask) << widthBits)];
+							doubleBufferData[offset] = texture.getColor(tx >> SCALE_BITS, ty >> SCALE_BITS);
 							//doubleBufferData[offset] = Color.convertRBG565To888(texture.getColor(tx >> SCALE_BITS, ty >> SCALE_BITS));
 							//doubleBufferData[offset] = 0xFF00FF00;
 						}
@@ -328,9 +328,9 @@ public class ZBufferedRenderer extends ShadedSurfacePolygonRenderer implements G
 					int endOffset = offset + interpSize;
 					while (offset < endOffset) {
 						if (zBuffer.checkDepth(offset, (short) (depth >> SCALE_BITS))) {
-							doubleBufferData[offset] = buffer[((tx >> SCALE_BITS) & widthMask)
-									+ (((ty >> SCALE_BITS) & heightMask) << widthBits)];
-							//doubleBufferData[offset] = texture.getColor(tx >> SCALE_BITS, ty >> SCALE_BITS);
+//							doubleBufferData[offset] = buffer[((tx >> SCALE_BITS) & widthMask)
+//									+ (((ty >> SCALE_BITS) & heightMask) << widthBits)];
+							doubleBufferData[offset] = texture.getColor(tx >> SCALE_BITS, ty >> SCALE_BITS);
 							//doubleBufferData[offset] = Color.convertRBG565To888(texture.getColor(tx >> SCALE_BITS, ty >> SCALE_BITS));
 							//doubleBufferData[offset] = 0xFFFF0000;
 						}
@@ -373,12 +373,12 @@ public class ZBufferedRenderer extends ShadedSurfacePolygonRenderer implements G
 			//			}
 
 			ShadedSurface texture = (ShadedSurface) currentTexture;
-			ShadedTexture srcTexture = texture.getSourceTexture();
-			int[] buffer = srcTexture.getRawData();
-			int widthBits = srcTexture.getWidthBits();
-			int widthMask = srcTexture.getWidthMask();
-			int heightBits = srcTexture.getHeightBits();
-			int heightMask = srcTexture.getHeightMask();
+//			ShadedTexture srcTexture = texture.getSourceTexture();
+//			int[] buffer = srcTexture.getRawData();
+//			int widthBits = srcTexture.getWidthBits();
+//			int widthMask = srcTexture.getWidthMask();
+//			int heightBits = srcTexture.getHeightBits();
+//			int heightMask = srcTexture.getHeightMask();
 
 			float u = SCALE * a.getDotProduct(viewPos);
 			float v = SCALE * b.getDotProduct(viewPos);
@@ -406,9 +406,9 @@ public class ZBufferedRenderer extends ShadedSurfacePolygonRenderer implements G
 					int endOffset = offset + INTERP_SIZE;
 					while (offset < endOffset) {
 						if (zBuffer.checkDepth(offset, (short) (depth >> SCALE_BITS))) {
-							doubleBufferData[offset] = buffer[((tx >> SCALE_BITS) & widthMask)
-									+ (((ty >> SCALE_BITS) & heightMask) << widthBits)];
-							//doubleBufferData[offset] = texture.getColor(tx >> SCALE_BITS, ty >> SCALE_BITS);
+//							doubleBufferData[offset] = buffer[((tx >> SCALE_BITS) & widthMask)
+//									+ (((ty >> SCALE_BITS) & heightMask) << widthBits)];
+							doubleBufferData[offset] = texture.getColor(tx >> SCALE_BITS, ty >> SCALE_BITS);
 							//doubleBufferData[offset] = Color.convertRBG565To888(texture.getColor(tx >> SCALE_BITS, ty >> SCALE_BITS));
 							//doubleBufferData[offset] = 0xFFFF00FF;
 						}
@@ -439,9 +439,9 @@ public class ZBufferedRenderer extends ShadedSurfacePolygonRenderer implements G
 					int endOffset = offset + interpSize;
 					while (offset < endOffset) {
 						if (zBuffer.checkDepth(offset, (short) (depth >> SCALE_BITS))) {
-							doubleBufferData[offset] = buffer[((tx >> SCALE_BITS) & widthMask)
-									+ (((ty >> SCALE_BITS) & heightMask) << widthBits)];
-							//doubleBufferData[offset] = texture.getColor(tx >> SCALE_BITS, ty >> SCALE_BITS);
+//							doubleBufferData[offset] = buffer[((tx >> SCALE_BITS) & widthMask)
+//									+ (((ty >> SCALE_BITS) & heightMask) << widthBits)];
+							doubleBufferData[offset] = texture.getColor(tx >> SCALE_BITS, ty >> SCALE_BITS);
 							//doubleBufferData[offset] = Color.convertRBG565To888(texture.getColor(tx >> SCALE_BITS, ty >> SCALE_BITS));
 							//doubleBufferData[offset] = 0xFF00FF00;
 						}

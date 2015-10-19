@@ -954,13 +954,13 @@ public class Color {
 
 	}
 
-	public static int convertRBG888To232(int color) {
+	public static byte convertRBG888To232(int color) {
 
 		int r = (color >> 16) & 0xFF;
 		int g = (color >> 8) & 0xFF;
 		int b = color & 0xFF;
 
-		return (((r >> 6) << 5) | ((g >> 5) << 2) | (b >> 6));
+		return (byte)(((r >> 6) << 5) | ((g >> 5) << 2) | (b >> 6));
 	}
 
 	/**

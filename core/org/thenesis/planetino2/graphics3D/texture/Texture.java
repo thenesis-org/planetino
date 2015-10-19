@@ -143,14 +143,13 @@ public abstract class Texture {
 
 		int width = image.getWidth();
 		int height = image.getHeight();
-
+		
 		if (shaded) {
 
 			int[] rgb888Data = new int[width * height];
 			image.getRGB(rgb888Data, 0, 0, width, height);
-
-			return new ShadedTexture(rgb888Data, countbits(width - 1), countbits(height - 1), new DirectColorModel(32,
-					0x00FF0000, 0x0000FF00, 0x000000FF));
+			
+			return new ShadedTexture(rgb888Data, countbits(width - 1), countbits(height - 1));
 
 			//			short[] rgb565Data = new short[width * height];	
 			//			convertImageToShort(image, rgb565Data);
@@ -384,6 +383,15 @@ public abstract class Texture {
 	}
 
 	public static void print(short[] array, int w, int h) {
+		for (int j = 0; j < h; j++) {
+			for (int i = 0; i < w; i++) {
+				System.out.print(array[j * w + i] + " ");
+			}
+			System.out.println();
+		}
+	}
+	
+	public static void print(int[] array, int w, int h) {
 		for (int j = 0; j < h; j++) {
 			for (int i = 0; i < w; i++) {
 				System.out.print(array[j * w + i] + " ");
