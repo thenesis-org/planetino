@@ -73,10 +73,13 @@ public class DemoAWT  {
 		inputManager.mapToKey(GameCore3D.goDown, KeyEvent.VK_PAGE_DOWN);
 		inputManager.mapToMouse(GameCore3D.turnLeft, InputManager.MOUSE_MOVE_LEFT);
 		inputManager.mapToMouse(GameCore3D.turnRight, InputManager.MOUSE_MOVE_RIGHT);
-		inputManager.mapToMouse(GameCore3D.tiltUp, InputManager.MOUSE_MOVE_UP);
-		inputManager.mapToMouse(GameCore3D.tiltDown, InputManager.MOUSE_MOVE_DOWN);
-		inputManager.mapToMouse(ShooterCore.fire, InputManager.MOUSE_BUTTON_1);
-		inputManager.mapToKey(ShooterCore.jump, KeyEvent.VK_SPACE);
+		inputManager.mapToMouse(GameCore3D.tiltUp, InputManager.MOUSE_MOVE_DOWN);
+		inputManager.mapToMouse(GameCore3D.tiltDown, InputManager.MOUSE_MOVE_UP);
+		inputManager.mapToMouse(DemoEngine.fire, InputManager.MOUSE_BUTTON_1);
+		inputManager.mapToKey(DemoEngine.jump, KeyEvent.VK_SPACE);
+		
+		inputManager.setRelativeMouseMode(true);
+		inputManager.showCursor(false);
 		
 		DemoEngine engine = new DemoEngine(screen, inputManager);
 		

@@ -59,12 +59,13 @@ import org.thenesis.planetino2.bsp2D.BSPRenderer;
 import org.thenesis.planetino2.bsp2D.BSPTree;
 import org.thenesis.planetino2.bsp2D.BSPTreeBuilderWithPortals;
 import org.thenesis.planetino2.bsp2D.MapLoader;
+import org.thenesis.planetino2.engine.GameCore3D;
 import org.thenesis.planetino2.engine.shooter3D.Bot;
 import org.thenesis.planetino2.engine.shooter3D.HeadsUpDisplay;
-import org.thenesis.planetino2.engine.shooter3D.ShooterCore;
 import org.thenesis.planetino2.game.CollisionDetection;
 import org.thenesis.planetino2.game.CollisionDetectionWithSliding;
 import org.thenesis.planetino2.game.GameObject;
+import org.thenesis.planetino2.game.GameObjectManager;
 import org.thenesis.planetino2.game.GameObjectRenderer;
 import org.thenesis.planetino2.game.GridGameObjectManager;
 import org.thenesis.planetino2.game.MessageQueue;
@@ -72,16 +73,30 @@ import org.thenesis.planetino2.game.Player;
 import org.thenesis.planetino2.graphics.Color;
 import org.thenesis.planetino2.graphics.Graphics;
 import org.thenesis.planetino2.graphics.Screen;
-import org.thenesis.planetino2.graphics.Toolkit;
+import org.thenesis.planetino2.input.GameAction;
 import org.thenesis.planetino2.input.InputManager;
 import org.thenesis.planetino2.math3D.MovingTransform3D;
+import org.thenesis.planetino2.math3D.ObjectLoader;
 import org.thenesis.planetino2.math3D.PointLight3D;
 import org.thenesis.planetino2.math3D.PolygonGroup;
 import org.thenesis.planetino2.math3D.Transform3D;
+import org.thenesis.planetino2.math3D.Vector3D;
+import org.thenesis.planetino2.math3D.ViewWindow;
 import org.thenesis.planetino2.path.AStarSearchWithBSP;
 
-public class DemoEngine extends ShooterCore {
+public class DemoEngine extends GameCore3D {
+	
+	private static final float PLAYER_SPEED = .5f;
+	private static final float PLAYER_TURN_SPEED = 0.04f;
+	private static final float CAMERA_HEIGHT = 100;
+	
+	public static GameAction fire = new GameAction("fire", GameAction.DETECT_INITAL_PRESS_ONLY);
+	public static GameAction jump = new GameAction("jump", GameAction.DETECT_INITAL_PRESS_ONLY);
 
+	protected GameObjectManager gameObjectManager;
+	protected PolygonGroup blastModel;
+	protected PolygonGroup botProjectileModel;
+	
 	private Brain averageBrain;
 	private Brain aggressiveBrain;
 	private Brain scaredBrain;
@@ -94,7 +109,46 @@ public class DemoEngine extends ShooterCore {
 		super(screen, inputManager);
 		this.inputManager = inputManager;
 	}
+	
+	@Override
+	public void init() {
+		
+		// FIXME
+		//inputManager.mapToKey(jump, Canvas.KEY_NUM9);
+		//inputManager.mapToKey(fire, Canvas.KEY_NUM5);
 
+		// set up the local lights for the model.
+		float ambientLightIntensity = .8f;
+		Vector lights = new Vector();
+		lights.addElement(new PointLight3D(-100, 100, 100, .5f, -1));
+		lights.addElement(new PointLight3D(100, 100, 0, .5f, -1));
+
+		// load the object model
+		ObjectLoader loader = new ObjectLoader();
+		loader.setLights(lights, ambientLightIntensity);
+		try {
+			blastModel = loader.loadObject("/res/", "blast.obj3d");
+			botProjectileModel = loader.loadObject("/res/", "botprojectile.obj3d");
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+
+		super.init();
+		
+		((Player)gameObjectManager.getPlayer()).setBlastModel(blastModel);
+
+	}
+	
+	@Override
+	public void createPolygonRenderer() {
+		// make the view window the entire screen
+		viewWindow = new ViewWindow(0, 0, screen.getWidth(), screen.getHeight(), (float) Math.toRadians(75));
+
+		Transform3D camera = new Transform3D();
+		polygonRenderer = new BSPRenderer(camera, viewWindow);
+	}
+
+	@Override
 	public void createPolygons() {
 		Graphics g = screen.getGraphics();
 		g.setColor(Color.BLACK.getRGB());
@@ -124,7 +178,7 @@ public class DemoEngine extends ShooterCore {
 
 		collisionDetection = new CollisionDetectionWithSliding(bspTree);
 		gameObjectManager = new GridGameObjectManager(bspTree.calcBounds(), collisionDetection);
-		gameObjectManager.addPlayer(new Player());
+		gameObjectManager.addPlayer(new ShooterPlayer());
 
 		((BSPRenderer) polygonRenderer).setGameObjectManager(gameObjectManager);
 
@@ -179,7 +233,7 @@ public class DemoEngine extends ShooterCore {
 			} else if ("scaredybot.obj3d".equals(filename)) {
 				AIBot bot = new AIBot(group, collisionDetection, scaredBrain, botProjectileModel);
 				gameObjectManager.add(bot);
-			} else if ("cacao-cube.obj3d".equals(filename) || "linuxtag-cube.obj3d".equals(filename)) {
+			} else if ("health_pack.obj3d".equals(filename)) {
 				float angleVelocity = 0.0010f;
 				MovingTransform3D mainTransform = group.getTransform();
 				mainTransform.setAngleVelocityY(angleVelocity);
@@ -202,6 +256,7 @@ public class DemoEngine extends ShooterCore {
 		}
 	}
 
+	@Override
 	public void drawPolygons(Graphics g) {
 
 		polygonRenderer.startFrame(screen);
@@ -271,6 +326,74 @@ public class DemoEngine extends ShooterCore {
 		scaredBrain.decisionTime = 4000;
 		scaredBrain.aimTime = 1000;
 		scaredBrain.hearDistance = 2000;
+
+	}
+	
+	@Override
+	public void updateWorld(long elapsedTime) {
+
+		float angleVelocity;
+
+		// cap elapsedTime
+		elapsedTime = Math.min(elapsedTime, 100);
+
+		Player player = (Player)gameObjectManager.getPlayer();
+		MovingTransform3D playerTransform = player.getTransform();
+		Vector3D velocity = playerTransform.getVelocity();
+
+		//playerTransform.stop();
+		velocity.x = 0;
+		velocity.z = 0;
+		float x = -playerTransform.getSinAngleY();
+		float z = -playerTransform.getCosAngleY();
+		if (goForward.isPressed()) {
+			velocity.add(x * PLAYER_SPEED, 0, z * PLAYER_SPEED);
+		}
+		if (goBackward.isPressed()) {
+			velocity.add(-x * PLAYER_SPEED, 0, -z * PLAYER_SPEED);
+		}
+		if (goLeft.isPressed()) {
+			velocity.add(z * PLAYER_SPEED, 0, -x * PLAYER_SPEED);
+		}
+		if (goRight.isPressed()) {
+			velocity.add(-z * PLAYER_SPEED, 0, x * PLAYER_SPEED);
+		}
+		if (jump.isPressed()) {
+			player.setJumping(true);
+		}
+		 if (fire.isPressed()) {
+	        player.fireProjectile();
+	     }
+
+
+		playerTransform.setVelocity(velocity);
+
+		// look up/down (rotate around x)
+		angleVelocity = Math.min(tiltUp.getAmount(), 200);
+		angleVelocity += Math.max(-tiltDown.getAmount(), -200);
+		playerTransform.setAngleVelocityX(angleVelocity * PLAYER_TURN_SPEED / 200);
+
+		// turn (rotate around y)
+		angleVelocity = Math.min(turnLeft.getAmount(), 200);
+		angleVelocity += Math.max(-turnRight.getAmount(), -200);
+		playerTransform.setAngleVelocityY(angleVelocity * PLAYER_TURN_SPEED / 200);
+
+		// update objects
+		gameObjectManager.update(elapsedTime);
+
+		// limit look up/down
+		float angleX = playerTransform.getAngleX();
+		float limit = (float) Math.PI / 2;
+		if (angleX < -limit) {
+			playerTransform.setAngleX(-limit);
+		} else if (angleX > limit) {
+			playerTransform.setAngleX(limit);
+		}
+
+		// set the camera to be 100 units above the player
+		Transform3D camera = polygonRenderer.getCamera();
+		camera.setTo(playerTransform);
+		camera.getLocation().add(0, CAMERA_HEIGHT, 0);
 
 	}
 }

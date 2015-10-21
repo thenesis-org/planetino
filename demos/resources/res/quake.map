@@ -78,6 +78,9 @@ wall 256 384 0 32
 wall 512 384
 wall 512 0 
 
+v 500 100 600
+obj healthPack health_pack.obj3d -1 
+
 v 384 192 64 
 pointlight -1 1 384
 

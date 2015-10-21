@@ -58,9 +58,9 @@ public class Player extends JumpingGameObject {
     public static final float DEFAULT_PLAYER_HEIGHT = 128;
     private static final float DEFAULT_MAX_HEALTH = 100;
 
-    private PolygonGroup blastModel;
-    private float maxHealth;
-    private float health;
+    protected PolygonGroup blastModel;
+    protected float maxHealth;
+    protected float health;
 
     public Player() {
         super(new PolygonGroup("player"));
