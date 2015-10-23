@@ -57,12 +57,15 @@ public class Player extends JumpingGameObject {
     public static final float DEFAULT_PLAYER_RADIUS = 32;
     public static final float DEFAULT_PLAYER_HEIGHT = 128;
     protected static final float DEFAULT_MAX_HEALTH = 100;
+    protected static final float DEFAULT_HEAR_DISTANCE = 1000;
 
     protected PolygonGroup blastModel;
-    protected float maxHealth;
+    protected float maxHealth = DEFAULT_HEAR_DISTANCE;
     protected float health;
+    
+    protected float hearDistance;
 
-    public Player() {
+	public Player() {
         super(new PolygonGroup("player"));
 
         // set up player bounds
@@ -128,5 +131,13 @@ public class Player extends JumpingGameObject {
         // (500 milliseconds)
         makeNoise(500);
     }
+    
+    public float getHearDistance() {
+		return hearDistance;
+	}
+
+	public void setHearDistance(float hearDistance) {
+		this.hearDistance = hearDistance;
+	}
 
 }

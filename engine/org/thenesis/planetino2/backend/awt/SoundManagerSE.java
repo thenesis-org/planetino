@@ -5,7 +5,7 @@ import kuusisto.tinysound.TinySound;
 import org.thenesis.planetino2.sound.Sound;
 import org.thenesis.planetino2.sound.SoundManager;
 
-public class SoundManagerSE implements SoundManager {
+public class SoundManagerSE extends SoundManager {
 	
 	public SoundManagerSE() {
 		TinySound.init();
@@ -28,6 +28,10 @@ public class SoundManagerSE implements SoundManager {
 			SoundSE.this.nativeSound = sound;
 		}
 		
+	}
+
+	public void play(Sound sound, double volume, double pan) {
+		((SoundSE)sound).nativeSound.play(volume, pan);
 	}
 
 }
