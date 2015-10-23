@@ -13,30 +13,25 @@ public class ShooterPlayer extends Player {
 	private static final float DEFAULT_MAX_ADRENALINE = 100.0F;
 	private static final int DEFAULT_MAX_AMMO = 500;
 	private int ammo = 50;
-	private float adrenaline = 100.0F;
+	private float adrenaline = DEFAULT_MAX_ADRENALINE;
 	private SoundManager soundManager;
 	private boolean adrenalineMode = false;
 	private boolean zoomViewMode = false;
 	private int lifeCount = 3;
 	private int kills = 0;
 	public boolean goNextLevel = false;
-	//private static final AudioFormat PLAYBACK_FORMAT = new AudioFormat(44100.0F, 8, 1, true, false);
-	public Sound s1;
-	private Sound s2;
+
 	private Sound itemCatchSound;
 	private Sound fireSound;
-	private Sound s5;
 
 	public ShooterPlayer() {
 		super();
 
 		soundManager = Toolkit.getInstance().getSoundManager();
+	
+		itemCatchSound = soundManager.getSound("m_health.wav");
+		fireSound = soundManager.getSound("hook_fire.wav");
 
-		this.s1 = soundManager.getSound("1.wav");
-		this.s2 = soundManager.getSound("2.wav");
-		this.itemCatchSound = soundManager.getSound("3.wav");
-		this.fireSound = soundManager.getSound("4.wav");
-		this.s5 = soundManager.getSound("5.wav");
 	}
 
 	public int getAmmo() {
@@ -64,24 +59,24 @@ public class ShooterPlayer extends Player {
 	}
 
 	public void resetPlayer() {
-		setHealth(100.0F);
-		this.adrenaline = 100.0F;
+		setHealth(DEFAULT_MAX_HEALTH);
+		this.adrenaline = DEFAULT_MAX_ADRENALINE;
 	}
 
 	public void cappedHealthAdd(float amount) {
-		if (getHealth() < 100.0F) {
+		if (getHealth() < DEFAULT_MAX_HEALTH) {
 			this.health += amount;
-			if (this.health > 100.0F) {
-				this.health = 100.0F;
+			if (this.health > DEFAULT_MAX_HEALTH) {
+				this.health = DEFAULT_MAX_HEALTH;
 			}
 		}
 	}
 
 	public void cappedAdrenalineAdd(float amount) {
-		if (getAdrenaline() < 100.0F) {
+		if (getAdrenaline() < DEFAULT_MAX_ADRENALINE) {
 			this.adrenaline += amount;
-			if (this.adrenaline > 100.0F) {
-				this.adrenaline = 100.0F;
+			if (this.adrenaline > DEFAULT_MAX_ADRENALINE) {
+				this.adrenaline = DEFAULT_MAX_ADRENALINE;
 			}
 		}
 	}
@@ -94,7 +89,7 @@ public class ShooterPlayer extends Player {
 		if (this.adrenaline <= 0.0F) {
 			return false;
 		}
-		float fAmount = amount / 100.0F;
+		float fAmount = amount / DEFAULT_MAX_ADRENALINE;
 		this.adrenaline -= fAmount;
 		if (this.adrenaline < 0.0F) {
 			this.adrenaline = 0.0F;
@@ -103,7 +98,7 @@ public class ShooterPlayer extends Player {
 	}
 
 	public float getMaxAdrenaline() {
-		return 100.0F;
+		return DEFAULT_MAX_ADRENALINE;
 	}
 
 	@Override
@@ -122,7 +117,7 @@ public class ShooterPlayer extends Player {
 		//blast.setFromPlayer(true);
 		float dist = getBounds().getRadius() + blast.getBounds().getRadius();
 
-		blast.getLocation().setTo(getX() + x * dist, getY() + 75.0F, getZ() + z * dist);
+		blast.getLocation().setTo(getX() + x * dist, getY() + BULLET_HEIGHT, getZ() + z * dist);
 
 		addSpawn(blast);
 

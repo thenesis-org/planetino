@@ -53,10 +53,10 @@ import org.thenesis.planetino2.math3D.Vector3D;
 */
 public class Player extends JumpingGameObject {
 
-    private static final float BULLET_HEIGHT = 75;
+    protected static final float BULLET_HEIGHT = 75;
     public static final float DEFAULT_PLAYER_RADIUS = 32;
     public static final float DEFAULT_PLAYER_HEIGHT = 128;
-    private static final float DEFAULT_MAX_HEALTH = 100;
+    protected static final float DEFAULT_MAX_HEALTH = 100;
 
     protected PolygonGroup blastModel;
     protected float maxHealth;
