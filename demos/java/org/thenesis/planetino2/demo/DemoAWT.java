@@ -47,7 +47,6 @@ import java.awt.event.KeyEvent;
 
 import org.thenesis.planetino2.backend.awt.AWTToolkit;
 import org.thenesis.planetino2.engine.GameCore3D;
-import org.thenesis.planetino2.engine.shooter3D.ShooterCore;
 import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.graphics.Toolkit;
 import org.thenesis.planetino2.input.InputManager;
@@ -61,13 +60,13 @@ public class DemoAWT  {
 		InputManager inputManager = Toolkit.getInstance().getInputManager();
 		
 		//inputManager.mapToKey(exit, KeyEvent.VK_ESCAPE);
-		inputManager.mapToKey(GameCore3D.goForward, KeyEvent.VK_W);
+		inputManager.mapToKey(GameCore3D.goForward, KeyEvent.VK_R);
 		inputManager.mapToKey(GameCore3D.goForward, KeyEvent.VK_UP);
-		inputManager.mapToKey(GameCore3D.goBackward, KeyEvent.VK_S);
+		inputManager.mapToKey(GameCore3D.goBackward, KeyEvent.VK_A);
 		inputManager.mapToKey(GameCore3D.goBackward, KeyEvent.VK_DOWN);
-		inputManager.mapToKey(GameCore3D.goLeft, KeyEvent.VK_A);
+		inputManager.mapToKey(GameCore3D.goLeft, KeyEvent.VK_Z);
 		inputManager.mapToKey(GameCore3D.goLeft, KeyEvent.VK_LEFT);
-		inputManager.mapToKey(GameCore3D.goRight, KeyEvent.VK_D);
+		inputManager.mapToKey(GameCore3D.goRight, KeyEvent.VK_E);
 		inputManager.mapToKey(GameCore3D.goRight, KeyEvent.VK_RIGHT);
 		inputManager.mapToKey(GameCore3D.goUp, KeyEvent.VK_PAGE_UP);
 		inputManager.mapToKey(GameCore3D.goDown, KeyEvent.VK_PAGE_DOWN);

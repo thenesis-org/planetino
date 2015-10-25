@@ -3,7 +3,7 @@ package org.thenesis.planetino2.graphics;
 import java.io.IOException;
 
 import org.thenesis.planetino2.input.InputManager;
-import org.thenesis.planetino2.sound.SoundManager;
+import org.thenesis.planetino2.sound.SoundPlayer;
 
 public abstract class Toolkit {
 
@@ -25,6 +25,6 @@ public abstract class Toolkit {
 	
 	public abstract InputManager getInputManager();
 	
-	public abstract SoundManager getSoundManager();
+	public abstract SoundPlayer getSoundPlayer();
 
 }

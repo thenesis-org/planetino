@@ -165,6 +165,8 @@ public abstract class GameCore3D extends GameCore {
 
 		// create the polygon renderer
 		createPolygonRenderer();
+		
+		createSoundManager();
 
 		// create polygons
 		polygons = new Vector();
@@ -179,6 +181,10 @@ public abstract class GameCore3D extends GameCore {
 
 		Transform3D camera = new Transform3D(0, 100, 0);
 		polygonRenderer = new SolidPolygonRenderer(camera, viewWindow);
+	}
+	
+	public void createSoundManager() {
+		
 	}
 
 	/**

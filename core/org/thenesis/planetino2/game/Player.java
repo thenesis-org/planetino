@@ -60,10 +60,10 @@ public class Player extends JumpingGameObject {
     protected static final float DEFAULT_HEAR_DISTANCE = 1000;
 
     protected PolygonGroup blastModel;
-    protected float maxHealth = DEFAULT_HEAR_DISTANCE;
+    protected float maxHealth;
     protected float health;
     
-    protected float hearDistance;
+    protected float hearDistance = DEFAULT_HEAR_DISTANCE;
 
 	public Player() {
         super(new PolygonGroup("player"));

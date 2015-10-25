@@ -3,9 +3,9 @@ package org.thenesis.planetino2.demo;
 import org.thenesis.planetino2.ai.Projectile;
 import org.thenesis.planetino2.game.GameObject;
 import org.thenesis.planetino2.game.Player;
-import org.thenesis.planetino2.graphics.Toolkit;
 import org.thenesis.planetino2.math3D.PolygonGroup;
 import org.thenesis.planetino2.math3D.Vector3D;
+import org.thenesis.planetino2.sound.Music;
 import org.thenesis.planetino2.sound.Sound;
 import org.thenesis.planetino2.sound.SoundManager;
 
@@ -21,15 +21,17 @@ public class ShooterPlayer extends Player {
 	private int kills = 0;
 	public boolean goNextLevel = false;
 
-	private Sound itemCatchSound;
+	private Music itemCatchSound;
 	private Sound fireSound;
+	private Sound jumpSound;
 
-	public ShooterPlayer() {
+	public ShooterPlayer(SoundManager soundManager) {
 		super();
 
-		soundManager = Toolkit.getInstance().getSoundManager();
+		this.soundManager = soundManager;
 	
-		itemCatchSound = soundManager.getSound("m_health.wav");
+		jumpSound = soundManager.getSound("jump1.wav");
+		itemCatchSound = soundManager.getMusic("power_up2.wav");
 		fireSound = soundManager.getSound("hook_fire.wav");
 
 	}
@@ -39,7 +41,7 @@ public class ShooterPlayer extends Player {
 	}
 
 	public int getMaxAmmo() {
-		return 500;
+		return DEFAULT_MAX_AMMO;
 	}
 
 	public boolean isAdrenalineMode() {
@@ -121,7 +123,7 @@ public class ShooterPlayer extends Player {
 
 		addSpawn(blast);
 
-		soundManager.play(fireSound);
+		fireSound.play();
 
 		makeNoise(500L);
 	}
@@ -131,19 +133,22 @@ public class ShooterPlayer extends Player {
 	@Override
 	public void notifyObjectCollision(GameObject obj) {
 		if (obj.getPolygonGroup().getName().equalsIgnoreCase("healthPack")) {
-			this.soundManager.play(this.itemCatchSound);
+			if (!itemCatchSound.isPlaying()) {
+				itemCatchSound.rewind();
+			}
+			itemCatchSound.play(false);
 			cappedHealthAdd(50.0F);
 			//obj.setState(2); // FIXME
 		} else if (obj.getPolygonGroup().getName().equalsIgnoreCase("adrenaline")) {
-			this.soundManager.play(this.itemCatchSound);
+			itemCatchSound.play(false);
 			cappedAdrenalineAdd(50.0F);
 			//obj.setState(2); // FIXME
 		} else if (obj.getPolygonGroup().getName().equalsIgnoreCase("ammo")) {
-			this.soundManager.play(this.itemCatchSound);
+			itemCatchSound.play(false);
 			this.ammo += 50;
 			//obj.setState(2); // FIXME
 		} else if (obj.getPolygonGroup().getName().equalsIgnoreCase("syrum")) {
-			this.soundManager.play(this.itemCatchSound);
+			itemCatchSound.play(false);
 			this.hasSyrum = true;
 			//obj.setState(2); // FIXME
 		} /*else if ((obj.getPolygonGroup().getFilename() != null) && (obj.getPolygonGroup().getFilename().equalsIgnoreCase("goal.obj"))) {
@@ -159,7 +164,14 @@ public class ShooterPlayer extends Player {
 		}*/
 	}
 
-	public void playSound(Sound s) {
-		this.soundManager.play(s);
+	@Override
+	public void setJumping(boolean isJumping) {
+		super.setJumping(isJumping);
+		if (isJumping) {
+			jumpSound.play();
+		}
 	}
+	
+	
+
 }

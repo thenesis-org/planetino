@@ -49,6 +49,7 @@ import java.util.Vector;
 
 import org.thenesis.planetino2.ai.AIBot;
 import org.thenesis.planetino2.ai.Brain;
+import org.thenesis.planetino2.ai.NoisyAIBot;
 import org.thenesis.planetino2.ai.pattern.AimPattern;
 import org.thenesis.planetino2.ai.pattern.AttackPatternRush;
 import org.thenesis.planetino2.ai.pattern.AttackPatternStrafe;
@@ -83,6 +84,8 @@ import org.thenesis.planetino2.math3D.Transform3D;
 import org.thenesis.planetino2.math3D.Vector3D;
 import org.thenesis.planetino2.math3D.ViewWindow;
 import org.thenesis.planetino2.path.AStarSearchWithBSP;
+import org.thenesis.planetino2.sound.Music;
+import org.thenesis.planetino2.sound.SoundManager;
 
 public class DemoEngine extends GameCore3D {
 	
@@ -92,6 +95,8 @@ public class DemoEngine extends GameCore3D {
 	
 	public static GameAction fire = new GameAction("fire", GameAction.DETECT_INITAL_PRESS_ONLY);
 	public static GameAction jump = new GameAction("jump", GameAction.DETECT_INITAL_PRESS_ONLY);
+	
+	protected SoundManager soundManager;
 
 	protected GameObjectManager gameObjectManager;
 	protected PolygonGroup blastModel;
@@ -113,10 +118,6 @@ public class DemoEngine extends GameCore3D {
 	@Override
 	public void init() {
 		
-		// FIXME
-		//inputManager.mapToKey(jump, Canvas.KEY_NUM9);
-		//inputManager.mapToKey(fire, Canvas.KEY_NUM5);
-
 		// set up the local lights for the model.
 		float ambientLightIntensity = .8f;
 		Vector lights = new Vector();
@@ -143,9 +144,20 @@ public class DemoEngine extends GameCore3D {
 	public void createPolygonRenderer() {
 		// make the view window the entire screen
 		viewWindow = new ViewWindow(0, 0, screen.getWidth(), screen.getHeight(), (float) Math.toRadians(75));
-
+		
 		Transform3D camera = new Transform3D();
 		polygonRenderer = new BSPRenderer(camera, viewWindow);
+	}
+	
+
+	@Override
+	public void createSoundManager() {
+		soundManager = new SoundManager(viewWindow, polygonRenderer.getCamera());
+		Music ambientMusic = soundManager.getMusic("ambient_loop.wav");
+		ambientMusic.setVolume(0.3);
+		ambientMusic.play(true);
+		Music introMusic = soundManager.getMusic("prepare.wav");
+		introMusic.play(false);
 	}
 
 	@Override
@@ -170,7 +182,8 @@ public class DemoEngine extends GameCore3D {
 
 		try {
 			//bspTree = loader.loadMap("/res/", "cacao_demo.map");
-			bspTree = loader.loadMap("/res/", "quake.map");
+			//bspTree = loader.loadMap("/res/", "quake.map"); //quake-one_bot.map
+			bspTree = loader.loadMap("/res/", "quake-one_bot.map");
 			//bspTree = loader.loadMap("/res/", "linuxtag.map");
 		} catch (IOException ex) {
 			ex.printStackTrace();
@@ -178,7 +191,7 @@ public class DemoEngine extends GameCore3D {
 
 		collisionDetection = new CollisionDetectionWithSliding(bspTree);
 		gameObjectManager = new GridGameObjectManager(bspTree.calcBounds(), collisionDetection);
-		gameObjectManager.addPlayer(new ShooterPlayer());
+		gameObjectManager.addPlayer(new ShooterPlayer(soundManager));
 
 		((BSPRenderer) polygonRenderer).setGameObjectManager(gameObjectManager);
 
@@ -224,14 +237,14 @@ public class DemoEngine extends GameCore3D {
 			if ("robot.obj3d".equals(filename)) {
 				gameObjectManager.add(new Bot(group));
 			} else if ("averagebot.obj3d".equals(filename)) {
-				AIBot bot = new AIBot(group, collisionDetection, averageBrain, botProjectileModel);
+				AIBot bot = new NoisyAIBot(soundManager, group, collisionDetection, averageBrain, botProjectileModel);
 				gameObjectManager.add(bot);
 				bot.setFlyHeight(48);
 			} else if ("aggressivebot.obj3d".equals(filename)) {
 				AIBot bot = new AIBot(group, collisionDetection, aggressiveBrain, botProjectileModel);
 				gameObjectManager.add(bot);
 			} else if ("scaredybot.obj3d".equals(filename)) {
-				AIBot bot = new AIBot(group, collisionDetection, scaredBrain, botProjectileModel);
+				AIBot bot = new NoisyAIBot(soundManager, group, collisionDetection, scaredBrain, botProjectileModel);
 				gameObjectManager.add(bot);
 			} else if ("health_pack.obj3d".equals(filename)) {
 				float angleVelocity = 0.0010f;

@@ -16,14 +16,14 @@ import org.thenesis.planetino2.graphics.Image;
 import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.graphics.Toolkit;
 import org.thenesis.planetino2.input.InputManager;
-import org.thenesis.planetino2.sound.SoundManager;
+import org.thenesis.planetino2.sound.SoundPlayer;
 
 public class AWTToolkit extends Toolkit {
 	
 	private AWTFont font;
 	private InputManager inputManager;
 	private AWTScreen awtScreen;
-	private SoundManagerSE soundManager;
+	private SoundPlayerSE soundPlayer;
 	
 	@Override
 	public Image createImage(String path) throws IOException {
@@ -117,11 +117,11 @@ public class AWTToolkit extends Toolkit {
 	}
 
 	@Override
-	public SoundManager getSoundManager() {
-		if (soundManager == null) {
-			soundManager = new SoundManagerSE();
+	public SoundPlayer getSoundPlayer() {
+		if (soundPlayer == null) {
+			soundPlayer = new SoundPlayerSE();
 		}
-		return soundManager;
+		return soundPlayer;
 	}
 
 }
