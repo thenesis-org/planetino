@@ -11,30 +11,88 @@ public class SmallShadedSurface extends Texture {
 //	private int heightBits;
 //	private int heightMask;
 	
-	private ShadedTexture sourceTexture;
-	private Vector3D origin;
-	private int sourceTextureEdgeLength; 
 	private static final int surfaceEdgeLength = 2;
+	
+//	private int[] buffer; 
+	private int meanColor;
+	
+	private ShadedTexture sourceTexture;
+	private int sourceTextureEdgeLength; 
+	
 
 	public SmallShadedSurface(ShadedTexture texture, Rectangle3D vertexBounds, Vector3D[] texels) {
 		super(surfaceEdgeLength, surfaceEdgeLength);
+//		this.widthBits = countbits(width);
+//		this.heightBits = countbits(height);
+//		this.widthMask = width - 1;
+//		this.heightMask = height - 1;
+		
 		this.sourceTexture = texture;
-		this.origin = texels[0];
 		sourceTextureEdgeLength = sourceTexture.getWidth(); // MUST be equal to sourceTexture.getHeight()
-		origin.multiply(sourceTextureEdgeLength);
+		
+		// Get the real texel coordinates in the source texture
+		setTargetTexelCoordinates(texels);
+		
+		meanColor = getMeanColor(texels); 
+		
+//		buffer = new int[surfaceEdgeLength * surfaceEdgeLength];
+//		setBufferColor(0, texels[0]); // origin
+//		setBufferColor(1, texels[1]);
+//		setBufferColor(2, texels[2]);
+//		buffer[3] = buffer[0]; // FIXME interpolate
 	}
+	
+	private void setTargetTexelCoordinates(Vector3D[] texels) {
+		int size = texels.length;
+		for (int i = 0; i < size; i++) {
+			texels[i].multiply(sourceTextureEdgeLength);
+			//texels[i].x = (int) texels[i].x; 
+			texels[i].y = (int) (sourceTextureEdgeLength - texels[i].y);
+			if (texels[i].x < 0) texels[i].x = 0;
+			if (texels[i].y < 0) texels[i].y = 0;
+			if (texels[i].x >= sourceTextureEdgeLength) texels[i].x = sourceTextureEdgeLength - 1;
+			if (texels[i].y >= sourceTextureEdgeLength) texels[i].y = sourceTextureEdgeLength - 1;
+		}
+	}
+	
+	private int getMeanColor(Vector3D[] texels) {
+		int size = texels.length;
+		int meanR = 0;
+		int meanG = 0;
+		int meanB = 0;
+		for (int i = 0; i < size; i++) {
+			int color = sourceTexture.getColor((int)texels[i].x, (int)texels[i].y, ShadedTexture.MAX_LEVEL * 2 / 3);
+			int r = (color >> 16) & 0xFF;
+			int g = (color >> 8) & 0xFF;
+			int b = color & 0xFF;
+			meanR += r;
+			meanG += g;
+			meanB += b;
+		}
+		meanR = meanR / size;
+		meanG = meanG / size;
+		meanB = meanB / size;
+		int meanColor = 0xFF000000 | (meanR << 16) | (meanG << 8) | (meanB);
+		return meanColor;
+	}
+	
+//	private void setBufferColor(int bufferIndex, Vector3D texel) {
+//		texel.multiply(sourceTextureEdgeLength);
+//		int srcX = (int) texel.x; //(currentMaterial.texture.getWidth() - origin.x); // // 
+//		int srcY = (int) (sourceTextureEdgeLength - texel.y);
+//		if (srcX < 0) srcX = 0;
+//		if (srcY < 0) srcY = 0;
+//		if (srcX >= sourceTextureEdgeLength) srcX = sourceTextureEdgeLength - 1;
+//		if (srcY >= sourceTextureEdgeLength) srcY = sourceTextureEdgeLength - 1;
+//		int color = sourceTexture.getColor(srcX, srcY, ShadedTexture.MAX_LEVEL * 2 / 3);
+//		buffer[bufferIndex] = color;
+//	}
 	
 
 	@Override
 	public int getColor(int x, int y) {
-		int srcX = (int) origin.x; //(currentMaterial.texture.getWidth() - origin.x); // // 
-		int srcY = (int) (sourceTextureEdgeLength - origin.y);
-		if (srcX < 0) srcX = 0;
-		if (srcY < 0) srcY = 0;
-		if (srcX >= sourceTextureEdgeLength) srcX = sourceTextureEdgeLength - 1;
-		if (srcY >= sourceTextureEdgeLength) srcY = sourceTextureEdgeLength - 1;
-		int color = sourceTexture.getColor(srcX, srcY, ShadedTexture.MAX_LEVEL * 2 / 3);
-		return color;
+		return meanColor;
+		//return buffer[(x & widthMask) + ((y & heightMask) << widthBits)];
 	}
 
 	public static SmallShadedSurface createSurface(TexturedPolygon3D texturedPolygon, ShadedTexture texture, Vector3D[] texels) {
