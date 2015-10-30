@@ -81,20 +81,11 @@ wall 512 0
 v 500 100 600
 obj healthPack health_pack.obj3d -1 
 
-#v 400 68 150
-#obj rectangle rectangle.obj -1 3.14
-
-#v 400 68 250
-#obj Droid Droid.obj -1
-
-#v 400 68 100
-#obj bullet bullet.obj -1
-
 v 100 68 900
 obj drfreak drfreak.obj -1 3.14
 
-#v 100 32 800
-#obj arm_and_gun arm_and_gun.obj -1
+v 100 32 800
+obj arm_and_gun arm_and_gun.obj -1
 
 v 100 68 650
 obj barrel barrel.obj -1
@@ -119,7 +110,6 @@ obj GrindCable GrindCable.obj -1
 
 v 384 350 800
 obj hang8 hang8.obj -1
-
 
 v 384 192 64 
 pointlight -1 1 384

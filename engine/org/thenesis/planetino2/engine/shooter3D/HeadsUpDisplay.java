@@ -88,10 +88,11 @@ public class HeadsUpDisplay implements Overlay {
 		// draw health value (number)
 		String str = Integer.toString((int) Math.floor(displayedHealth + 0.5d));
 		g.setColor(Color.WHITE.getRGB());
-		g.drawString(str, 0, 0);
+		g.drawString(str, 0, fontHeight);
 
 		// draw health bar
-		int x = font.charsWidth(str.toCharArray(), 0, str.length()) + spacing * 2;
+		final char[] MAX_SIZE_STRING = new char[] {'M', 'M', 'M'};
+		int x = font.charsWidth(MAX_SIZE_STRING, 0, MAX_SIZE_STRING.length) + spacing;
 		int y = fontHeight / 2;
 		int w = window.getWidth() / 4;
 		int h = window.getHeight() / 60;

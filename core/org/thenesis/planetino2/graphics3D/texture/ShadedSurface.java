@@ -55,7 +55,7 @@ import org.thenesis.planetino2.math3D.Vector3D;
  A ShadedSurface is a pre-shaded Texture that maps onto a
  polygon.
  */
-public final class ShadedSurface extends Texture {
+public class ShadedSurface extends Texture {
 
 	public static final int SURFACE_BORDER_SIZE = 1;
 
@@ -177,9 +177,9 @@ public final class ShadedSurface extends Texture {
 
 	}
 
-	private int getColor565(int x, int y) {
-		return buffer[x + y * width];
-	}
+//	private int getColor565(int x, int y) {
+//		return buffer[x + y * width];
+//	}
 
 	/**
 	 Gets the 16-bit color of the pixel at location (x,y) in
@@ -198,7 +198,7 @@ public final class ShadedSurface extends Texture {
 		} else if (y >= height) {
 			y = height - 1;
 		}
-		return getColor565(x, y);
+		return getColor(x, y);
 	}
 
 	/**
@@ -246,12 +246,12 @@ public final class ShadedSurface extends Texture {
 	 then this method attempts to retrieve it. Returns true if
 	 successfull.
 	 */
-	//    public boolean retrieveSurface() {
-	//        if (buffer == null) {
-	//            buffer = (short[])bufferReference.get();
-	//        }
-	//        return !(buffer == null);
-	//    }
+	    public boolean retrieveSurface() {
+//	        if (buffer == null) {
+//	            buffer = (short[])bufferReference.get();
+//	        }
+	        return !(buffer == null);
+	    }
 
 	/**
 	 Sets the source texture for this ShadedSurface.
@@ -293,9 +293,9 @@ public final class ShadedSurface extends Texture {
 	 */
 	public void buildSurface() {
 
-		//        if (retrieveSurface()) {
-		//            return;
-		//        }
+		        if (retrieveSurface()) {
+		            return;
+		        }
 
 		        int width = (int)surfaceBounds.getWidth();
 		        int height = (int)surfaceBounds.getHeight();

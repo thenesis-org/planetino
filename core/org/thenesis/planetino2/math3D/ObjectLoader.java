@@ -51,6 +51,7 @@ import java.util.Vector;
 
 import org.thenesis.planetino2.graphics3D.texture.ShadedSurface;
 import org.thenesis.planetino2.graphics3D.texture.ShadedTexture;
+import org.thenesis.planetino2.graphics3D.texture.SmallShadedSurface;
 import org.thenesis.planetino2.graphics3D.texture.Texture;
 import org.thenesis.planetino2.util.BufferedReader;
 import org.thenesis.planetino2.util.StringTokenizer;
@@ -111,6 +112,7 @@ public class ObjectLoader {
 
 	protected String path;
 	protected Vector vertices;
+	protected Vector textureCoordinates;
 	protected Material currentMaterial;
 	protected Hashtable materials;
 	protected Vector lights;
@@ -125,6 +127,7 @@ public class ObjectLoader {
 	public ObjectLoader() {
 		materials = new Hashtable();
 		vertices = new Vector();
+		textureCoordinates = new Vector();
 		parsers = new Hashtable();
 		parsers.put("obj", new ObjLineParser());
 		parsers.put("mtl", new MtlLineParser());
@@ -145,7 +148,7 @@ public class ObjectLoader {
 	/**
 	 Loads an OBJ file as a PolygonGroup.
 	 */
-	public PolygonGroup loadObject(String path, String filename) throws IOException {
+	public PolygonGroup loadObject(String path, String filename) throws IOException {		
 
 		this.path = path;
 
@@ -153,6 +156,7 @@ public class ObjectLoader {
 		object.setFilename(filename);
 
 		vertices.removeAllElements();
+		textureCoordinates.removeAllElements();
 		currentGroup = object;
 		parseFile(filename);
 
@@ -177,11 +181,32 @@ public class ObjectLoader {
 	 -1 is the last. 0 is invalid and throws an exception.
 	 */
 	protected Vector3D getVector(String indexStr) {
+		return getVector(indexStr, vertices);
+	}
+	
+	/**
+	 Gets a Vector3D from the list of vectors in the file.
+	 Negative indeces count from the end of the list, postive
+	 indeces count from the beginning. 1 is the first index,
+	 -1 is the last. 0 is invalid and throws an exception.
+	 */
+	protected Vector3D getTextureVector(String indexStr) {
+		return getVector(indexStr, textureCoordinates);
+	}
+	
+	
+	/**
+	 Gets a Vector3D from the list of vectors.
+	 Negative indeces count from the end of the list, postive
+	 indeces count from the beginning. 1 is the first index,
+	 -1 is the last. 0 is invalid and throws an exception.
+	 */
+	protected Vector3D getVector(String indexStr, Vector vector3DList) {
 		int index = Integer.parseInt(indexStr);
 		if (index < 0) {
-			index = vertices.size() + index + 1;
+			index = vector3DList.size() + index + 1;
 		}
-		return (Vector3D) vertices.elementAt(index - 1);
+		return (Vector3D) vector3DList.elementAt(index - 1);
 	}
 
 	/**
@@ -249,32 +274,204 @@ public class ObjectLoader {
 				// create a new vertex
 				vertices.addElement(new Vector3D(Float.parseFloat(tokenizer.nextToken()), Float.parseFloat(tokenizer
 						.nextToken()), Float.parseFloat(tokenizer.nextToken())));
+			} else if (command.equals("vt")) {
+				// create new texture coordinates
+				textureCoordinates.addElement(new Vector3D(Float.parseFloat(tokenizer.nextToken()), Float.parseFloat(tokenizer
+						.nextToken()), 0));
 			} else if (command.equals("f")) {
 				// create a new face (flat, convex polygon)
 				Vector currVertices = new Vector();
+				Vector currTextureCoordinates = new Vector();
 				while (tokenizer.hasMoreTokens()) {
-					String indexStr = tokenizer.nextToken();
+					String faceStr = tokenizer.nextToken();
+					String vertexIndexStr = faceStr;
 
 					// ignore texture and normal coords
-					int endIndex = indexStr.indexOf('/');
+					int endIndex = faceStr.indexOf('/');
 					if (endIndex != -1) {
-						indexStr = indexStr.substring(0, endIndex);
+						vertexIndexStr = faceStr.substring(0, endIndex);
+						String textureCoordIndexStr = faceStr.substring(endIndex + 1);
+						endIndex = textureCoordIndexStr.indexOf('/');
+						if (endIndex != -1) {
+							textureCoordIndexStr = textureCoordIndexStr.substring(0, endIndex);
+						}
+						currTextureCoordinates.addElement(getTextureVector(textureCoordIndexStr));
 					}
 
-					currVertices.addElement(getVector(indexStr));
+					currVertices.addElement(getVector(vertexIndexStr));
 				}
 
 				// create textured polygon
-				Vector3D[] array = new Vector3D[currVertices.size()];
-				currVertices.copyInto(array);
-				//currVertices.toArray(array);
-				TexturedPolygon3D poly = new TexturedPolygon3D(array);
+				Vector3D[] vertexArray = new Vector3D[currVertices.size()];
+				currVertices.copyInto(vertexArray);
+				
+				TexturedPolygon3D texturedPolygon = new TexturedPolygon3D(vertexArray);
 
-				// set the texture
-				ShadedSurface.createShadedSurface(poly, currentMaterial.texture, lights, ambientLightIntensity);
+				if (currTextureCoordinates.isEmpty()) {
+					ShadedSurface.createShadedSurface(texturedPolygon, currentMaterial.texture, lights, ambientLightIntensity);
+				} else {
+//					Vector3D[] t = new Vector3D[currTextureCoordinates.size()];
+//					currTextureCoordinates.copyInto(t);
+//					Vector3D origin = new Vector3D(t[0]);
+//					Vector3D directionU = new Vector3D(t[1]);
+//					Vector3D directionV = new Vector3D(t[2]);
+//					origin.x = origin.x * currentMaterial.texture.getWidth();
+//					origin.y = origin.y * currentMaterial.texture.getHeight();
+//					directionU.x = directionU.x * currentMaterial.texture.getWidth();
+//					directionU.y = directionU.y * currentMaterial.texture.getHeight();
+//					directionV.x = directionV.x * currentMaterial.texture.getWidth();
+//					directionV.y = directionV.y * currentMaterial.texture.getHeight();
+//					directionU.subtract(origin);
+//					directionV.subtract(origin);
+//					//System.out.println("origin=" + origin + " directionU=" + directionU + " directionV=" + directionV);
+//					Rectangle3D bounds = new Rectangle3D(origin, directionU, directionV, currentMaterial.texture.getWidth(), currentMaterial.texture.getHeight());
+//					ShadedSurface.createShadedSurface(texturedPolygon, currentMaterial.texture, bounds, lights, ambientLightIntensity);
+					
+					
+//					Vector3D[] t = new Vector3D[currTextureCoordinates.size()];
+//					currTextureCoordinates.copyInto(t);
+//					Vector3D origin = new Vector3D(t[0]);
+//					Vector3D directionU = new Vector3D(t[1]);
+//					Vector3D directionV = new Vector3D(t[2]);
+//					origin.multiply(currentMaterial.texture.getWidth());
+////					origin.x = origin.x * currentMaterial.texture.getWidth();
+////					origin.y = origin.y * currentMaterial.texture.getHeight();
+////					directionU.x = directionU.x * currentMaterial.texture.getWidth();
+////					directionU.y = directionU.y * currentMaterial.texture.getHeight();
+////					directionV.x = directionV.x * currentMaterial.texture.getWidth();
+////					directionV.y = directionV.y * currentMaterial.texture.getHeight();
+//					//directionU.subtract(origin);
+//					//directionV.subtract(origin);
+//					int width = (int) (directionU.length());
+//					int height = (int) (directionV.length());
+//					Rectangle3D bounds = new Rectangle3D(origin, directionU, directionV, width, height);
+//					ShadedSurface.createShadedSurface(texturedPolygon, currentMaterial.texture, bounds, lights, ambientLightIntensity);
+//					//ExtendedShadedSurface.createShadedSurface(texturedPolygon, currentMaterial.texture, lights, ambientLightIntensity);
+				
+//					Vector3D[] t = new Vector3D[currTextureCoordinates.size()];
+//					currTextureCoordinates.copyInto(t);
+//					Vector3D origin = new Vector3D(t[0]);
+//					Vector3D directionU = new Vector3D(t[1]);
+//					Vector3D directionV = new Vector3D(t[2]);
+//					origin.multiply(currentMaterial.texture.getWidth());
+//					directionU.multiply(currentMaterial.texture.getWidth());
+//					directionV.multiply(currentMaterial.texture.getWidth());
+//					directionU.subtract(origin);
+//					directionV.subtract(origin);
+//
+//					int width = (int) (directionU.length());
+//					int height = (int) (directionV.length() + 1);
+//					width = (width == 0) ? 1 : width;
+//					height = (height == 0) ? 1 : height;
+					
+//					int width = 2;
+//					int height = 2;
+//					int size = width * height;
+//					
+//					//System.out.println("size=" + size);
+//					int[] rgbBuffer = new int[size];
+//					for (int y = 0; y < height; y++) {
+//						for (int x = 0; x < width; x++) {
+//							
+////							origin = new Vector3D(0.1f, 0.98f, 0.0f);
+////							directionU = new Vector3D(0.1f, 0.98f, 0.0f);
+////							directionV = new Vector3D(0.1f, 0.98f, 0.0f);
+//							origin = new Vector3D(t[0]);
+////							directionU = new Vector3D(t[1]);
+////							directionV = new Vector3D(t[2]);
+////							System.out.println(origin + "  " + directionU + "   "+ directionV);
+//							origin.multiply(currentMaterial.texture.getWidth());
+////							directionU.multiply(currentMaterial.texture.getWidth());
+////							directionV.multiply(currentMaterial.texture.getWidth());
+////							directionU.subtract(origin);
+////							directionV.subtract(origin);
+////							directionU.normalize();
+////							directionV.normalize();
+////							System.out.println("origin=" + origin);
+////							directionU.multiply(x);
+////							directionV.multiply(y);
+////							directionU.add(directionV);
+////							origin.add(directionU);
+//							//System.out.println(origin + "  " + directionU + "   "+ directionV);
+//							int srcX = (int) origin.x; //(currentMaterial.texture.getWidth() - origin.x); // // 
+//							int srcY = (int) (currentMaterial.texture.getWidth() - origin.y);
+////							int srcX = (int) (currentMaterial.texture.getWidth() - origin.x);
+////							int srcY = (int) (origin.y);
+//							//System.out.println("srcX=" + srcX + " srcY=" + srcY);
+//							if (srcX < 0) srcX = 0;
+//							if (srcY < 0) srcY = 0;
+//							if (srcX >= currentMaterial.texture.getWidth()) srcX = currentMaterial.texture.getWidth() - 1;
+//							if (srcY >= currentMaterial.texture.getWidth()) srcY = currentMaterial.texture.getWidth() - 1;
+//							//System.out.println("srcX=" + srcX + " srcY=" + srcY);
+//							rgbBuffer[y * width + x] = currentMaterial.texture.sourceBuffer[srcY * currentMaterial.texture.getWidth() + srcX]; //
+//							//currentMaterial.texture.getColor(srcX, srcY); //
+//							//System.out.println("c=" + Integer.toHexString(rgbBuffer[y * width + x]));
+//						}
+//					}
+//				
+//					//ExtendedTexture texture = new ExtendedTexture(rgbBuffer, width, height);
+//					//PowerOf2Texture texture = new PowerOf2Texture(rgbBuffer, Texture.countbits(width - 1), Texture.countbits(height - 1));
+//					//texturedPolygon.setTexture(texture);
+//					
+//					ShadedTexture texture = new ShadedTexture(rgbBuffer, Texture.countbits(width - 1), Texture.countbits(height - 1));
+//					ShadedSurface.createShadedSurface(texturedPolygon, texture, lights, ambientLightIntensity);
+				
+					
+//					/* Works but use too much memory because of shade level calculations (64 levels) */
+//					int width = 2;
+//					int height = 2;
+//					int size = width * height;
+//					Vector3D origin = new Vector3D((Vector3D)currTextureCoordinates.elementAt(0));
+//					origin.multiply(currentMaterial.texture.getWidth());
+//					int srcX = (int) origin.x; //(currentMaterial.texture.getWidth() - origin.x); // // 
+//					int srcY = (int) (currentMaterial.texture.getWidth() - origin.y);
+//					if (srcX < 0) srcX = 0;
+//					if (srcY < 0) srcY = 0;
+//					if (srcX >= currentMaterial.texture.getWidth()) srcX = currentMaterial.texture.getWidth() - 1;
+//					if (srcY >= currentMaterial.texture.getWidth()) srcY = currentMaterial.texture.getWidth() - 1;
+//					int color = currentMaterial.texture.getColor(srcX, srcY); //currentMaterial.texture.sourceBuffer[srcY * currentMaterial.texture.getWidth() + srcX];
+//					//System.out.println("size=" + size);
+//					int[] rgbBuffer = new int[size];
+//					for (int i = 0; i < size; i++) {
+//						rgbBuffer[i] = color;
+//					}
+//					//ShadedTexture texture = new ShadedTexture(rgbBuffer, Texture.countbits(width - 1), Texture.countbits(height - 1));
+//					//ExtendedShadedSurface.createShadedSurface(texturedPolygon, texture, lights, ambientLightIntensity);
+//					ShadedTexture texture = new ShadedTexture(rgbBuffer, Texture.countbits(width - 1), Texture.countbits(height - 1));
+//					ShadedSurface.createShadedSurface(texturedPolygon, texture, lights, ambientLightIntensity);
+					
+					
+					/* Works but no shading yet */
+					Vector3D[] texels = new Vector3D[currTextureCoordinates.size()];
+					currTextureCoordinates.copyInto(texels);
+					SmallShadedSurface.createSurface(texturedPolygon, currentMaterial.texture, texels);
+					
+					
+					/* Use only color of origin from the shaded texture: doesn't work  */
+//					Vector3D[] t = new Vector3D[currTextureCoordinates.size()];
+//					currTextureCoordinates.copyInto(t);
+//					Vector3D origin = new Vector3D(t[0]);
+//					origin.multiply(currentMaterial.texture.getWidth());
+//					int srcX = (int) origin.x; //(currentMaterial.texture.getWidth() - origin.x); // // 
+//					int srcY = (int) (currentMaterial.texture.getWidth() - origin.y);
+//					if (srcX < 0) srcX = 0;
+//					if (srcY < 0) srcY = 0;
+//					if (srcX >= currentMaterial.texture.getWidth()) srcX = currentMaterial.texture.getWidth() - 1;
+//					if (srcY >= currentMaterial.texture.getWidth()) srcY = currentMaterial.texture.getWidth() - 1;
+//					int color = currentMaterial.texture.getColor(srcX, srcY); //currentMaterial.texture.sourceBuffer[srcY * currentMaterial.texture.getWidth() + srcX];
+//					//ShadedTexture texture = new ShadedTexture(rgbBuffer, Texture.countbits(width - 1), Texture.countbits(height - 1));
+//					//ExtendedShadedSurface.createShadedSurface(texturedPolygon, texture, lights, ambientLightIntensity);
+//					//ShadedTexture texture = new ShadedTexture(rgbBuffer, Texture.countbits(width - 1), Texture.countbits(height - 1));
+//					//ShadedSurface.createShadedSurface(texturedPolygon, texture, lights, ambientLightIntensity);
+//					Rectangle3D bounds = new Rectangle3D(origin, new Vector3D(t[1]), new Vector3D(t[2]), 2, 2);
+//					ShadedSurface.createShadedSurface(texturedPolygon, currentMaterial.texture, bounds, lights, ambientLightIntensity);
+				
+				}
+				
+				//ShadedSurface.createShadedSurface(texturedPolygon, currentMaterial.texture, lights, ambientLightIntensity);
 
 				// add the polygon to the current group
-				currentGroup.addPolygon(poly);
+				currentGroup.addPolygon(texturedPolygon);
 			} else if (command.equals("g")) {
 				// define the current group
 				if (tokenizer.hasMoreTokens()) {

@@ -43,8 +43,6 @@
  */
 package org.thenesis.planetino2.graphics3D.texture;
 
-import org.thenesis.planetino2.graphics.Color;
-
 /**
  The PowerOf2Texture class is a Texture with a width and height
  that are a power of 2 (32, 128, etc.).
@@ -77,7 +75,8 @@ public final class PowerOf2Texture extends Texture {
 	 the bitmap.
 	 */
 	public int getColor(int x, int y) {
-		return Color.convertRBG565To888(buffer[(x & widthMask) + ((y & heightMask) << widthBits)]);
+		//return Color.convertRBG565To888(buffer[(x & widthMask) + ((y & heightMask) << widthBits)]);
+		return buffer[(x & widthMask) + ((y & heightMask) << widthBits)];
 	}
 
 	public int[] getRawData() {

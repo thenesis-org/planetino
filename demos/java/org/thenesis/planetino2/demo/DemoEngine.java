@@ -137,6 +137,14 @@ public class DemoEngine extends GameCore3D {
 		super.init();
 		
 		((Player)gameObjectManager.getPlayer()).setBlastModel(blastModel);
+		
+		Music ambientMusic = soundManager.getMusic("ambient_loop.wav");
+		ambientMusic.setVolume(0.3);
+		ambientMusic.play(true);
+		Music introMusic = soundManager.getMusic("prepare.wav");
+		introMusic.play(false);
+		
+		drawFrameRate = true;
 
 	}
 	
@@ -153,11 +161,6 @@ public class DemoEngine extends GameCore3D {
 	@Override
 	public void createSoundManager() {
 		soundManager = new SoundManager(viewWindow, polygonRenderer.getCamera());
-		Music ambientMusic = soundManager.getMusic("ambient_loop.wav");
-		ambientMusic.setVolume(0.3);
-		ambientMusic.play(true);
-		Music introMusic = soundManager.getMusic("prepare.wav");
-		introMusic.play(false);
 	}
 
 	@Override
@@ -243,7 +246,7 @@ public class DemoEngine extends GameCore3D {
 			} else if ("aggressivebot.obj3d".equals(filename)) {
 				AIBot bot = new AIBot(group, collisionDetection, aggressiveBrain, botProjectileModel);
 				gameObjectManager.add(bot);
-			} else if ("scaredybot.obj3d".equals(filename)) {
+			} else if ("DemonicEye2.obj".equals(filename)) {
 				AIBot bot = new NoisyAIBot(soundManager, group, collisionDetection, scaredBrain, botProjectileModel);
 				gameObjectManager.add(bot);
 			} else if ("health_pack.obj3d".equals(filename)) {

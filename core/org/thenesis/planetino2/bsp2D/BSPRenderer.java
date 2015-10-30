@@ -54,6 +54,7 @@ import org.thenesis.planetino2.graphics3D.ZBufferedRenderer;
 import org.thenesis.planetino2.graphics3D.texture.PowerOf2Texture;
 import org.thenesis.planetino2.graphics3D.texture.ShadedSurface;
 import org.thenesis.planetino2.graphics3D.texture.ShadedTexture;
+import org.thenesis.planetino2.graphics3D.texture.SmallShadedSurface;
 import org.thenesis.planetino2.graphics3D.texture.Texture;
 import org.thenesis.planetino2.math3D.Rectangle3D;
 import org.thenesis.planetino2.math3D.TexturedPolygon3D;
@@ -108,7 +109,6 @@ public class BSPRenderer extends ZBufferedRenderer
         traverser.setGameObjectManager(gameObjectManager);
     }
 
-
     protected void init() {
         destPolygon = new TexturedPolygon3D();
         scanConverter = new SortedScanConverter(viewWindow);
@@ -121,6 +121,7 @@ public class BSPRenderer extends ZBufferedRenderer
             new ShadedTextureZRenderer());
         scanRenderers.put(ShadedSurface.class,
             new ShadedSurfaceZRenderer());
+        scanRenderers.put(SmallShadedSurface.class, new SmallShadedSurfaceZRenderer());
 
         // same thing, for bsp tree polygons
         bspScanRenderers = new Hashtable();
