@@ -93,8 +93,8 @@ public class DemoEngine extends GameCore3D {
 	private static final float PLAYER_TURN_SPEED = 0.04f;
 	private static final float CAMERA_HEIGHT = 100;
 	
-	public static GameAction fire = new GameAction("fire", GameAction.DETECT_INITAL_PRESS_ONLY);
-	public static GameAction jump = new GameAction("jump", GameAction.DETECT_INITAL_PRESS_ONLY);
+	private static final float ANGLE_DEFAULT = (float) Math.toRadians(75);
+	private static final float ANGLE_ZOOM = (float) Math.toRadians(25);
 	
 	protected SoundManager soundManager;
 
@@ -390,10 +390,16 @@ public class DemoEngine extends GameCore3D {
 		if (jump.isPressed()) {
 			player.setJumping(true);
 		}
-		 if (fire.isPressed()) {
+		if (fire.isPressed()) {
 	        player.fireProjectile();
-	     }
-
+	    }
+		if (zoom.isPressed()) {
+	        viewWindow.setAngle(ANGLE_ZOOM);
+	    } else {
+	    	if (viewWindow.getAngle() != ANGLE_DEFAULT) {
+	    		viewWindow.setAngle(ANGLE_DEFAULT);
+	    	}
+	    }
 
 		playerTransform.setVelocity(velocity);
 

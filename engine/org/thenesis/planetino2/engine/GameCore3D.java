@@ -99,8 +99,10 @@ public abstract class GameCore3D extends GameCore {
 	public static GameAction tiltDown = new GameAction("tiltDown");
 	public static GameAction tiltLeft = new GameAction("tiltLeft");
 	public static GameAction tiltRight = new GameAction("tiltRight");
-	protected GameAction timeSmoothingToggle = new GameAction("timeSmoothingToggle",
-			GameAction.DETECT_INITAL_PRESS_ONLY);
+	protected GameAction timeSmoothingToggle = new GameAction("timeSmoothingToggle", GameAction.DETECT_INITAL_PRESS_ONLY);
+	public static GameAction fire = new GameAction("fire", GameAction.DETECT_INITAL_PRESS_ONLY);
+	public static GameAction jump = new GameAction("jump", GameAction.DETECT_INITAL_PRESS_ONLY);
+	public static GameAction zoom = new GameAction("zoom");
 
 	public GameCore3D(Screen screen, InputManager inputManager) {
 		super(screen);
