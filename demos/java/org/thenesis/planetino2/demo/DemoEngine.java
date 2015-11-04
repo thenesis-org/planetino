@@ -98,7 +98,7 @@ public class DemoEngine extends GameCore3D {
 	
 	protected SoundManager soundManager;
 
-	protected GameObjectManager gameObjectManager;
+	protected ShooterObjectManager gameObjectManager;
 	protected PolygonGroup blastModel;
 	protected PolygonGroup botProjectileModel;
 	
@@ -193,9 +193,9 @@ public class DemoEngine extends GameCore3D {
 		}
 
 		collisionDetection = new CollisionDetectionWithSliding(bspTree);
-		gameObjectManager = new GridGameObjectManager(bspTree.calcBounds(), collisionDetection);
+		gameObjectManager = new ShooterObjectManager(bspTree.calcBounds(), collisionDetection);
 		gameObjectManager.addPlayer(new ShooterPlayer(soundManager));
-
+		
 		((BSPRenderer) polygonRenderer).setGameObjectManager(gameObjectManager);
 
 		createGameObjects(loader.getObjectsInMap());
@@ -220,13 +220,13 @@ public class DemoEngine extends GameCore3D {
 
 	private void createGameObjects(Vector mapObjects) {
 
-		Player player = (Player) gameObjectManager.getPlayer();
+		ShooterPlayer player = (ShooterPlayer) gameObjectManager.getPlayer();
 		player.setHealth(100);
 
 		drawInstructions = false;
 		MessageQueue queue = MessageQueue.getInstance();
 		addOverlay(queue);
-		addOverlay(new HeadsUpDisplay(player));
+		addOverlay(new ShooterOverlay(player));
 		queue.setDebug(false);
 		//queue.add("Use the mouse/arrow keys to move.");
 		//queue.add("Press Esc to exit.");
@@ -249,6 +249,18 @@ public class DemoEngine extends GameCore3D {
 			} else if ("DemonicEye2.obj".equals(filename)) {
 				AIBot bot = new NoisyAIBot(soundManager, group, collisionDetection, scaredBrain, botProjectileModel);
 				gameObjectManager.add(bot);
+			} else if ("Droid.obj".equals(filename)) {
+				AIBot bot = new NoisyAIBot(soundManager, group, collisionDetection, averageBrain, botProjectileModel);
+				bot.setFlyHeight(150);
+				gameObjectManager.add(bot);
+			} else if ("drfreak.obj".equals(filename)) {
+				AIBot bot = new NoisyAIBot(soundManager, group, collisionDetection, scaredBrain, botProjectileModel);
+				bot.setFlyHeight(0);
+				gameObjectManager.add(bot);
+			} else if ("Serpent.obj".equals(filename)) {
+				AIBot bot = new NoisyAIBot(soundManager, group, collisionDetection, scaredBrain, botProjectileModel);
+				bot.setFlyHeight(0);
+				gameObjectManager.add(bot);
 			} else if ("health_pack.obj3d".equals(filename)) {
 				float angleVelocity = 0.0010f;
 				MovingTransform3D mainTransform = group.getTransform();
@@ -256,8 +268,9 @@ public class DemoEngine extends GameCore3D {
 				mainTransform.setAngleVelocityX(angleVelocity);
 				mainTransform.rotateAngleY(50f);
 				mainTransform.rotateAngleX(50f);
-				gameObjectManager.add(new GameObject(group));
-			} else if ("classpath-cube.obj3d".equals(filename)) {
+				RespawnableItem item = new RespawnableItem(group);
+				gameObjectManager.addRespawnableItem(item);
+			} else if ("GrindCable.obj".equals(filename)) {
 				float angleVelocity = 0.0010f;
 				MovingTransform3D mainTransform = group.getTransform();
 				mainTransform.setAngleVelocityY(angleVelocity);

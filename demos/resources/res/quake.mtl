@@ -58,4 +58,10 @@ map_Kd roof1.png
 newmtl roof2
 map_Kd roof2.png
 
+newmtl wall3
+map_Kd alien_wall3_s.jpg
+
+newmtl wall4
+map_Kd sci_fi_wall1_s.jpg
+
 

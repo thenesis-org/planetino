@@ -53,7 +53,8 @@ import org.thenesis.planetino2.math3D.ViewWindow;
 public class HeadsUpDisplay implements Overlay {
 
 	// increase health display by 20 points per second
-	private static final float DISPLAY_INC_RATE = 0.04f;
+	protected static final float DISPLAY_INC_RATE = 0.04f;
+	protected static final char[] MAX_SIZE_STRING = new char[] {'M', 'M', 'M'};
 
 	private Player player;
 	private float displayedHealth;
@@ -91,7 +92,6 @@ public class HeadsUpDisplay implements Overlay {
 		g.drawString(str, 0, fontHeight);
 
 		// draw health bar
-		final char[] MAX_SIZE_STRING = new char[] {'M', 'M', 'M'};
 		int x = font.charsWidth(MAX_SIZE_STRING, 0, MAX_SIZE_STRING.length) + spacing;
 		int y = fontHeight / 2;
 		int w = window.getWidth() / 4;

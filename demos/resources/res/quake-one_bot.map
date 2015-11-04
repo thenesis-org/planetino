@@ -78,8 +78,9 @@ wall 256 384 0 32
 wall 512 384
 wall 512 0 
 
-v 500 100 600
-obj healthPack health_pack.obj3d -1 
+#v 500 100 600
+v 390 68 190
+obj GrindCable GrindCable.obj -1
 
 #v 400 68 150
 #obj rectangle rectangle.obj -1 3.14
@@ -90,32 +91,33 @@ obj healthPack health_pack.obj3d -1
 #v 400 68 100
 #obj bullet bullet.obj -1
 
-v 100 68 900
-obj drfreak drfreak.obj -1 3.14
+#v 100 68 900
+#obj drfreak drfreak.obj -1 3.14
 
 #v 100 32 800
 #obj arm_and_gun arm_and_gun.obj -1
 
-v 100 68 650
-obj barrel barrel.obj -1
+#v 100 68 650
+#obj barrel barrel.obj -1
 
-v 200 68 650
-obj spider spider.obj -1
+#v 200 68 650
+#obj spider spider.obj -1
 
-v 200 68 600
-obj bullet bullet.obj -1
+#v 200 68 600
+#obj bullet bullet.obj -1
 
-v 200 68 550
-obj serpent Serpent.obj -1
+#v 200 68 550
+#obj serpent Serpent.obj -1
 
-v 750 68 800
-obj Droid Droid.obj -1
+#v 750 68 800
+#obj Droid Droid.obj -1
 
-v 750 68 600
-obj chaingunner_weapon chaingunner_weapon.obj -1
+#v 750 68 600
+#obj chaingunner_weapon chaingunner_weapon.obj -1
 
-v 750 68 500
-obj GrindCable GrindCable.obj -1
+#v 750 68 500
+v 200 100 650
+obj healthPack health_pack.obj3d -1 
 
 v 384 350 800
 obj hang8 hang8.obj -1
@@ -170,7 +172,7 @@ pointlight -1 1 256
 v 768 448 896 
 pointlight -1 1 256
 
-v 500 32 800
+v 500 32 1200
 #obj scaredybot1 scaredybot.obj3d -1 
 obj scaredybot1 DemonicEye2.obj -1 
 #v 400 32 800
@@ -198,7 +200,7 @@ usemtl roof1
 floor 32
 usemtl roof2
 ceil 512
-usemtl wall1
+usemtl wall3
 wall 640 1280 192 512
 wall 384 1280
 wall 0 1280
@@ -299,8 +301,9 @@ wall -1200 800
 
 #v -700 0 550
 #obj bot1 averagebot.obj3d -1 1.57
-#v -500 0 550
+v -500 0 550
 #obj bot2 averagebot.obj3d -1 1.57
+obj drfreak drfreak.obj -1 3.14
 v -1100 300 300
 pointlight -1 .6 600
 
@@ -322,7 +325,7 @@ usemtl roof2
 ceil 256
 usemtl wall1
 wall 1024 1500 0 32
-usemtl texture_G
+usemtl wall4
 wall 1024 1800
 wall 1536 1800 
 wall 2048 1800
@@ -335,8 +338,9 @@ wall 2816 1500
 wall 2000 1500 0 0
 wall 1700 1500
 
-#v 3000 0 1750
+v 3000 0 1750
 #obj bot3 averagebot.obj3d -1
+obj Droid Droid.obj -1
 
 # far east room
 ambientLightIntensity .2
@@ -440,8 +444,9 @@ wall 1700 850
 
 #v 1850 192 700
 #obj bot4 averagebot.obj3d -1
-#v 1850 192 1000
+v 1850 192 1000
 #obj bot5 averagebot.obj3d -1
+obj serpent Serpent.obj -1
 
 # east hall
 room eastHall

@@ -11,8 +11,8 @@ import org.thenesis.planetino2.sound.SoundManager;
 
 public class ShooterPlayer extends Player {
 	private static final float DEFAULT_MAX_ADRENALINE = 100.0F;
-	private static final int DEFAULT_MAX_AMMO = 500;
-	private int ammo = 50;
+	private static final int DEFAULT_MAX_AMMO = 50;
+	private int ammo = 0;
 	private float adrenaline = DEFAULT_MAX_ADRENALINE;
 	private SoundManager soundManager;
 	private boolean adrenalineMode = false;
@@ -128,8 +128,6 @@ public class ShooterPlayer extends Player {
 		makeNoise(500L);
 	}
 
-	private boolean hasSyrum = false;
-
 	@Override
 	public void notifyObjectCollision(GameObject obj) {
 		if (obj.getPolygonGroup().getName().equalsIgnoreCase("healthPack")) {
@@ -138,19 +136,19 @@ public class ShooterPlayer extends Player {
 			}
 			itemCatchSound.play(false);
 			cappedHealthAdd(50.0F);
-			//obj.setState(2); // FIXME
+			setState(obj, STATE_DESTROYED);
 		} else if (obj.getPolygonGroup().getName().equalsIgnoreCase("adrenaline")) {
 			itemCatchSound.play(false);
 			cappedAdrenalineAdd(50.0F);
-			//obj.setState(2); // FIXME
+			setState(obj, STATE_DESTROYED);
 		} else if (obj.getPolygonGroup().getName().equalsIgnoreCase("ammo")) {
 			itemCatchSound.play(false);
 			this.ammo += 50;
-			//obj.setState(2); // FIXME
-		} else if (obj.getPolygonGroup().getName().equalsIgnoreCase("syrum")) {
+			setState(obj, STATE_DESTROYED);
+		} else if (obj.getPolygonGroup().getName().equalsIgnoreCase("GrindCable")) { // weapon
 			itemCatchSound.play(false);
-			this.hasSyrum = true;
-			//obj.setState(2); // FIXME
+			ammo = DEFAULT_MAX_AMMO;
+			setState(obj, STATE_DESTROYED);
 		} /*else if ((obj.getPolygonGroup().getFilename() != null) && (obj.getPolygonGroup().getFilename().equalsIgnoreCase("goal.obj"))) {
 			if (this.hasSyrum) {
 				this.sm.play(this.s2);
