@@ -22,18 +22,20 @@ public class ShooterPlayer extends Player {
 	public boolean goNextLevel = false;
 
 	private Music itemCatchSound;
+	private Music weaponChangeSound;
 	private Sound fireSound;
 	private Sound jumpSound;
+	private Sound painSound;
 
 	public ShooterPlayer(SoundManager soundManager) {
 		super();
-
 		this.soundManager = soundManager;
-	
+
 		jumpSound = soundManager.getSound("jump1.wav");
 		itemCatchSound = soundManager.getMusic("power_up2.wav");
+		weaponChangeSound = soundManager.getMusic("weaponpickup.wav");
 		fireSound = soundManager.getSound("hook_fire.wav");
-
+		painSound = soundManager.getSound("pain25_2.wav");
 	}
 
 	public int getAmmo() {
@@ -146,7 +148,7 @@ public class ShooterPlayer extends Player {
 			this.ammo += 50;
 			setState(obj, STATE_DESTROYED);
 		} else if (obj.getPolygonGroup().getName().equalsIgnoreCase("GrindCable")) { // weapon
-			itemCatchSound.play(false);
+			weaponChangeSound.play(false);
 			ammo = DEFAULT_MAX_AMMO;
 			setState(obj, STATE_DESTROYED);
 		} /*else if ((obj.getPolygonGroup().getFilename() != null) && (obj.getPolygonGroup().getFilename().equalsIgnoreCase("goal.obj"))) {
@@ -169,6 +171,15 @@ public class ShooterPlayer extends Player {
 			jumpSound.play();
 		}
 	}
+	
+	@Override
+	public void addHealth(float addition) {
+        super.addHealth(addition);
+        // Note: dead sound is played in the main game loop
+        if ((getHealth() > 0) && (addition < 0)) {
+			painSound.play();
+		}
+    }
 	
 	
 

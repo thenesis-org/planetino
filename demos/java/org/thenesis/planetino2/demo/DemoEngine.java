@@ -161,6 +161,7 @@ public class DemoEngine extends GameCore3D {
 	@Override
 	public void createSoundManager() {
 		soundManager = new SoundManager(viewWindow, polygonRenderer.getCamera());
+		soundManager.init();
 	}
 
 	@Override
@@ -250,16 +251,19 @@ public class DemoEngine extends GameCore3D {
 				AIBot bot = new NoisyAIBot(soundManager, group, collisionDetection, scaredBrain, botProjectileModel);
 				gameObjectManager.add(bot);
 			} else if ("Droid.obj".equals(filename)) {
-				AIBot bot = new NoisyAIBot(soundManager, group, collisionDetection, averageBrain, botProjectileModel);
+				NoisyAIBot bot = new NoisyAIBot(soundManager, group, collisionDetection, averageBrain, botProjectileModel);
 				bot.setFlyHeight(150);
+				bot.setSoundLoop("alien_not_alone.wav");
 				gameObjectManager.add(bot);
 			} else if ("drfreak.obj".equals(filename)) {
-				AIBot bot = new NoisyAIBot(soundManager, group, collisionDetection, scaredBrain, botProjectileModel);
+				NoisyAIBot bot = new NoisyAIBot(soundManager, group, collisionDetection, scaredBrain, botProjectileModel);
 				bot.setFlyHeight(0);
+				bot.setSoundLoop("old_man.wav");
 				gameObjectManager.add(bot);
 			} else if ("Serpent.obj".equals(filename)) {
-				AIBot bot = new NoisyAIBot(soundManager, group, collisionDetection, scaredBrain, botProjectileModel);
+				NoisyAIBot bot = new NoisyAIBot(soundManager, group, collisionDetection, scaredBrain, botProjectileModel);
 				bot.setFlyHeight(0);
+				bot.setSoundLoop("snake.wav");
 				gameObjectManager.add(bot);
 			} else if ("health_pack.obj3d".equals(filename)) {
 				float angleVelocity = 0.0010f;
@@ -366,7 +370,7 @@ public class DemoEngine extends GameCore3D {
 		// cap elapsedTime
 		elapsedTime = Math.min(elapsedTime, 100);
 
-		Player player = (Player)gameObjectManager.getPlayer();
+		ShooterPlayer player = (ShooterPlayer)gameObjectManager.getPlayer();
 		MovingTransform3D playerTransform = player.getTransform();
 		Vector3D velocity = playerTransform.getVelocity();
 
@@ -429,6 +433,37 @@ public class DemoEngine extends GameCore3D {
 		Transform3D camera = polygonRenderer.getCamera();
 		camera.setTo(playerTransform);
 		camera.getLocation().add(0, CAMERA_HEIGHT, 0);
-
+		
+		// Check if the player has won/lost the match
+		checkGameState();
+		
+	}
+	
+	/**
+	 * Check if the player has won/lost the match and change level if needed
+	 */
+	public void checkGameState() {
+		ShooterPlayer player = (ShooterPlayer)gameObjectManager.getPlayer();
+		if (player.getHealth() <= 0) {
+			try {
+				Music deathSound = soundManager.getMusic("death3_player.wav");
+				deathSound.playAndWait();
+				Thread.sleep(2000);
+				
+				Music lostSound = soundManager.getMusic("youlose.wav");
+				lostSound.playAndWait();
+				while (lostSound.isPlaying()) {
+					Thread.sleep(1);
+				}
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+			}
+			changeLevel();
+		}
+	}
+	
+	public void changeLevel() {
+		soundManager.close();
+		init();
 	}
 }

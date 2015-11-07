@@ -101,6 +101,16 @@ public class SoundManager {
 		}
 		
 	}
+	
+	public void init() {
+		player.init();
+	}
+
+	public void close() {
+		player.close();
+	}
+
+	
 
 
 }

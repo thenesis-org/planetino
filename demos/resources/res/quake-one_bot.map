@@ -181,7 +181,7 @@ obj scaredybot1 DemonicEye2.obj -1
 #obj scaredybot3 scaredybot.obj3d -1 
 
 # south hall
-ambientLightIntensity .15
+ambientLightIntensity .4
 room southHall
 usemtl roof1
 floor 0
@@ -194,7 +194,7 @@ wall 640 1280
 wall 640 1024 0 32
 
 # south room
-ambientLightIntensity .3
+ambientLightIntensity .5
 room southRoom
 usemtl roof1
 floor 32
@@ -232,7 +232,7 @@ obj null cube.obj3d -1 .2
 #obj aggressivebot3 aggressivebot.obj3d -1 
 
 # hall to west room
-ambientLightIntensity .15
+ambientLightIntensity .4
 room westHall1
 usemtl texture_H
 floor 0
@@ -265,7 +265,7 @@ v -350 150 900
 pointlight -1 .6 800
 
 # west room
-ambientLightIntensity .2
+ambientLightIntensity .5
 room westRoomPillar1
 usemtl texture_G
 floor 384 
@@ -283,7 +283,7 @@ wall -900 500
 wall -900 600
 wall -800 600
 
-ambientLightIntensity .15
+ambientLightIntensity .5
 room westRoom
 usemtl texture_H
 floor 0 
@@ -308,7 +308,7 @@ v -1100 300 300
 pointlight -1 .6 600
 
 # south east hall
-ambientLightIntensity .15
+ambientLightIntensity .4
 usemtl texture_H
 room step
 floor 32 
@@ -343,7 +343,7 @@ v 3000 0 1750
 obj Droid Droid.obj -1
 
 # far east room
-ambientLightIntensity .2
+ambientLightIntensity .5
 room farEastRoom
 usemtl texture_H
 floor 64
@@ -372,7 +372,7 @@ v 3050 96 1000.5
 obj null cube.obj3d -1 .2
 
 # steps
-ambientLightIntensity .2
+ambientLightIntensity .4
 usemtl texture_G
 room step1
 floor 32

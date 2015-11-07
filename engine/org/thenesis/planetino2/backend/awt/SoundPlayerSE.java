@@ -9,7 +9,6 @@ import org.thenesis.planetino2.sound.SoundPlayer;
 public class SoundPlayerSE implements SoundPlayer {
 
 	public SoundPlayerSE() {
-		TinySound.init();
 	}
 
 	public Sound getSound(String soundName) {
@@ -58,6 +57,17 @@ public class SoundPlayerSE implements SoundPlayer {
 			nativeMusic.play(loop);
 		}
 		
+		public void playAndWait() {
+			nativeMusic.play(false);
+			try {
+				while (nativeMusic.playing()) {
+					Thread.sleep(1);
+				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		public void setVolume(double volume) {
 			nativeMusic.setVolume(volume);
 		}
@@ -78,7 +88,15 @@ public class SoundPlayerSE implements SoundPlayer {
 			return nativeMusic.playing();
 		}
 
+	}
 
+	public void close() {
+		TinySound.shutdown();
+	}
+
+	public void init() {
+		TinySound.init();
+		
 	}
 
 }

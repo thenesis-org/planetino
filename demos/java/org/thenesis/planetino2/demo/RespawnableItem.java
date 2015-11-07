@@ -5,6 +5,7 @@ import org.thenesis.planetino2.math3D.PolygonGroup;
 
 public class RespawnableItem extends GameObject {
 
+	private static final int DEFAULT_RESPAWN_TIME = 20000;
 	private long elapsedTimeInDestroyedState;
 
 	public RespawnableItem(PolygonGroup polygonGroup) {
@@ -14,7 +15,7 @@ public class RespawnableItem extends GameObject {
 	@Override
 	public void update(GameObject player, long elapsedTime) {
 		if (isDestroyed()) {
-			if (elapsedTimeInDestroyedState > 20000) {
+			if (elapsedTimeInDestroyedState > DEFAULT_RESPAWN_TIME) {
 				setState(STATE_ACTIVE);
 				elapsedTimeInDestroyedState = 0;
 				addSpawn(this);

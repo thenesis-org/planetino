@@ -20,20 +20,35 @@ public class NoisyAIBot extends AIBot {
 	public NoisyAIBot(SoundManager soundManager, PolygonGroup polygonGroup, CollisionDetection collisionDetection, Brain brain, PolygonGroup blastModel) {
 		super(polygonGroup, collisionDetection, brain, blastModel);
 		this.soundManager = soundManager;
-		soundLoop = soundManager.getMusic(BOT_SOUND);
 		deathSound = soundManager.getMusic(DEATH_SOUND);
 		soundLevel = MAX_SOUND_LEVEL;
+	}
+	
+	public static double getMaxSoundLevel() {
+		return MAX_SOUND_LEVEL;
 	}
 	
 	public void update(GameObject player, long elapsedTime) {
 		super.update(player, elapsedTime);
 		if (getAiState() == WOUNDED_STATE_DEAD) {
-			soundLoop.stop();
+			getSoundLoop().stop();
 			deathSound.play(false);
 		} else {
-			soundManager.updateVolumeAndPan(soundLoop, (Player)player, this, soundLevel);
+			soundManager.updateVolumeAndPan(getSoundLoop(), (Player)player, this, soundLevel);
 		}
 	}
+	
+	public Music getSoundLoop() {
+		if (soundLoop == null) {
+			soundLoop = soundManager.getMusic(BOT_SOUND);
+		}
+		return soundLoop;
+	}
+
+	public void setSoundLoop(String name) {
+		soundLoop = soundManager.getMusic(name);
+	}
+
 
 //	@Override
 //	public void notifyVisible(boolean visible) {
