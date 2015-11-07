@@ -23,6 +23,7 @@ public class ShooterPlayer extends Player {
 
 	private Music itemCatchSound;
 	private Music weaponChangeSound;
+	private Music ammoCatchSound;
 	private Sound fireSound;
 	private Sound jumpSound;
 	private Sound painSound;
@@ -33,6 +34,7 @@ public class ShooterPlayer extends Player {
 
 		jumpSound = soundManager.getSound("jump1.wav");
 		itemCatchSound = soundManager.getMusic("power_up2.wav");
+		ammoCatchSound = soundManager.getMusic("change.wav");
 		weaponChangeSound = soundManager.getMusic("weaponpickup.wav");
 		fireSound = soundManager.getSound("hook_fire.wav");
 		painSound = soundManager.getSound("pain25_2.wav");
@@ -67,7 +69,7 @@ public class ShooterPlayer extends Player {
 		this.adrenaline = DEFAULT_MAX_ADRENALINE;
 	}
 
-	public void cappedHealthAdd(float amount) {
+	public void capHealthAdd(float amount) {
 		if (getHealth() < DEFAULT_MAX_HEALTH) {
 			this.health += amount;
 			if (this.health > DEFAULT_MAX_HEALTH) {
@@ -76,7 +78,7 @@ public class ShooterPlayer extends Player {
 		}
 	}
 
-	public void cappedAdrenalineAdd(float amount) {
+	public void capAdrenalineAdd(float amount) {
 		if (getAdrenaline() < DEFAULT_MAX_ADRENALINE) {
 			this.adrenaline += amount;
 			if (this.adrenaline > DEFAULT_MAX_ADRENALINE) {
@@ -137,31 +139,24 @@ public class ShooterPlayer extends Player {
 				itemCatchSound.rewind();
 			}
 			itemCatchSound.play(false);
-			cappedHealthAdd(50.0F);
+			capHealthAdd(50.0F);
 			setState(obj, STATE_DESTROYED);
 		} else if (obj.getPolygonGroup().getName().equalsIgnoreCase("adrenaline")) {
 			itemCatchSound.play(false);
-			cappedAdrenalineAdd(50.0F);
+			capAdrenalineAdd(50.0F);
 			setState(obj, STATE_DESTROYED);
-		} else if (obj.getPolygonGroup().getName().equalsIgnoreCase("ammo")) {
-			itemCatchSound.play(false);
+		} else if (obj.getPolygonGroup().getName().equalsIgnoreCase("ammo_pack")) {
+			if (!ammoCatchSound.isPlaying()) {
+				ammoCatchSound.rewind();
+			}
+			ammoCatchSound.play(false);
 			this.ammo += 50;
 			setState(obj, STATE_DESTROYED);
 		} else if (obj.getPolygonGroup().getName().equalsIgnoreCase("GrindCable")) { // weapon
 			weaponChangeSound.play(false);
 			ammo = DEFAULT_MAX_AMMO;
 			setState(obj, STATE_DESTROYED);
-		} /*else if ((obj.getPolygonGroup().getFilename() != null) && (obj.getPolygonGroup().getFilename().equalsIgnoreCase("goal.obj"))) {
-			if (this.hasSyrum) {
-				this.sm.play(this.s2);
-
-				this.goNextLevel = true;
-			}
-		} else if ((obj.getPolygonGroup().getFilename() != null) && (obj.getPolygonGroup().getFilename().equalsIgnoreCase("spike.obj"))) {
-			setHealth(0.0F);
-		} else if ((obj.getPolygonGroup().getFilename() != null) && (obj.getPolygonGroup().getFilename().equalsIgnoreCase("zombie.obj"))) {
-			setHealth(getHealth() - 25.0F);
-		}*/
+		} 
 	}
 
 	@Override

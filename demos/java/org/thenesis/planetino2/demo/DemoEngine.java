@@ -274,6 +274,15 @@ public class DemoEngine extends GameCore3D {
 				mainTransform.rotateAngleX(50f);
 				RespawnableItem item = new RespawnableItem(group);
 				gameObjectManager.addRespawnableItem(item);
+			} else if ("ammo_pack.obj".equals(filename)) {
+				float angleVelocity = 0.0010f;
+				MovingTransform3D mainTransform = group.getTransform();
+				mainTransform.setAngleVelocityY(angleVelocity);
+				mainTransform.setAngleVelocityX(angleVelocity);
+				mainTransform.rotateAngleY(50f);
+				mainTransform.rotateAngleX(50f);
+				RespawnableItem item = new RespawnableItem(group);
+				gameObjectManager.addRespawnableItem(item);
 			} else if ("GrindCable.obj".equals(filename)) {
 				float angleVelocity = 0.0010f;
 				MovingTransform3D mainTransform = group.getTransform();

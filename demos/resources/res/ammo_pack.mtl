@@ -1,0 +1,5 @@
+# Material file for ammo-cube.obj
+
+newmtl ammo_pack
+	map_Kd ammo_pack.png
+

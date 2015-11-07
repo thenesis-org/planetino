@@ -460,6 +460,9 @@ wall 1700 550
 wall 896 550 0 0
 wall 896 850
 
+v 1050 275 700 
+obj ammo_pack ammo_pack.obj -1 
+
 v 1050 300 700 
 pointlight -1 1 150
 
@@ -480,4 +483,6 @@ pointlight -1 1 150
 
 v 1850 300 1100 
 pointlight -1 1 150
+
+
 
