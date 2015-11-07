@@ -61,6 +61,7 @@ public class AWTScreen implements Screen, KeyListener, MouseListener, MouseMotio
 		frame.add(panel);
 		frame.setResizable(false);
 		frame.pack();
+		frame.setLocationRelativeTo(null); // Center the frame (has to be called after pack)
 		frame.setVisible(true);
 		panel.requestFocus();
 
