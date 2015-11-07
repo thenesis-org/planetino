@@ -455,9 +455,6 @@ public class DemoEngine extends GameCore3D {
 				
 				Music lostSound = soundManager.getMusic("youlose.wav");
 				lostSound.playAndWait();
-				while (lostSound.isPlaying()) {
-					Thread.sleep(1);
-				}
 				Thread.sleep(5000);
 			} catch (InterruptedException e) {
 			}
