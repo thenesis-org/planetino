@@ -7,12 +7,12 @@ import org.thenesis.planetino2.graphics.Font;
 
 public class AWTFont implements Font {
 	
+	private static Canvas canvas = new Canvas();
 	java.awt.Font nativeFont;
 	private FontMetrics metrics;
 	
 	public AWTFont(java.awt.Font nativeFont) {
-		Canvas c = new Canvas();
-		metrics = c.getFontMetrics(nativeFont);
+		metrics = canvas.getFontMetrics(nativeFont);
 	}
 
 	public int getHeight() {
