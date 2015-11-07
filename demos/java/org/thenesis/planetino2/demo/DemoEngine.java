@@ -238,33 +238,24 @@ public class DemoEngine extends GameCore3D {
 		while (i.hasMoreElements()) {
 			PolygonGroup group = (PolygonGroup) i.nextElement();
 			String filename = group.getFilename();
-			if ("robot.obj3d".equals(filename)) {
-				gameObjectManager.add(new Bot(group));
-			} else if ("averagebot.obj3d".equals(filename)) {
-				AIBot bot = new NoisyAIBot(soundManager, group, collisionDetection, averageBrain, botProjectileModel);
-				gameObjectManager.add(bot);
-				bot.setFlyHeight(48);
-			} else if ("aggressivebot.obj3d".equals(filename)) {
-				AIBot bot = new AIBot(group, collisionDetection, aggressiveBrain, botProjectileModel);
-				gameObjectManager.add(bot);
-			} else if ("DemonicEye2.obj".equals(filename)) {
+			if ("DemonicEye2.obj".equals(filename)) {
 				AIBot bot = new NoisyAIBot(soundManager, group, collisionDetection, scaredBrain, botProjectileModel);
-				gameObjectManager.add(bot);
+				gameObjectManager.addEnnemy(bot);
 			} else if ("Droid.obj".equals(filename)) {
 				NoisyAIBot bot = new NoisyAIBot(soundManager, group, collisionDetection, averageBrain, botProjectileModel);
 				bot.setFlyHeight(150);
 				bot.setSoundLoop("alien_not_alone.wav");
-				gameObjectManager.add(bot);
+				gameObjectManager.addEnnemy(bot);
 			} else if ("drfreak.obj".equals(filename)) {
 				NoisyAIBot bot = new NoisyAIBot(soundManager, group, collisionDetection, scaredBrain, botProjectileModel);
 				bot.setFlyHeight(0);
 				bot.setSoundLoop("old_man.wav");
-				gameObjectManager.add(bot);
+				gameObjectManager.addEnnemy(bot);
 			} else if ("Serpent.obj".equals(filename)) {
 				NoisyAIBot bot = new NoisyAIBot(soundManager, group, collisionDetection, scaredBrain, botProjectileModel);
 				bot.setFlyHeight(0);
 				bot.setSoundLoop("snake.wav");
-				gameObjectManager.add(bot);
+				gameObjectManager.addEnnemy(bot);
 			} else if ("health_pack.obj3d".equals(filename)) {
 				float angleVelocity = 0.0010f;
 				MovingTransform3D mainTransform = group.getTransform();
@@ -465,6 +456,17 @@ public class DemoEngine extends GameCore3D {
 					Thread.sleep(1);
 				}
 				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+			}
+			changeLevel();
+		} else if (gameObjectManager.getAliveEnemyCount() == 0) {
+			try {
+				Music winSound = soundManager.getMusic("youwin.wav");
+				winSound.playAndWait();
+				Thread.sleep(500);
+				Music winMusic = soundManager.getMusic("OA07.wav");
+				winMusic.play(false);
+				Thread.sleep(10000);
 			} catch (InterruptedException e) {
 			}
 			changeLevel();
