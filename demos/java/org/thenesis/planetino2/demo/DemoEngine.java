@@ -407,6 +407,9 @@ public class DemoEngine extends GameCore3D {
 	    		viewWindow.setAngle(ANGLE_DEFAULT);
 	    	}
 	    }
+		if (exit.isPressed()) {
+			stop();
+		}
 
 		playerTransform.setVelocity(velocity);
 

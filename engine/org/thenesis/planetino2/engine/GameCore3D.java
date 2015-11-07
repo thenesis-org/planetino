@@ -83,7 +83,7 @@ public abstract class GameCore3D extends GameCore {
 	private float frameRate;
 
 	protected InputManager inputManager;
-	private GameAction exit = new GameAction("exit");
+	public static GameAction exit = new GameAction("exit");
 	private GameAction smallerView = new GameAction("smallerView", GameAction.DETECT_INITAL_PRESS_ONLY);
 	private GameAction largerView = new GameAction("largerView", GameAction.DETECT_INITAL_PRESS_ONLY);
 	private GameAction frameRateToggle = new GameAction("frameRateToggle", GameAction.DETECT_INITAL_PRESS_ONLY);
