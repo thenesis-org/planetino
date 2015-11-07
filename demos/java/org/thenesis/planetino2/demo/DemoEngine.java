@@ -109,6 +109,8 @@ public class DemoEngine extends GameCore3D {
 	protected BSPTree bspTree;
 	protected String mapFile;
 	protected CollisionDetection collisionDetection;
+	
+	private ShooterOverlay shooterOverlay;
 
 	public DemoEngine(Screen screen, InputManager inputManager) {
 		super(screen, inputManager);
@@ -227,7 +229,8 @@ public class DemoEngine extends GameCore3D {
 		drawInstructions = false;
 		MessageQueue queue = MessageQueue.getInstance();
 		addOverlay(queue);
-		addOverlay(new ShooterOverlay(player));
+		shooterOverlay = new ShooterOverlay(player);
+		addOverlay(shooterOverlay);
 		queue.setDebug(false);
 		//queue.add("Use the mouse/arrow keys to move.");
 		//queue.add("Press Esc to exit.");
@@ -475,6 +478,7 @@ public class DemoEngine extends GameCore3D {
 	
 	public void changeLevel() {
 		soundManager.close();
+		removeOverlay(shooterOverlay);
 		init();
 	}
 }
