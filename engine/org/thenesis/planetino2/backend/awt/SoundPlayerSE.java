@@ -14,14 +14,9 @@ public class SoundPlayerSE implements SoundPlayer {
 	public Sound getSound(String soundName) {
 		return new SoundSE(soundName);
 	}
-
 	
 	public org.thenesis.planetino2.sound.Music getMusic(String name) {
 		return new MusicSE(name);
-	}
-
-	public void play(org.thenesis.planetino2.sound.Music music, boolean loop) {
-		((MusicSE) music).nativeMusic.play(loop);
 	}
 	
 	private class SoundSE implements Sound {
