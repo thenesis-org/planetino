@@ -2,6 +2,7 @@ package org.thenesis.planetino2.backend.awt;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 
 import org.thenesis.planetino2.graphics.Font;
 import org.thenesis.planetino2.graphics.Graphics;
@@ -10,10 +11,12 @@ import org.thenesis.planetino2.graphics.Toolkit;
 public class AWTGraphics implements Graphics {
 	
 	private BufferedImage bufferedImage;
+	private int[] imageData;
 	private java.awt.Graphics nativeGraphics;
 	
 	public AWTGraphics(BufferedImage bufferedImage) {
 		this.bufferedImage = bufferedImage;
+		this.imageData = ((DataBufferInt) bufferedImage.getRaster().getDataBuffer()).getData();
 		this.nativeGraphics = bufferedImage.getGraphics();
 		setFont(Toolkit.getInstance().getDefaultFont());
 	}
@@ -27,7 +30,8 @@ public class AWTGraphics implements Graphics {
 	}
 
 	public void drawRGB(int[] rgbData, int offset, int scanlength, int x, int y, int width, int height, boolean processAlpha) {
-		bufferedImage.setRGB(0, 0, width, height, rgbData, 0, width);
+		//bufferedImage.setRGB(0, 0, width, height, rgbData, 0, width); // Slow !
+		System.arraycopy(rgbData, offset, imageData, 0, rgbData.length);
 	}
 
 	public void fillRect(int x, int y, int width, int height) {
@@ -49,7 +53,6 @@ public class AWTGraphics implements Graphics {
 
 	public void setFont(Font prevFont) {
 		nativeGraphics.setFont(((AWTFont)prevFont).nativeFont);
-
 	}
 
 }

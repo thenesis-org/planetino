@@ -19,8 +19,8 @@ public class AWTScreen implements Screen, KeyListener, MouseListener, MouseMotio
 	Panel panel;
 	private Frame frame;
 
-	private int screenWidth = 640;
-	private int screenHeight = 480;
+	private int screenWidth = 1024;
+	private int screenHeight = 640;
 	protected BufferedImage screenImage;
 	private Graphics screenGraphics;
 
@@ -30,7 +30,7 @@ public class AWTScreen implements Screen, KeyListener, MouseListener, MouseMotio
 
 		this.inputManager = inputManager;
 		
-		screenImage = new BufferedImage(screenWidth, screenWidth, BufferedImage.TYPE_INT_RGB);
+		screenImage = new BufferedImage(screenWidth, screenWidth, BufferedImage.TYPE_INT_ARGB_PRE);
 		screenGraphics = new AWTGraphics(screenImage);
 
 		final Dimension dimension = new Dimension(screenWidth, screenHeight);
