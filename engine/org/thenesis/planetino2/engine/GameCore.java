@@ -151,14 +151,7 @@ public abstract class GameCore implements Runnable {
                 System.currentTimeMillis() - currTime;
             currTime += elapsedTime;
 
-            // update
-            update(elapsedTime);
-
-            // draw the screen
-            Graphics g = screen.getGraphics();
-            draw(g);
-            //g.dispose();
-            screen.update();
+           tick(elapsedTime);
 
             // don't take a nap! run as fast as possible
             try {
@@ -166,6 +159,17 @@ public abstract class GameCore implements Runnable {
             }
             catch (InterruptedException ex) { }
         }
+    }
+    
+    public void tick(long elapsedTime) {
+    	 // update
+        update(elapsedTime);
+
+        // draw the screen
+        Graphics g = screen.getGraphics();
+        draw(g);
+        //g.dispose();
+        screen.update();
     }
 
 
