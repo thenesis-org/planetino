@@ -55,9 +55,10 @@ public class DemoAWT  {
 	public static void main(String[] args) {
 		Toolkit.setToolkit(new AWTToolkit());
 		
-		Screen screen = Toolkit.getInstance().getScreen();
-		InputManager inputManager = Toolkit.getInstance().getInputManager();
+		Screen screen = Toolkit.getInstance().getScreen(1024, 640);
+		screen.show();
 		
+		InputManager inputManager = Toolkit.getInstance().getInputManager();
 		inputManager.mapToKey(DemoEngine.exit, KeyEvent.VK_ESCAPE);
 		inputManager.mapToKey(DemoEngine.goForward, KeyEvent.VK_R);
 		inputManager.mapToKey(DemoEngine.goForward, KeyEvent.VK_UP);

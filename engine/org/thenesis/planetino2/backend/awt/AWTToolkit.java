@@ -33,9 +33,9 @@ public class AWTToolkit extends Toolkit {
 	}
 
 	@Override
-	public Screen getScreen() {
+	public Screen getScreen(int widthHint, int heightHint) {
 		if (awtScreen == null) {
-			awtScreen = new AWTScreen(getInputManager());
+			awtScreen = new AWTScreen(getInputManager(), widthHint, heightHint);
 		}
 		return awtScreen;
 	}

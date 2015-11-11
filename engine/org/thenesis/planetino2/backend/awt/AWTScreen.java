@@ -10,14 +10,17 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
 import org.thenesis.planetino2.graphics.Graphics;
 import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.input.InputManager;
 
 public class AWTScreen implements Screen, KeyListener, MouseListener, MouseMotionListener {
 
-	Panel panel;
-	private Frame frame;
+	JPanel panel;
+	private JFrame frame;
 
 	private int screenWidth = 1024;
 	private int screenHeight = 640;
@@ -26,19 +29,17 @@ public class AWTScreen implements Screen, KeyListener, MouseListener, MouseMotio
 
 	private InputManager inputManager;
 
-	public AWTScreen(InputManager inputManager) {
+	public AWTScreen(InputManager inputManager, int screenWidth, int screenHeight) {
 
 		this.inputManager = inputManager;
+		this.screenWidth = screenWidth;
+		this.screenHeight = screenHeight;
 		
 		screenImage = new BufferedImage(screenWidth, screenWidth, BufferedImage.TYPE_INT_ARGB_PRE);
 		screenGraphics = new AWTGraphics(screenImage);
-
+		
 		final Dimension dimension = new Dimension(screenWidth, screenHeight);
-		panel = new Panel() {
-
-			public void update(java.awt.Graphics g) {
-				paint(g);
-			}
+		panel = new JPanel() {
 
 			public Dimension getMinimumSize() {
 				return dimension;
@@ -48,23 +49,26 @@ public class AWTScreen implements Screen, KeyListener, MouseListener, MouseMotio
 				return dimension;
 			}
 
-			public void paint(java.awt.Graphics g) {
+			public void paintComponent(java.awt.Graphics g) {
+				super.paintComponent(g); 
 				g.drawImage(screenImage, 0, 0, null);
 			}
 		};
-
-		frame = new Frame();
-		//frame.addWindowListener(this);
+		panel.setFocusable(true);
 		panel.addKeyListener(this);
 		panel.addMouseListener(this);
 		panel.addMouseMotionListener(this);
+	}
+	
+	public void show() {
+		frame = new JFrame();
+		//frame.addWindowListener(this);
 		frame.add(panel);
 		frame.setResizable(false);
 		frame.pack();
 		frame.setLocationRelativeTo(null); // Center the frame (has to be called after pack)
 		frame.setVisible(true);
-		panel.requestFocus();
-
+		panel.requestFocusInWindow();
 	}
 
 	public Graphics getGraphics() {
@@ -84,7 +88,9 @@ public class AWTScreen implements Screen, KeyListener, MouseListener, MouseMotio
 	}
 
 	public void restoreScreen() {
-		frame.dispose();
+		if (frame != null) {
+			frame.dispose();
+		}
 	}
 
 	/* Event listener interfaces */

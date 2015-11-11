@@ -19,7 +19,7 @@ public abstract class Toolkit {
 
 	public abstract Image createImage(String string) throws IOException;
 	
-	public abstract Screen getScreen();
+	public abstract Screen getScreen(int widthHint, int heightHint);
 	
 	public abstract Font getDefaultFont();
 	

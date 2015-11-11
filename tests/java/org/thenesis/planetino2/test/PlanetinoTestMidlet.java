@@ -58,7 +58,8 @@ public class PlanetinoTestMidlet  {
 	public static void main(String[] args) {
 		Toolkit.setToolkit(new AWTToolkit());
 		
-		Screen screen = Toolkit.getInstance().getScreen();
+		Screen screen = Toolkit.getInstance().getScreen(1024, 640);
+		screen.show();
 		InputManager inputManager = Toolkit.getInstance().getInputManager();
 		
 		//inputManager.mapToKey(exit, KeyEvent.VK_ESCAPE);

@@ -51,7 +51,12 @@ package org.thenesis.planetino2.graphics;
  full screen graphics modes.
  */
 public interface Screen {
-
+	
+	/**
+	 * Show the screen.
+	 */
+	public void show();
+	
 	/**
 	 Gets the graphics context for the display. The
 	 ScreenManager uses double buffering, so applications must
