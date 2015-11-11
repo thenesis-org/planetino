@@ -17,6 +17,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.util.Vector;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -53,8 +54,8 @@ public class Editor implements KeyListener, MouseListener, MouseMotionListener {
 	Map2DPanel map2dPanel;
 	JPanel panel3D;
 
-	private int panelWidth = 320;
-	private int panelHeight = 320;
+	private int panelWidth = 400;
+	private int panelHeight = 300;
 
 	public static void main(String[] args) {
 
@@ -111,10 +112,12 @@ public class Editor implements KeyListener, MouseListener, MouseMotionListener {
 		System.out.println("Created GUI on EDT? " + SwingUtilities.isEventDispatchThread());
 		JFrame f = new JFrame("Planetino Editor");
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		f.setLayout(new FlowLayout());
+		f.setLayout(new GridLayout(2, 2));
 		panel3D = screen.getPanel();
+		//panel3D.setBorder(BorderFactory.createLineBorder(Color.ORANGE));
 		f.add(panel3D);
 		map2dPanel = new Map2DPanel(engine, panelWidth, panelHeight);
+		//map2dPanel.setBorder(BorderFactory.createLineBorder(Color.ORANGE));
 		f.add(map2dPanel);
 		MapInspector inspector = new MapInspector(engine, panelWidth, panelHeight);
 		f.add(inspector);
@@ -498,7 +501,7 @@ class MapInspector extends JPanel implements ActionListener {
 		clearButton.addActionListener(this);
 
 		//Lay everything out.
-		treePanel.setPreferredSize(new Dimension(panelWidth, panelHeight));
+		this.setPreferredSize(new Dimension(panelWidth, panelHeight));
 		add(treePanel, BorderLayout.CENTER);
 
 		JPanel panel = new JPanel(new GridLayout(0, 1));
