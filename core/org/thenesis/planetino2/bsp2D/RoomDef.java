@@ -68,6 +68,8 @@ public class RoomDef {
 	private Vector vertices;
 	private float ambientLightIntensity;
 
+	private String roomName;
+
 	/**
 	 The HorizontalAreaDef class represents a floor or ceiling.
 	 */
@@ -362,5 +364,15 @@ public class RoomDef {
 
 		return list;
 	}
+
+	public void setName(String name) {
+		this.roomName = name;
+	}
+
+	public String getName() {
+		return roomName;
+	}
+	
+	
 
 }

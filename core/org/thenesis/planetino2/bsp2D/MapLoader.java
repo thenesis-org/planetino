@@ -207,7 +207,10 @@ public class MapLoader extends ObjectLoader {
         tree.createSurfaces(lights);
         return tree;
     }
-
+    
+    public Vector getRooms() {
+		return rooms;
+	}
 
     /**
         Gets a list of all objects degined in the map file.
@@ -333,7 +336,11 @@ public class MapLoader extends ObjectLoader {
             else if (command.equals("room")) {
                 // start a new room
                 currentRoom = new RoomDef(ambientLightIntensity);
+                if (tokenizer.hasMoreTokens()) {
+                	currentRoom.setName(tokenizer.nextToken());
+                }
                 rooms.addElement(currentRoom);
+                
             }
             else if (command.equals("floor")) {
                 // define a room's floor
