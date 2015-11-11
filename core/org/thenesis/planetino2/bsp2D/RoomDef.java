@@ -88,7 +88,7 @@ public class RoomDef {
 	/**
 	 The Vertex class represents a Wall vertex.
 	 */
-	private static class Vertex {
+	public static class Vertex {
 		float x;
 		float z;
 		float bottom;
@@ -108,6 +108,14 @@ public class RoomDef {
 		public boolean isWall() {
 			return (bottom != top) && (texture != null);
 		}
+
+		@Override
+		public String toString() {
+			return "Vertex (" + x + " " + z + ")";
+		}
+		
+		
+		
 	}
 
 	/**
@@ -371,6 +379,19 @@ public class RoomDef {
 
 	public String getName() {
 		return roomName;
+	}
+
+	@Override
+	public String toString() {
+		if (roomName != null) {
+			return "Room " + roomName;
+		} else {
+			return super.toString();
+		}
+	}
+	
+	public Vector getWallVertices() {
+		return vertices;
 	}
 	
 	
