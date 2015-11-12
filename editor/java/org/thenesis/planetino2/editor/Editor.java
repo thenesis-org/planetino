@@ -104,12 +104,12 @@ public class Editor implements KeyListener, MouseListener, MouseMotionListener {
 		inputManager.mapToKey(EditorEngine.goDown, KeyEvent.VK_V);
 		inputManager.mapToKey(EditorEngine.turnRight, KeyEvent.VK_F);
 		inputManager.mapToKey(EditorEngine.turnLeft, KeyEvent.VK_D);
-		//		inputManager.mapToMouse(EditorEngine.turnLeft, InputManager.MOUSE_MOVE_LEFT);
-		//		inputManager.mapToMouse(EditorEngine.turnRight, InputManager.MOUSE_MOVE_RIGHT);
-		//		inputManager.mapToMouse(EditorEngine.tiltUp, InputManager.MOUSE_MOVE_DOWN);
-		//		inputManager.mapToMouse(EditorEngine.tiltDown, InputManager.MOUSE_MOVE_UP);
-		//		inputManager.mapToMouse(EditorEngine.fire, InputManager.MOUSE_BUTTON_1);
-		//		inputManager.mapToKey(EditorEngine.jump, KeyEvent.VK_SPACE);
+		inputManager.mapToMouse(EditorEngine.turnLeft, InputManager.MOUSE_MOVE_LEFT);
+		inputManager.mapToMouse(EditorEngine.turnRight, InputManager.MOUSE_MOVE_RIGHT);
+		inputManager.mapToMouse(EditorEngine.tiltUp, InputManager.MOUSE_MOVE_DOWN);
+		inputManager.mapToMouse(EditorEngine.tiltDown, InputManager.MOUSE_MOVE_UP);
+		inputManager.mapToMouse(EditorEngine.fire, InputManager.MOUSE_BUTTON_1);
+		inputManager.mapToKey(EditorEngine.jump, KeyEvent.VK_SPACE);
 		inputManager.mapToKey(EditorEngine.zoom, KeyEvent.VK_S);
 
 		engine = new EditorEngine(screen, inputManager);
@@ -197,6 +197,9 @@ public class Editor implements KeyListener, MouseListener, MouseMotionListener {
 	}
 
 	public void mouseDragged(MouseEvent e) {
+		//System.out.println("[DEBUG] AWTBackend.mouseDragged()");
+		inputManager.pointerDragged(e.getX(), e.getY());
+		updateUI();
 	}
 
 	public void mousePressed(MouseEvent e) {
@@ -217,8 +220,9 @@ public class Editor implements KeyListener, MouseListener, MouseMotionListener {
 	public void mouseMoved(MouseEvent e) {
 		//System.out.println("[DEBUG] AWTBackend.mouseMoved()");
 		//listener.mouseMoved(e.getX(), e.getY(), e.getModifiers());
-		inputManager.pointerDragged(e.getX(), e.getY());
-		updateUI();
+		
+		//inputManager.pointerDragged(e.getX(), e.getY());
+		//updateUI();
 	}
 
 	public void updateUI() {
@@ -314,7 +318,7 @@ class EditorScreen implements Screen {
 
 }
 
-class Map2DPanel extends JPanel {
+class Map2DPanel extends JPanel implements MouseListener {
 
 	BufferedImage map2DImage;
 	final Dimension dimension;
@@ -340,6 +344,8 @@ class Map2DPanel extends JPanel {
 		dimension = new Dimension(map2DWidth, map2DHeight);
 		map2DImage = new BufferedImage(map2DWidth, map2DHeight, BufferedImage.TYPE_INT_ARGB_PRE);
 		map2DGraphics = map2DImage.getGraphics();
+		addMouseListener(this);
+		addMouseMotionListener(editor);
 	}
 
 	public void drawMap2D() {
@@ -458,6 +464,39 @@ class Map2DPanel extends JPanel {
 		//		g.setFont(Font.getFont(Font.MONOSPACED));
 		//		g.setColor(Color.WHITE);
 		//		g.drawString("2D Map", 50, 50);
+	}
+
+	public void mouseClicked(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void mousePressed(MouseEvent e) {
+		
+		float playerX = (e.getX() * zoomFactorX) - shiftX;
+		float playerZ = (e.getY() * zoomFactorY) - shiftY;
+		
+		Vector3D playerLocation = editor.getEngine().getGameObjectManager().getPlayer().getLocation();
+		playerLocation.x = playerX;
+		playerLocation.z = playerZ;
+		
+		editor.updateUI();
+		
+	}
+
+	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
