@@ -90,25 +90,28 @@ public class EditorEngine extends GameCore3D {
 	public EditorEngine(Screen screen, InputManager inputManager) {
 		super(screen, inputManager);
 		this.inputManager = inputManager;
+		
+		
+		float ambientLightIntensity = .2f;
+		Vector lights = new Vector();
+		lights.addElement(new PointLight3D(-100, 100, 100, .3f, -1));
+		lights.addElement(new PointLight3D(100, 100, 0, .3f, -1));
+		loader = new MapLoader(new BSPTreeBuilderWithPortals());
+		loader.setObjectLights(lights, ambientLightIntensity);
+		try {
+			//bspTree = loader.loadMap("/res/", "cacao_demo.map");
+			//bspTree = loader.loadMap("/res/", "quake.map"); //quake-one_bot.map
+			bspTree = loader.loadMap("/res/", "quake-one_bot.map");
+			//bspTree = loader.loadMap("/res/", "linuxtag.map");
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
 	}
 	
 	@Override
 	public void init() {
-		
-		// set up the local lights for the model.
-		float ambientLightIntensity = .8f;
-		Vector lights = new Vector();
-		lights.addElement(new PointLight3D(-100, 100, 100, .5f, -1));
-		lights.addElement(new PointLight3D(100, 100, 0, .5f, -1));
-
-		// load the object model
-		ObjectLoader loader = new ObjectLoader();
-		loader.setLights(lights, ambientLightIntensity);
-
 		super.init();
-		
 		drawFrameRate = false;
-
 	}
 	
 	@Override
@@ -130,25 +133,6 @@ public class EditorEngine extends GameCore3D {
 		int fontHeight = g.getFont().getHeight();
 		g.drawString("Loading...", 5, screen.getHeight() - fontHeight);
 		screen.update();
-
-		float ambientLightIntensity = .2f;
-		Vector lights = new Vector();
-		lights.addElement(new PointLight3D(-100, 100, 100, .3f, -1));
-		lights.addElement(new PointLight3D(100, 100, 0, .3f, -1));
-
-		loader = new MapLoader(new BSPTreeBuilderWithPortals());
-		loader.setObjectLights(lights, ambientLightIntensity);
-		//MapLoader loader = new MapLoader();
-		//loader.setObjectLights(lights, ambientLightIntensity);
-
-		try {
-			//bspTree = loader.loadMap("/res/", "cacao_demo.map");
-			//bspTree = loader.loadMap("/res/", "quake.map"); //quake-one_bot.map
-			bspTree = loader.loadMap("/res/", "quake-one_bot.map");
-			//bspTree = loader.loadMap("/res/", "linuxtag.map");
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		}
 
 		//collisionDetection = new CollisionDetectionWithSliding(bspTree);
 		//gameObjectManager = new GridGameObjectManager(bspTree.calcBounds(), collisionDetection);
@@ -308,6 +292,15 @@ public class EditorEngine extends GameCore3D {
 
 	public MapLoader getLoader() {
 		return loader;
+	}
+	
+	/** 
+	 * Rebuild map without reloading the map file. 
+	 * This method is called by the editor when map objects have been
+	 * modified by the user.
+	 */
+	public void rebuildMap() {
+		bspTree = loader.rebuildBSPTree();
 	}
 	
 	

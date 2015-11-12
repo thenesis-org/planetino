@@ -89,12 +89,12 @@ public class RoomDef {
 	 The Vertex class represents a Wall vertex.
 	 */
 	public static class Vertex {
-		float x;
-		float z;
-		float bottom;
-		float top;
-		Texture texture;
-		Rectangle3D textureBounds;
+		private float x;
+		private float z;
+		private float bottom;
+		private float top;
+		private Texture texture;
+		private Rectangle3D textureBounds;
 
 		public Vertex(float x, float z, float bottom, float top, Texture texture, Rectangle3D textureBounds) {
 			this.x = x;
@@ -108,13 +108,43 @@ public class RoomDef {
 		public boolean isWall() {
 			return (bottom != top) && (texture != null);
 		}
+		
+		public float getX() {
+			return x;
+		}
+
+		public float getZ() {
+			return z;
+		}
+
+		public float getBottom() {
+			return bottom;
+		}
+
+		public float getTop() {
+			return top;
+		}
+
+		void setX(float x) {
+			this.x = x;
+		}
+
+		void setZ(float z) {
+			this.z = z;
+		}
+
+		void setBottom(float bottom) {
+			this.bottom = bottom;
+		}
+
+		void setTop(float top) {
+			this.top = top;
+		}
 
 		@Override
 		public String toString() {
 			return "Vertex (" + x + " " + z + ")";
 		}
-		
-		
 		
 	}
 
@@ -165,6 +195,26 @@ public class RoomDef {
 	 */
 	public void addVertex(float x, float z, float bottom, float top, Texture texture, Rectangle3D texBounds) {
 		vertices.addElement(new Vertex(x, z, bottom, top, texture, texBounds));
+	}
+	
+	public void setVertexX(Vertex v, float x) {
+		v.setX(x);
+		invalidate();
+	}
+	
+	public void setVertexZ(Vertex v, float z) {
+		v.setZ(z);
+		invalidate();
+	}
+	
+	public void setVertexBottom(Vertex v, float bottom) {
+		v.setBottom(bottom);
+		invalidate();
+	}
+	
+	public void setVertexTop(Vertex v, float top) {
+		v.setTop(top);
+		invalidate();
 	}
 
 	/**
@@ -371,6 +421,17 @@ public class RoomDef {
 		}
 
 		return list;
+	}
+	
+	/**
+	 * Should be called when a vertex has been modified after RoomDef creation
+	 */
+	private void invalidate() {
+		int size = vertices.size();
+		for (int i = 0; i < size; i++) {
+			Vertex curr = (Vertex) vertices.elementAt(i);
+			curr.textureBounds = null;
+		}
 	}
 
 	public void setName(String name) {

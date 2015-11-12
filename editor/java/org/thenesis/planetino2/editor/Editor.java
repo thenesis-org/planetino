@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -17,15 +18,23 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.util.Vector;
 
-import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import javax.swing.JTree;
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
@@ -43,6 +52,7 @@ import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.graphics.Toolkit;
 import org.thenesis.planetino2.input.InputManager;
 import org.thenesis.planetino2.math3D.PolygonGroup;
+import org.thenesis.planetino2.math3D.Transform3D;
 import org.thenesis.planetino2.math3D.Vector3D;
 
 public class Editor implements KeyListener, MouseListener, MouseMotionListener {
@@ -51,11 +61,15 @@ public class Editor implements KeyListener, MouseListener, MouseMotionListener {
 
 	InputManager inputManager;
 	EditorEngine engine;
+	JFrame editorFrame;
 	Map2DPanel map2dPanel;
 	JPanel panel3D;
 
 	private int panelWidth = 400;
 	private int panelHeight = 300;
+
+	private ObjectInspector objectInspector;
+	private Object selectedMapObject;
 
 	public static void main(String[] args) {
 
@@ -100,6 +114,7 @@ public class Editor implements KeyListener, MouseListener, MouseMotionListener {
 
 		engine = new EditorEngine(screen, inputManager);
 		engine.init();
+		engine.tick(DEFAULT_ELAPSED_TIME);
 		//		Thread engineThread = new Thread(engine);
 		//		engineThread.start();
 		//		try {
@@ -109,24 +124,47 @@ public class Editor implements KeyListener, MouseListener, MouseMotionListener {
 		//			e.printStackTrace();
 		//		}
 
-		System.out.println("Created GUI on EDT? " + SwingUtilities.isEventDispatchThread());
-		JFrame f = new JFrame("Planetino Editor");
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		f.setLayout(new GridLayout(2, 2));
+		log("Created GUI on EDT? " + SwingUtilities.isEventDispatchThread());
+		editorFrame = new JFrame("Planetino Map Editor");
+		editorFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		editorFrame.setLayout(new GridLayout(2, 2));
 		panel3D = screen.getPanel();
 		//panel3D.setBorder(BorderFactory.createLineBorder(Color.ORANGE));
-		f.add(panel3D);
-		map2dPanel = new Map2DPanel(engine, panelWidth, panelHeight);
+		editorFrame.add(panel3D);
+		map2dPanel = new Map2DPanel(this, panelWidth, panelHeight);
 		//map2dPanel.setBorder(BorderFactory.createLineBorder(Color.ORANGE));
-		f.add(map2dPanel);
-		MapInspector inspector = new MapInspector(engine, panelWidth, panelHeight);
-		f.add(inspector);
-		f.setResizable(false);
-		f.pack();
-		f.setLocationRelativeTo(null); // Center the frame
-		f.setVisible(true);
+		editorFrame.add(map2dPanel);
+		MapInspector mapInspector = new MapInspector(this, panelWidth, panelHeight);
+		editorFrame.add(mapInspector);
+		objectInspector = new ObjectInspector(this, panelWidth, panelHeight);
+		editorFrame.add(objectInspector);
+		editorFrame.setResizable(false);
+		editorFrame.pack();
+		editorFrame.setLocationRelativeTo(null); // Center the frame
+		editorFrame.setVisible(true);
 		panel3D.requestFocusInWindow();
+		
+		//updateUI();
 
+	}
+	
+	public EditorEngine getEngine() {
+		return engine;
+	}
+	
+	public void setSelectedMapObject(Object mapObject) {
+		this.selectedMapObject = mapObject;
+		objectInspector.setMapObject(mapObject);
+		updateUI();
+		log("Selected map object: " + mapObject);
+	}
+	
+	public Object getSelectedMapObject() {
+		return selectedMapObject;
+	}
+	
+	public static void log(String s) {
+		System.out.println(s);
 	}
 
 	/* Event listener interfaces */
@@ -185,7 +223,17 @@ public class Editor implements KeyListener, MouseListener, MouseMotionListener {
 
 	public void updateUI() {
 		engine.tick(DEFAULT_ELAPSED_TIME);
+		editorFrame.pack();
 		map2dPanel.repaint();
+		objectInspector.repaint();
+	}
+	
+	public void notifyMapChanged() {
+		Transform3D savedPlayerTransform = (Transform3D)engine.getGameObjectManager().getPlayer().getTransform().clone();
+		engine.rebuildMap();
+		engine.init();
+		engine.getGameObjectManager().getPlayer().getTransform().setTo(savedPlayerTransform);
+		updateUI();
 	}
 
 	//	public void windowClosing(WindowEvent e) {
@@ -274,6 +322,7 @@ class Map2DPanel extends JPanel {
 	private int map2DHeight = 320;
 	private MapLoader mapLoader;
 	private Graphics map2DGraphics;
+	private Editor editor;
 	private EditorEngine engine;
 
 	float zoomFactorX;
@@ -281,8 +330,9 @@ class Map2DPanel extends JPanel {
 	float shiftX;
 	float shiftY;
 
-	public Map2DPanel(EditorEngine engine, int width, int height) {
-		this.engine = engine;
+	public Map2DPanel(Editor editor, int width, int height) {
+		this.editor = editor;
+		this.engine = editor.getEngine();
 		this.mapLoader = engine.getLoader();
 		this.map2DWidth = width;
 		this.map2DHeight = height;
@@ -333,13 +383,18 @@ class Map2DPanel extends JPanel {
 
 		for (int i = 0; i < roomCount; i++) {
 			RoomDef roomDef = (RoomDef) rooms.elementAt(i);
-			System.out.println("Roomdef " + roomDef.getName());
+			if (editor.getSelectedMapObject() == roomDef) {
+				map2DGraphics.setColor(Color.RED);
+			} else {
+				map2DGraphics.setColor(Color.WHITE);
+			}
+			//Editor.log("Roomdef " + roomDef.getName());
 			Vector polygons = roomDef.createPolygons();
 			int polygonCount = polygons.size();
 			for (int j = 0; j < polygonCount; j++) {
 				BSPPolygon bspPolygon = (BSPPolygon) polygons.elementAt(j);
 				if (bspPolygon.isWall()) {
-					System.out.println(bspPolygon.getLine().x1 + " " + bspPolygon.getLine().y1 + " " + bspPolygon.getLine().x2 + " " + bspPolygon.getLine().y2);
+					//Editor.log(bspPolygon.getLine().x1 + " " + bspPolygon.getLine().y1 + " " + bspPolygon.getLine().x2 + " " + bspPolygon.getLine().y2);
 					int x1 = (int) ((bspPolygon.getLine().x1 + shiftX) / zoomFactorX);
 					int y1 = (int) ((bspPolygon.getLine().y1 + shiftY) / zoomFactorY);
 					int x2 = (int) ((bspPolygon.getLine().x2 + shiftX) / zoomFactorX);
@@ -478,11 +533,13 @@ class MapInspector extends JPanel implements ActionListener {
 	private static String CLEAR_COMMAND = "clear";
 
 	private DynamicTree treePanel;
+	private Editor editor;
 	private EditorEngine engine;
 
-	public MapInspector(EditorEngine engine, int panelWidth, int panelHeight) {
+	public MapInspector(Editor editor, int panelWidth, int panelHeight) {
 		super(new BorderLayout());
-		this.engine = engine;
+		this.editor = editor;
+		this.engine = editor.getEngine();
 
 		//Create the components.
 		treePanel = new DynamicTree();
@@ -557,113 +614,268 @@ class MapInspector extends JPanel implements ActionListener {
 			treePanel.clear();
 		}
 	}
-}
+	
+	
+	class DynamicTree extends JPanel implements TreeSelectionListener {
+		protected DefaultMutableTreeNode rootNode;
+		protected DefaultTreeModel treeModel;
+		protected JTree tree;
+		private java.awt.Toolkit toolkit = java.awt.Toolkit.getDefaultToolkit();
 
-class DynamicTree extends JPanel {
-	protected DefaultMutableTreeNode rootNode;
-	protected DefaultTreeModel treeModel;
-	protected JTree tree;
-	private java.awt.Toolkit toolkit = java.awt.Toolkit.getDefaultToolkit();
+		public DynamicTree() {
+			super(new GridLayout(1, 0));
 
-	public DynamicTree() {
-		super(new GridLayout(1, 0));
+			rootNode = new DefaultMutableTreeNode("Map");
+			treeModel = new DefaultTreeModel(rootNode);
+			treeModel.addTreeModelListener(new MyTreeModelListener());
 
-		rootNode = new DefaultMutableTreeNode("Map");
-		treeModel = new DefaultTreeModel(rootNode);
-		treeModel.addTreeModelListener(new MyTreeModelListener());
+			tree = new JTree(treeModel);
+			tree.setEditable(true);
+			tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+			tree.setShowsRootHandles(true);
+			tree.addTreeSelectionListener(this);
 
-		tree = new JTree(treeModel);
-		tree.setEditable(true);
-		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-		tree.setShowsRootHandles(true);
+			JScrollPane scrollPane = new JScrollPane(tree);
+			add(scrollPane);
+		}
 
-		JScrollPane scrollPane = new JScrollPane(tree);
-		add(scrollPane);
-	}
+		/** Remove all nodes except the root node. */
+		public void clear() {
+			rootNode.removeAllChildren();
+			treeModel.reload();
+		}
 
-	/** Remove all nodes except the root node. */
-	public void clear() {
-		rootNode.removeAllChildren();
-		treeModel.reload();
-	}
+		/** Remove the currently selected node. */
+		public void removeCurrentNode() {
+			TreePath currentSelection = tree.getSelectionPath();
+			if (currentSelection != null) {
+				DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) (currentSelection.getLastPathComponent());
+				MutableTreeNode parent = (MutableTreeNode) (currentNode.getParent());
+				if (parent != null) {
+					treeModel.removeNodeFromParent(currentNode);
+					return;
+				}
+			}
 
-	/** Remove the currently selected node. */
-	public void removeCurrentNode() {
-		TreePath currentSelection = tree.getSelectionPath();
-		if (currentSelection != null) {
-			DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) (currentSelection.getLastPathComponent());
-			MutableTreeNode parent = (MutableTreeNode) (currentNode.getParent());
-			if (parent != null) {
-				treeModel.removeNodeFromParent(currentNode);
-				return;
+			// Either there was no selection, or the root was selected.
+			toolkit.beep();
+		}
+
+		/** Add child to the currently selected node. */
+		public DefaultMutableTreeNode addObject(Object child) {
+			DefaultMutableTreeNode parentNode = null;
+			TreePath parentPath = tree.getSelectionPath();
+
+			if (parentPath == null) {
+				parentNode = rootNode;
+			} else {
+				parentNode = (DefaultMutableTreeNode) (parentPath.getLastPathComponent());
+			}
+
+			return addObject(parentNode, child, true);
+		}
+
+		public DefaultMutableTreeNode addObject(DefaultMutableTreeNode parent, Object child) {
+			return addObject(parent, child, false);
+		}
+
+		public DefaultMutableTreeNode addObject(DefaultMutableTreeNode parent, Object child, boolean shouldBeVisible) {
+			DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(child);
+
+			if (parent == null) {
+				parent = rootNode;
+			}
+
+			treeModel.insertNodeInto(childNode, parent, parent.getChildCount());
+
+			//Make sure the user can see the lovely new node.
+			if (shouldBeVisible) {
+				tree.scrollPathToVisible(new TreePath(childNode.getPath()));
+			}
+			return childNode;
+		}
+
+		class MyTreeModelListener implements TreeModelListener {
+			public void treeNodesChanged(TreeModelEvent e) {
+				DefaultMutableTreeNode node;
+				node = (DefaultMutableTreeNode) (e.getTreePath().getLastPathComponent());
+
+				/*
+				 * If the event lists children, then the changed node is the child
+				 * of the node we've already gotten. Otherwise, the changed node and
+				 * the specified node are the same.
+				 */
+				try {
+					int index = e.getChildIndices()[0];
+					node = (DefaultMutableTreeNode) (node.getChildAt(index));
+				} catch (NullPointerException exc) {
+				}
+
+				System.out.println("The user has finished editing the node.");
+				System.out.println("New value: " + node.getUserObject());
+			}
+
+			public void treeNodesInserted(TreeModelEvent e) {
+			}
+
+			public void treeNodesRemoved(TreeModelEvent e) {
+			}
+
+			public void treeStructureChanged(TreeModelEvent e) {
 			}
 		}
 
-		// Either there was no selection, or the root was selected.
-		toolkit.beep();
-	}
-
-	/** Add child to the currently selected node. */
-	public DefaultMutableTreeNode addObject(Object child) {
-		DefaultMutableTreeNode parentNode = null;
-		TreePath parentPath = tree.getSelectionPath();
-
-		if (parentPath == null) {
-			parentNode = rootNode;
-		} else {
-			parentNode = (DefaultMutableTreeNode) (parentPath.getLastPathComponent());
-		}
-
-		return addObject(parentNode, child, true);
-	}
-
-	public DefaultMutableTreeNode addObject(DefaultMutableTreeNode parent, Object child) {
-		return addObject(parent, child, false);
-	}
-
-	public DefaultMutableTreeNode addObject(DefaultMutableTreeNode parent, Object child, boolean shouldBeVisible) {
-		DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(child);
-
-		if (parent == null) {
-			parent = rootNode;
-		}
-
-		treeModel.insertNodeInto(childNode, parent, parent.getChildCount());
-
-		//Make sure the user can see the lovely new node.
-		if (shouldBeVisible) {
-			tree.scrollPathToVisible(new TreePath(childNode.getPath()));
-		}
-		return childNode;
-	}
-
-	class MyTreeModelListener implements TreeModelListener {
-		public void treeNodesChanged(TreeModelEvent e) {
-			DefaultMutableTreeNode node;
-			node = (DefaultMutableTreeNode) (e.getTreePath().getLastPathComponent());
-
-			/*
-			 * If the event lists children, then the changed node is the child
-			 * of the node we've already gotten. Otherwise, the changed node and
-			 * the specified node are the same.
-			 */
-			try {
-				int index = e.getChildIndices()[0];
-				node = (DefaultMutableTreeNode) (node.getChildAt(index));
-			} catch (NullPointerException exc) {
-			}
-
-			System.out.println("The user has finished editing the node.");
-			System.out.println("New value: " + node.getUserObject());
-		}
-
-		public void treeNodesInserted(TreeModelEvent e) {
-		}
-
-		public void treeNodesRemoved(TreeModelEvent e) {
-		}
-
-		public void treeStructureChanged(TreeModelEvent e) {
+		/* TreeSelectionListener interface */
+		
+		public void valueChanged(TreeSelectionEvent e) {
+			DefaultMutableTreeNode node = (DefaultMutableTreeNode) (e.getPath().getLastPathComponent());
+			Object mapObject = node.getUserObject();
+			editor.setSelectedMapObject(mapObject);
 		}
 	}
+	
 }
+
+class ObjectInspector extends JPanel {
+
+	private Editor editor;
+	private RoomDefPanel roomDefPanel;
+	
+	public ObjectInspector(Editor editor, int panelWidth, int panelHeight) {
+		this.editor = editor;
+		roomDefPanel = new RoomDefPanel();
+		//setPreferredSize(new Dimension(panelWidth, panelHeight));	
+		//roomDefPanel.setPreferredSize(new Dimension(panelWidth, panelHeight));	
+		setLayout(new BorderLayout());
+	}
+	
+	public void setMapObject(Object mapObject) {
+		if (mapObject instanceof RoomDef) {
+			Editor.log("ObjectInspector: setMapObject");
+			roomDefPanel.setRoomDef((RoomDef) mapObject);
+			add(roomDefPanel, BorderLayout.CENTER);
+		} 
+		
+	}
+	
+	class RoomDefPanel extends JPanel {
+		
+		private RoomDef roomDef;
+		
+		RoomDefPanel() {
+			setLayout(new BorderLayout());
+		}
+		
+		public void setRoomDef(final RoomDef roomDef) {
+			this.roomDef = roomDef;
+			removeAll();
+			
+			Vector wallVertices = roomDef.getWallVertices();
+			int wallVertexCount = wallVertices.size();
+			
+			JLabel nameLabel = new JLabel(roomDef.getName());
+			add(nameLabel, BorderLayout.NORTH);
+			
+			JPanel vertexPanel = new JPanel();
+			ScrollPane scrollPane = new ScrollPane();
+			scrollPane.add(vertexPanel);
+			vertexPanel.setLayout(new BoxLayout(vertexPanel, BoxLayout.Y_AXIS));
+			//vertexPanel.add(scrollPane);
+			
+			for (int j = 0; j < wallVertexCount; j++) {
+				final RoomDef.Vertex vertex = (RoomDef.Vertex) wallVertices.elementAt(j);
+				
+				JPanel linePanel = new JPanel();
+				linePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+				// Spinner for X
+				SpinnerNumberModel model = new SpinnerNumberModel();
+				model.setValue(vertex.getX());
+				model.setStepSize(1);				
+				JSpinner spinner = new JSpinner(model);
+				spinner.addChangeListener(new ChangeListener() {
+					public void stateChanged(ChangeEvent e) {
+						JSpinner mySpinner = (JSpinner)(e.getSource());
+						SpinnerNumberModel myModel = (SpinnerNumberModel)(mySpinner.getModel());
+						roomDef.setVertexX(vertex, Float.valueOf((Float)myModel.getValue()));
+			            Editor.log("spinner value changed: " +  myModel.getValue());
+			            editor.notifyMapChanged();
+					}
+				});
+				linePanel.add(spinner);
+				// Spinner for Z
+				model = new SpinnerNumberModel();
+				model.setValue(vertex.getZ());
+				model.setStepSize(1);				
+				spinner = new JSpinner(model);
+				spinner.addChangeListener(new ChangeListener() {
+					public void stateChanged(ChangeEvent e) {
+						JSpinner mySpinner = (JSpinner)(e.getSource());
+						SpinnerNumberModel myModel = (SpinnerNumberModel)(mySpinner.getModel());
+						roomDef.setVertexZ(vertex, Float.valueOf((Float)myModel.getValue()));
+			            Editor.log("spinner value changed: " +  myModel.getValue());
+			            editor.notifyMapChanged();
+					}
+				});
+				linePanel.add(spinner);
+				// Spinner for Bottom
+				model = new SpinnerNumberModel();
+				model.setValue(vertex.getBottom());
+				model.setStepSize(1);				
+				spinner = new JSpinner(model);
+				spinner.addChangeListener(new ChangeListener() {
+					public void stateChanged(ChangeEvent e) {
+						JSpinner mySpinner = (JSpinner)(e.getSource());
+						SpinnerNumberModel myModel = (SpinnerNumberModel)(mySpinner.getModel());
+						roomDef.setVertexBottom(vertex, Float.valueOf((Float)myModel.getValue()));
+			            Editor.log("spinner value changed: " +  myModel.getValue());
+			            editor.notifyMapChanged();
+					}
+				});
+				linePanel.add(spinner);
+				// Spinner for Top
+				model = new SpinnerNumberModel();
+				model.setValue(vertex.getTop());
+				model.setStepSize(1);				
+				spinner = new JSpinner(model);
+				spinner.addChangeListener(new ChangeListener() {
+					public void stateChanged(ChangeEvent e) {
+						JSpinner mySpinner = (JSpinner)(e.getSource());
+						SpinnerNumberModel myModel = (SpinnerNumberModel)(mySpinner.getModel());
+						roomDef.setVertexTop(vertex, Float.valueOf((Float)myModel.getValue()));
+			            Editor.log("spinner value changed: " +  myModel.getValue());
+			            editor.notifyMapChanged();
+					}
+				});
+				linePanel.add(spinner);
+				
+				vertexPanel.add(linePanel);
+			}
+			add(scrollPane, BorderLayout.CENTER);
+			
+		}
+		
+//		@Override
+//		public void paintComponent(Graphics g) {
+//			super.paintComponent(g);
+//			
+//			Editor.log("RoomDefPanel: paintComponent");
+//			
+//			Vector wallVertices = roomDef.getWallVertices();
+//			int wallVertexCount = wallVertices.size();
+//			int height = g.getFontMetrics().getHeight();
+//			g.drawString(roomDef.getName(), 0, height);
+//			for (int j = 0; j < wallVertexCount; j++) {
+//				RoomDef.Vertex vertex = (RoomDef.Vertex) wallVertices.elementAt(j);
+//				g.drawString(vertex.toString(), 0, height * (j + 3));
+//			}
+//			
+//		}
+		
+	}
+	
+	
+
+}
+
+
+

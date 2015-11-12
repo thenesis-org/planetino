@@ -178,10 +178,11 @@ public class MapLoader extends ObjectLoader {
         parseFile(filename);
 
         return createBSPTree();
-        
-      
-
     		
+    }
+    
+    public BSPTree rebuildBSPTree() {
+        return createBSPTree();
     }
 
 
