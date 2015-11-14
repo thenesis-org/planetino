@@ -130,13 +130,15 @@ public class Editor implements KeyListener, MouseListener, MouseMotionListener {
 		log("Created GUI on EDT? " + SwingUtilities.isEventDispatchThread());
 		editorFrame = new JFrame("Planetino Map Editor");
 		editorFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		editorFrame.setLayout(new GridLayout(2, 2));
+		editorFrame.setLayout(new GridLayout(2, 3));
 		panel3D = screen.getPanel();
 		//panel3D.setBorder(BorderFactory.createLineBorder(Color.ORANGE));
 		editorFrame.add(panel3D);
 		map2dPanel = new Map2DPanel(this, panelWidth, panelHeight);
 		//map2dPanel.setBorder(BorderFactory.createLineBorder(Color.ORANGE));
 		editorFrame.add(map2dPanel);
+		ToolsPanel toolsPanel = new ToolsPanel(this);
+		editorFrame.add(toolsPanel);
 		mapInspector = new MapInspector(this, panelWidth, panelHeight);
 		editorFrame.add(mapInspector);
 		objectInspector = new ObjectInspector(this, panelWidth, panelHeight);
@@ -819,58 +821,20 @@ class ObjectInspector extends JPanel {
 			/* Build buttons */
 			
 			JPanel buttonPanel = new JPanel();
-			buttonPanel.setLayout(new FlowLayout());
-			JLabel moveLabel = new JLabel("Move");
-			final JButton xLessButton = new JButton("-X");
-			final JButton xButton = new JButton("X");
-			final JButton zLessButton = new JButton("-Z");
-			final JButton zButton = new JButton("Z");
-			final JButton yLessButton = new JButton("-Y");
-			final JButton yButton = new JButton("Y");
-			final SpinnerNumberModel model = new SpinnerNumberModel();
-			model.setValue(100);
-			model.setStepSize(10);
-			//model.setMinimum(0);
-			JSpinner spinner = new JSpinner(model);
+			buttonPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+			JLabel moveLabel = new JLabel("Name");
+			final JTextField nameField = new JTextField(roomDef.getName(), 30);
 			
 			ActionListener actionListener = new ActionListener() {
-				
 				public void actionPerformed(ActionEvent e) {
-					if (e.getSource() == xLessButton) {
-						roomDef.moveX(-(Integer)model.getNumber());
-					} else if (e.getSource() == xButton) {
-						roomDef.moveX((Integer)model.getNumber());
-					} else if (e.getSource() == zLessButton) {
-						roomDef.moveZ(-(Integer)model.getNumber());
-					} else if (e.getSource() == zButton) {
-						roomDef.moveZ((Integer)model.getNumber());
-					} else if (e.getSource() == yLessButton) {
-						roomDef.moveY(-(Integer)model.getNumber());
-					} else if (e.getSource() == yButton) {
-						roomDef.moveY((Integer)model.getNumber());
-					}
-					
-					updateRoomDef(roomDef);
+					roomDef.setName(nameField.getText());
 					editor.notifyMapChanged();
-					
 				}
 			};
 			
-			xLessButton.addActionListener(actionListener);
-			xButton.addActionListener(actionListener);
-			zLessButton.addActionListener(actionListener);
-			zButton.addActionListener(actionListener);
-			yLessButton.addActionListener(actionListener);
-			yButton.addActionListener(actionListener);
-			
+			nameField.addActionListener(actionListener);
 			buttonPanel.add(moveLabel);
-			buttonPanel.add(xLessButton);
-			buttonPanel.add(xButton);
-			buttonPanel.add(zLessButton);
-			buttonPanel.add(zButton);
-			buttonPanel.add(yLessButton);
-			buttonPanel.add(yButton);
-			buttonPanel.add(spinner);
+			buttonPanel.add(nameField);
 			add(buttonPanel, BorderLayout.NORTH);
 			
 			vertexPanel = new JPanel();
@@ -985,10 +949,92 @@ class ObjectInspector extends JPanel {
 //		}
 		
 	}
-	
-	
 
 }
+
+class ToolsPanel extends JPanel {
+	
+	private Editor editor;
+	private JPanel vertexPanel;
+	
+	ToolsPanel(final Editor editor) {
+		
+		this.editor = editor;
+		setLayout(new BorderLayout());
+		
+		/* Build buttons */
+		
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setLayout(new FlowLayout());
+		JLabel moveLabel = new JLabel("Move");
+		final JButton xLessButton = new JButton("-X");
+		final JButton xButton = new JButton("X");
+		final JButton zLessButton = new JButton("-Z");
+		final JButton zButton = new JButton("Z");
+		final JButton yLessButton = new JButton("-Y");
+		final JButton yButton = new JButton("Y");
+		final SpinnerNumberModel model = new SpinnerNumberModel();
+		model.setValue(100);
+		model.setStepSize(10);
+		//model.setMinimum(0);
+		JSpinner spinner = new JSpinner(model);
+		
+		ActionListener actionListener = new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				Object selectedMapObject = editor.getSelectedMapObject();
+				if (selectedMapObject instanceof RoomDef) {
+					RoomDef roomDef = (RoomDef) selectedMapObject;
+					if (e.getSource() == xLessButton) {
+						roomDef.moveX(-(Integer) model.getNumber());
+					} else if (e.getSource() == xButton) {
+						roomDef.moveX((Integer) model.getNumber());
+					} else if (e.getSource() == zLessButton) {
+						roomDef.moveZ(-(Integer) model.getNumber());
+					} else if (e.getSource() == zButton) {
+						roomDef.moveZ((Integer) model.getNumber());
+					} else if (e.getSource() == yLessButton) {
+						roomDef.moveY(-(Integer) model.getNumber());
+					} else if (e.getSource() == yButton) {
+						roomDef.moveY((Integer) model.getNumber());
+					}
+				}
+
+				editor.notifyMapChanged();
+			}
+		};
+		
+		xLessButton.addActionListener(actionListener);
+		xButton.addActionListener(actionListener);
+		zLessButton.addActionListener(actionListener);
+		zButton.addActionListener(actionListener);
+		yLessButton.addActionListener(actionListener);
+		yButton.addActionListener(actionListener);
+		
+		buttonPanel.add(moveLabel);
+		buttonPanel.add(xLessButton);
+		buttonPanel.add(xButton);
+		buttonPanel.add(zLessButton);
+		buttonPanel.add(zButton);
+		buttonPanel.add(yLessButton);
+		buttonPanel.add(yButton);
+		buttonPanel.add(spinner);
+		add(buttonPanel, BorderLayout.NORTH);
+		
+		vertexPanel = new JPanel();
+		vertexPanel.setLayout(new BoxLayout(vertexPanel, BoxLayout.Y_AXIS));
+		ScrollPane scrollPane = new ScrollPane();
+		scrollPane.add(vertexPanel);
+		add(scrollPane, BorderLayout.CENTER);
+		
+	}
+	
+	
+	
+	
+		
+		
+	}
 
 
 
