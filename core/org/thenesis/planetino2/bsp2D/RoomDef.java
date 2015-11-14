@@ -423,6 +423,38 @@ public class RoomDef {
 		return list;
 	}
 	
+	public void moveX(float x) {
+		int wallVertexCount = vertices.size();
+		for (int i = 0; i < wallVertexCount; i++) {
+			Vertex vertex = (Vertex) vertices.elementAt(i);
+			vertex.setX(vertex.getX() + x);
+		}
+		invalidate();
+	}
+	
+	public void moveZ(float z) {
+		int wallVertexCount = vertices.size();
+		for (int i = 0; i < wallVertexCount; i++) {
+			Vertex vertex = (Vertex) vertices.elementAt(i);
+			vertex.setZ(vertex.getZ() + z);
+		}
+		invalidate();
+	}
+	
+	public void moveY(float y) {
+		int wallVertexCount = vertices.size();
+		for (int i = 0; i < wallVertexCount; i++) {
+			Vertex vertex = (Vertex) vertices.elementAt(i);
+			vertex.setBottom(vertex.getBottom() + y);
+			vertex.setTop(vertex.getTop() + y);
+		}
+		
+		floor.height += y;
+		ceil.height += y;
+		
+		invalidate();
+	}
+	
 	/**
 	 * Should be called when a vertex has been modified after RoomDef creation
 	 */

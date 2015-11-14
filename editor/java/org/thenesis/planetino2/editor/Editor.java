@@ -25,6 +25,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
@@ -35,6 +36,7 @@ import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.text.StyledEditorKit.BoldAction;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
@@ -68,6 +70,7 @@ public class Editor implements KeyListener, MouseListener, MouseMotionListener {
 	private int panelWidth = 400;
 	private int panelHeight = 300;
 
+	private MapInspector mapInspector;
 	private ObjectInspector objectInspector;
 	private Object selectedMapObject;
 
@@ -134,7 +137,7 @@ public class Editor implements KeyListener, MouseListener, MouseMotionListener {
 		map2dPanel = new Map2DPanel(this, panelWidth, panelHeight);
 		//map2dPanel.setBorder(BorderFactory.createLineBorder(Color.ORANGE));
 		editorFrame.add(map2dPanel);
-		MapInspector mapInspector = new MapInspector(this, panelWidth, panelHeight);
+		mapInspector = new MapInspector(this, panelWidth, panelHeight);
 		editorFrame.add(mapInspector);
 		objectInspector = new ObjectInspector(this, panelWidth, panelHeight);
 		editorFrame.add(objectInspector);
@@ -229,6 +232,7 @@ public class Editor implements KeyListener, MouseListener, MouseMotionListener {
 		engine.tick(DEFAULT_ELAPSED_TIME);
 		editorFrame.pack();
 		map2dPanel.repaint();
+		mapInspector.repaint();
 		objectInspector.repaint();
 	}
 	
@@ -782,44 +786,114 @@ class ObjectInspector extends JPanel {
 	
 	public ObjectInspector(Editor editor, int panelWidth, int panelHeight) {
 		this.editor = editor;
-		roomDefPanel = new RoomDefPanel();
+		setLayout(new BorderLayout());
+		setVisible(false);
 		//setPreferredSize(new Dimension(panelWidth, panelHeight));	
 		//roomDefPanel.setPreferredSize(new Dimension(panelWidth, panelHeight));	
-		setLayout(new BorderLayout());
+		
 	}
 	
 	public void setMapObject(Object mapObject) {
 		if (mapObject instanceof RoomDef) {
 			Editor.log("ObjectInspector: setMapObject");
-			roomDefPanel.setRoomDef((RoomDef) mapObject);
+			roomDefPanel = new RoomDefPanel((RoomDef)mapObject);
+			removeAll();
 			add(roomDefPanel, BorderLayout.CENTER);
-		} 
+			setVisible(true);
+		} else {
+			setVisible(false);
+		}
 		
 	}
 	
 	class RoomDefPanel extends JPanel {
 		
 		private RoomDef roomDef;
+		private JPanel vertexPanel;
 		
-		RoomDefPanel() {
+		RoomDefPanel(final RoomDef roomDef) {
+			
+			this.roomDef = roomDef;
 			setLayout(new BorderLayout());
+			
+			/* Build buttons */
+			
+			JPanel buttonPanel = new JPanel();
+			buttonPanel.setLayout(new FlowLayout());
+			JLabel moveLabel = new JLabel("Move");
+			final JButton xLessButton = new JButton("-X");
+			final JButton xButton = new JButton("X");
+			final JButton zLessButton = new JButton("-Z");
+			final JButton zButton = new JButton("Z");
+			final JButton yLessButton = new JButton("-Y");
+			final JButton yButton = new JButton("Y");
+			final SpinnerNumberModel model = new SpinnerNumberModel();
+			model.setValue(100);
+			model.setStepSize(10);
+			//model.setMinimum(0);
+			JSpinner spinner = new JSpinner(model);
+			
+			ActionListener actionListener = new ActionListener() {
+				
+				public void actionPerformed(ActionEvent e) {
+					if (e.getSource() == xLessButton) {
+						roomDef.moveX(-(Integer)model.getNumber());
+					} else if (e.getSource() == xButton) {
+						roomDef.moveX((Integer)model.getNumber());
+					} else if (e.getSource() == zLessButton) {
+						roomDef.moveZ(-(Integer)model.getNumber());
+					} else if (e.getSource() == zButton) {
+						roomDef.moveZ((Integer)model.getNumber());
+					} else if (e.getSource() == yLessButton) {
+						roomDef.moveY(-(Integer)model.getNumber());
+					} else if (e.getSource() == yButton) {
+						roomDef.moveY((Integer)model.getNumber());
+					}
+					
+					updateRoomDef(roomDef);
+					editor.notifyMapChanged();
+					
+				}
+			};
+			
+			xLessButton.addActionListener(actionListener);
+			xButton.addActionListener(actionListener);
+			zLessButton.addActionListener(actionListener);
+			zButton.addActionListener(actionListener);
+			yLessButton.addActionListener(actionListener);
+			yButton.addActionListener(actionListener);
+			
+			buttonPanel.add(moveLabel);
+			buttonPanel.add(xLessButton);
+			buttonPanel.add(xButton);
+			buttonPanel.add(zLessButton);
+			buttonPanel.add(zButton);
+			buttonPanel.add(yLessButton);
+			buttonPanel.add(yButton);
+			buttonPanel.add(spinner);
+			add(buttonPanel, BorderLayout.NORTH);
+			
+			vertexPanel = new JPanel();
+			vertexPanel.setLayout(new BoxLayout(vertexPanel, BoxLayout.Y_AXIS));
+			ScrollPane scrollPane = new ScrollPane();
+			scrollPane.add(vertexPanel);
+			add(scrollPane, BorderLayout.CENTER);
+			
+			updateRoomDef(roomDef);
 		}
 		
-		public void setRoomDef(final RoomDef roomDef) {
-			this.roomDef = roomDef;
-			removeAll();
+		
+		
+		private void updateRoomDef(final RoomDef roomDef) {
+			
+			vertexPanel.removeAll();
 			
 			Vector wallVertices = roomDef.getWallVertices();
 			int wallVertexCount = wallVertices.size();
 			
-			JLabel nameLabel = new JLabel(roomDef.getName());
-			add(nameLabel, BorderLayout.NORTH);
-			
-			JPanel vertexPanel = new JPanel();
-			ScrollPane scrollPane = new ScrollPane();
-			scrollPane.add(vertexPanel);
-			vertexPanel.setLayout(new BoxLayout(vertexPanel, BoxLayout.Y_AXIS));
-			//vertexPanel.add(scrollPane);
+//			JLabel nameLabel = new JLabel(roomDef.getName());
+//			add(nameLabel, BorderLayout.NORTH);
+
 			
 			for (int j = 0; j < wallVertexCount; j++) {
 				final RoomDef.Vertex vertex = (RoomDef.Vertex) wallVertices.elementAt(j);
@@ -889,7 +963,7 @@ class ObjectInspector extends JPanel {
 				
 				vertexPanel.add(linePanel);
 			}
-			add(scrollPane, BorderLayout.CENTER);
+			
 			
 		}
 		
