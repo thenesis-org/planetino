@@ -808,6 +808,14 @@ class ObjectInspector extends JPanel {
 		
 	}
 	
+	@Override
+	public void repaint() {
+		super.repaint();
+		if (roomDefPanel != null) {
+			roomDefPanel.repaint();
+		}
+	}
+	
 	class RoomDefPanel extends JPanel {
 		
 		private RoomDef roomDef;
@@ -848,6 +856,16 @@ class ObjectInspector extends JPanel {
 		
 		
 		
+		@Override
+		public void repaint() {
+			super.repaint();
+			if (roomDef != null) {
+				updateRoomDef(roomDef);
+			}
+		}
+
+
+
 		private void updateRoomDef(final RoomDef roomDef) {
 			
 			vertexPanel.removeAll();
@@ -926,6 +944,8 @@ class ObjectInspector extends JPanel {
 				linePanel.add(spinner);
 				
 				vertexPanel.add(linePanel);
+				
+				revalidate();
 			}
 			
 			
