@@ -27,7 +27,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.JTree;
-import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -36,7 +35,6 @@ import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.text.StyledEditorKit.BoldAction;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
@@ -48,6 +46,8 @@ import org.thenesis.planetino2.backend.awt.AWTToolkit;
 import org.thenesis.planetino2.bsp2D.BSPPolygon;
 import org.thenesis.planetino2.bsp2D.MapLoader;
 import org.thenesis.planetino2.bsp2D.RoomDef;
+import org.thenesis.planetino2.bsp2D.RoomDef.Ceil;
+import org.thenesis.planetino2.bsp2D.RoomDef.Floor;
 import org.thenesis.planetino2.game.GameObjectManager;
 import org.thenesis.planetino2.game.Player;
 import org.thenesis.planetino2.graphics.Screen;
@@ -636,6 +636,15 @@ class MapInspector extends JPanel implements ActionListener {
 		for (int i = 0; i < roomCount; i++) {
 			RoomDef roomDef = (RoomDef) rooms.elementAt(i);
 			DefaultMutableTreeNode node = treePanel.addObject(null, roomDef);
+			
+			RoomAmbientLightIntensity roomAmbientLightIntensity = new RoomAmbientLightIntensity(roomDef);
+			treePanel.addObject(node, roomAmbientLightIntensity);
+			
+			Floor floor = roomDef.getFloor();
+			treePanel.addObject(node, floor);
+			Ceil ceil = roomDef.getCeil();
+			treePanel.addObject(node, ceil);
+			
 			Vector wallVertices = roomDef.getWallVertices();
 			int wallVertexCount = wallVertices.size();
 			for (int j = 0; j < wallVertexCount; j++) {
@@ -781,10 +790,25 @@ class MapInspector extends JPanel implements ActionListener {
 	
 }
 
+class RoomAmbientLightIntensity {
+	
+	private RoomDef roomDef;
+	
+	public RoomAmbientLightIntensity(RoomDef roomDef) {
+		this.roomDef = roomDef;
+	}
+	
+	@Override
+	public String toString() {
+		return "Ambient light intensity (" + roomDef.getAmbientLightIntensity() + ")";
+	}
+	
+}
+
 class ObjectInspector extends JPanel {
 
 	private Editor editor;
-	private RoomDefPanel roomDefPanel;
+	private JPanel currentObjectPanel;
 	
 	public ObjectInspector(Editor editor, int panelWidth, int panelHeight) {
 		this.editor = editor;
@@ -796,23 +820,30 @@ class ObjectInspector extends JPanel {
 	}
 	
 	public void setMapObject(Object mapObject) {
+		Editor.log("ObjectInspector: setMapObject");
 		if (mapObject instanceof RoomDef) {
-			Editor.log("ObjectInspector: setMapObject");
-			roomDefPanel = new RoomDefPanel((RoomDef)mapObject);
+			currentObjectPanel = new RoomDefPanel((RoomDef)mapObject);
 			removeAll();
-			add(roomDefPanel, BorderLayout.CENTER);
+			add(currentObjectPanel, BorderLayout.CENTER);
 			setVisible(true);
-		} else {
+			revalidate();
+		} else if (mapObject instanceof RoomDef.Vertex) {
+//			currentObjectPanel = new RoomDefVertexPanel((RoomDef)mapObject);
+//			removeAll();
+//			add(currentObjectPanel, BorderLayout.CENTER);
+//			setVisible(true);
+//			revalidate();
+		}else {
 			setVisible(false);
 		}
 		
 	}
 	
 	@Override
-	public void repaint() {
+	public void repaint() { // FIXME we shouldn't override repaint ?
 		super.repaint();
-		if (roomDefPanel != null) {
-			roomDefPanel.repaint();
+		if (currentObjectPanel != null) {
+			currentObjectPanel.repaint();
 		}
 	}
 	
@@ -969,6 +1000,143 @@ class ObjectInspector extends JPanel {
 //		}
 		
 	}
+	
+//	class VertexRoomDefPanel extends JPanel {
+//		
+//		private RoomDef.Vertex vertex;
+//		private JPanel vertexPanel;
+//		
+//		VertexRoomDefPanel(final RoomDef.Vertex vertex) {
+//			
+//			this.vertex = vertex;
+//			setLayout(new BorderLayout());
+//			
+//			/* Build buttons */
+//			
+//			JPanel buttonPanel = new JPanel();
+//			buttonPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+//			JLabel moveLabel = new JLabel("Texture");
+//			final JTextField nameField = new JTextField(vertex.getName(), 30);
+//			
+//			ActionListener actionListener = new ActionListener() {
+//				public void actionPerformed(ActionEvent e) {
+//					roomDef.setName(nameField.getText());
+//					editor.notifyMapChanged();
+//				}
+//			};
+//			
+//			nameField.addActionListener(actionListener);
+//			buttonPanel.add(moveLabel);
+//			buttonPanel.add(nameField);
+//			add(buttonPanel, BorderLayout.NORTH);
+//			
+//			vertexPanel = new JPanel();
+//			vertexPanel.setLayout(new BoxLayout(vertexPanel, BoxLayout.Y_AXIS));
+//			ScrollPane scrollPane = new ScrollPane();
+//			scrollPane.add(vertexPanel);
+//			add(scrollPane, BorderLayout.CENTER);
+//			
+//			updateRoomDef(roomDef);
+//		}
+//		
+//		
+//		
+//		@Override
+//		public void repaint() {
+//			super.repaint();
+//			if (roomDef != null) {
+//				updateRoomDef(roomDef);
+//			}
+//		}
+//
+//
+//
+//		private void updateRoomDef(final RoomDef roomDef) {
+//			
+//			vertexPanel.removeAll();
+//			
+//			Vector wallVertices = roomDef.getWallVertices();
+//			int wallVertexCount = wallVertices.size();
+//			
+////			JLabel nameLabel = new JLabel(roomDef.getName());
+////			add(nameLabel, BorderLayout.NORTH);
+//
+//			
+//			for (int j = 0; j < wallVertexCount; j++) {
+//				final RoomDef.Vertex vertex = (RoomDef.Vertex) wallVertices.elementAt(j);
+//				
+//				JPanel linePanel = new JPanel();
+//				linePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+//				// Spinner for X
+//				SpinnerNumberModel model = new SpinnerNumberModel();
+//				model.setValue(vertex.getX());
+//				model.setStepSize(1);				
+//				JSpinner spinner = new JSpinner(model);
+//				spinner.addChangeListener(new ChangeListener() {
+//					public void stateChanged(ChangeEvent e) {
+//						JSpinner mySpinner = (JSpinner)(e.getSource());
+//						SpinnerNumberModel myModel = (SpinnerNumberModel)(mySpinner.getModel());
+//						roomDef.setVertexX(vertex, Float.valueOf((Float)myModel.getValue()));
+//			            Editor.log("spinner value changed: " +  myModel.getValue());
+//			            editor.notifyMapChanged();
+//					}
+//				});
+//				linePanel.add(spinner);
+//				// Spinner for Z
+//				model = new SpinnerNumberModel();
+//				model.setValue(vertex.getZ());
+//				model.setStepSize(1);				
+//				spinner = new JSpinner(model);
+//				spinner.addChangeListener(new ChangeListener() {
+//					public void stateChanged(ChangeEvent e) {
+//						JSpinner mySpinner = (JSpinner)(e.getSource());
+//						SpinnerNumberModel myModel = (SpinnerNumberModel)(mySpinner.getModel());
+//						roomDef.setVertexZ(vertex, Float.valueOf((Float)myModel.getValue()));
+//			            Editor.log("spinner value changed: " +  myModel.getValue());
+//			            editor.notifyMapChanged();
+//					}
+//				});
+//				linePanel.add(spinner);
+//				// Spinner for Bottom
+//				model = new SpinnerNumberModel();
+//				model.setValue(vertex.getBottom());
+//				model.setStepSize(1);				
+//				spinner = new JSpinner(model);
+//				spinner.addChangeListener(new ChangeListener() {
+//					public void stateChanged(ChangeEvent e) {
+//						JSpinner mySpinner = (JSpinner)(e.getSource());
+//						SpinnerNumberModel myModel = (SpinnerNumberModel)(mySpinner.getModel());
+//						roomDef.setVertexBottom(vertex, Float.valueOf((Float)myModel.getValue()));
+//			            Editor.log("spinner value changed: " +  myModel.getValue());
+//			            editor.notifyMapChanged();
+//					}
+//				});
+//				linePanel.add(spinner);
+//				// Spinner for Top
+//				model = new SpinnerNumberModel();
+//				model.setValue(vertex.getTop());
+//				model.setStepSize(1);				
+//				spinner = new JSpinner(model);
+//				spinner.addChangeListener(new ChangeListener() {
+//					public void stateChanged(ChangeEvent e) {
+//						JSpinner mySpinner = (JSpinner)(e.getSource());
+//						SpinnerNumberModel myModel = (SpinnerNumberModel)(mySpinner.getModel());
+//						roomDef.setVertexTop(vertex, Float.valueOf((Float)myModel.getValue()));
+//			            Editor.log("spinner value changed: " +  myModel.getValue());
+//			            editor.notifyMapChanged();
+//					}
+//				});
+//				linePanel.add(spinner);
+//				
+//				vertexPanel.add(linePanel);
+//				
+//				revalidate();
+//			}
+//			
+//			
+//		}
+//		
+//	}
 
 }
 

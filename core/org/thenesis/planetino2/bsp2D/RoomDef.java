@@ -63,8 +63,8 @@ public class RoomDef {
 
 	private static final Vector3D CEIL_NORMAL = new Vector3D(0, -1, 0);
 
-	private HorizontalAreaDef floor;
-	private HorizontalAreaDef ceil;
+	private Floor floor;
+	private Ceil ceil;
 	private Vector vertices;
 	private float ambientLightIntensity;
 
@@ -73,7 +73,7 @@ public class RoomDef {
 	/**
 	 The HorizontalAreaDef class represents a floor or ceiling.
 	 */
-	private static class HorizontalAreaDef {
+	private abstract static class HorizontalAreaDef {
 		float height;
 		Texture texture;
 		Rectangle3D textureBounds;
@@ -84,6 +84,34 @@ public class RoomDef {
 			this.textureBounds = textureBounds;
 		}
 	}
+	
+	public static class Ceil extends HorizontalAreaDef {
+
+		public Ceil(float height, Texture texture, Rectangle3D textureBounds) {
+			super(height, texture, textureBounds);
+		}
+		
+		@Override
+		public String toString() {
+			return "Ceil (" + height + ")";
+		}
+		
+	}
+	
+	public static class Floor extends HorizontalAreaDef {
+
+		public Floor(float height, Texture texture, Rectangle3D textureBounds) {
+			super(height, texture, textureBounds);
+		}
+		
+		@Override
+		public String toString() {
+			return "Floor (" + height + ")";
+		}
+		
+	}
+	
+	
 
 	/**
 	 The Vertex class represents a Wall vertex.
@@ -239,7 +267,7 @@ public class RoomDef {
 			texBounds = new Rectangle3D(new Vector3D(0, height, 0), new Vector3D(1, 0, 0), new Vector3D(0, 0, -1),
 					texture.getWidth(), texture.getHeight());
 		}
-		floor = new HorizontalAreaDef(height, texture, texBounds);
+		floor = new Floor(height, texture, texBounds);
 	}
 
 	/**
@@ -264,7 +292,7 @@ public class RoomDef {
 			texBounds = new Rectangle3D(new Vector3D(0, height, 0), new Vector3D(1, 0, 0), new Vector3D(0, 0, 1),
 					texture.getWidth(), texture.getHeight());
 		}
-		ceil = new HorizontalAreaDef(height, texture, texBounds);
+		ceil = new Ceil(height, texture, texBounds);
 	}
 
 	/**
@@ -486,7 +514,18 @@ public class RoomDef {
 	public Vector getWallVertices() {
 		return vertices;
 	}
-	
+
+	public Floor getFloor() {
+		return floor;
+	}
+
+	public Ceil getCeil() {
+		return ceil;
+	}
+
+	public float getAmbientLightIntensity() {
+		return ambientLightIntensity;
+	}
 	
 
 }
