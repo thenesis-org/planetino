@@ -120,6 +120,7 @@ public class RoomDef {
 	 The Vertex class represents a Wall vertex.
 	 */
 	public static class Vertex {
+		private RoomDef roomDef;
 		private float x;
 		private float z;
 		private float bottom;
@@ -128,7 +129,8 @@ public class RoomDef {
 		private Texture texture;
 		private Rectangle3D textureBounds;
 
-		public Vertex(float x, float z, float bottom, float top, Material material, Rectangle3D textureBounds) {
+		public Vertex(RoomDef roomDef, float x, float z, float bottom, float top, Material material, Rectangle3D textureBounds) {
+			this.roomDef = roomDef;
 			this.x = x;
 			this.z = z;
 			this.bottom = bottom;
@@ -172,6 +174,14 @@ public class RoomDef {
 
 		void setTop(float top) {
 			this.top = top;
+		}
+		
+		public Material getMaterial() {
+			return material;
+		}
+
+		public RoomDef getRoomDef() {
+			return roomDef;
 		}
 
 		@Override
@@ -217,7 +227,7 @@ public class RoomDef {
 	 is created.
 	 */
 	public void addVertex(float x, float z, float bottom, float top, Material material) {
-		vertices.addElement(new Vertex(x, z, bottom, top, material, null));
+		vertices.addElement(new Vertex(this, x, z, bottom, top, material, null));
 	}
 
 	/**
@@ -227,7 +237,7 @@ public class RoomDef {
 	 polygon for the wall is created.
 	 */
 	public void addVertex(float x, float z, float bottom, float top, Material material, Rectangle3D texBounds) {
-		vertices.addElement(new Vertex(x, z, bottom, top, material, texBounds));
+		vertices.addElement(new Vertex(this, x, z, bottom, top, material, texBounds));
 	}
 	
 	public void setVertexX(Vertex v, float x) {
