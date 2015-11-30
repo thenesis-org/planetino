@@ -97,8 +97,20 @@ public class ObjectLoader {
 	 The Material class wraps a ShadedTexture.
 	 */
 	public static class Material {
+		
 		//public File sourceFile;
+		public String name;
+		public String textureFileName;
 		public ShadedTexture texture;
+		
+		public Material(String name) {
+			this.name = name;
+		}
+		
+		
+		public Material() {
+			this.name = "null";
+		}
 	}
 
 	/**
@@ -513,12 +525,13 @@ public class ObjectLoader {
 				String name = tokenizer.nextToken();
 				currentMaterial = (Material) materials.get(name);
 				if (currentMaterial == null) {
-					currentMaterial = new Material();
+					currentMaterial = new Material(name);
 					materials.put(name, currentMaterial);
 				}
 			} else if (command.equals("map_Kd")) {
 				// give the current material a texture
 				String name = tokenizer.nextToken();
+				currentMaterial.textureFileName = name;
 				currentMaterial.texture = (ShadedTexture) Texture.createTexture(path, name, true);
 				//				File file = new File(path, name);
 				//				if (!file.equals(currentMaterial.sourceFile)) {

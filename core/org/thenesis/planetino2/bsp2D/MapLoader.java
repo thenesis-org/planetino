@@ -272,7 +272,7 @@ public class MapLoader extends ObjectLoader {
                     currentMaterial =
                         (Material)materials.get(name);
                     if (currentMaterial == null) {
-                        currentMaterial = new Material();
+                        currentMaterial = new Material(name);
                         System.out.println("no material: " + name);
                     }
                 }
@@ -346,12 +346,12 @@ public class MapLoader extends ObjectLoader {
             else if (command.equals("floor")) {
                 // define a room's floor
                 float y = Float.parseFloat(tokenizer.nextToken());
-                currentRoom.setFloor(y, currentMaterial.texture);
+                currentRoom.setFloor(y, currentMaterial);
             }
             else if (command.equals("ceil")) {
                 // define a room's ceiling
                 float y = Float.parseFloat(tokenizer.nextToken());
-                currentRoom.setCeil(y, currentMaterial.texture);
+                currentRoom.setCeil(y, currentMaterial);
             }
             else if (command.equals("wall")) {
                 // define a wall vertex in a room.
@@ -363,11 +363,11 @@ public class MapLoader extends ObjectLoader {
                     float top =
                         Float.parseFloat(tokenizer.nextToken());
                     currentRoom.addVertex(x, z, bottom, top,
-                        currentMaterial.texture);
+                        currentMaterial);
                 }
                 else {
                     currentRoom.addVertex(x, z,
-                        currentMaterial.texture);
+                        currentMaterial);
                 }
             }
             else {

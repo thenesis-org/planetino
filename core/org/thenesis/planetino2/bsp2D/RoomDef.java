@@ -47,6 +47,7 @@ import java.util.Enumeration;
 import java.util.Vector;
 
 import org.thenesis.planetino2.graphics3D.texture.Texture;
+import org.thenesis.planetino2.math3D.ObjectLoader.Material;
 import org.thenesis.planetino2.math3D.Rectangle3D;
 import org.thenesis.planetino2.math3D.Vector3D;
 
@@ -75,20 +76,22 @@ public class RoomDef {
 	 */
 	private abstract static class HorizontalAreaDef {
 		float height;
+		Material material;
 		Texture texture;
 		Rectangle3D textureBounds;
 
-		public HorizontalAreaDef(float height, Texture texture, Rectangle3D textureBounds) {
+		public HorizontalAreaDef(float height, Material material, Rectangle3D textureBounds) {
 			this.height = height;
-			this.texture = texture;
+			this.material = material;
+			this.texture = material.texture;
 			this.textureBounds = textureBounds;
 		}
 	}
 	
 	public static class Ceil extends HorizontalAreaDef {
 
-		public Ceil(float height, Texture texture, Rectangle3D textureBounds) {
-			super(height, texture, textureBounds);
+		public Ceil(float height, Material material, Rectangle3D textureBounds) {
+			super(height, material, textureBounds);
 		}
 		
 		@Override
@@ -100,8 +103,8 @@ public class RoomDef {
 	
 	public static class Floor extends HorizontalAreaDef {
 
-		public Floor(float height, Texture texture, Rectangle3D textureBounds) {
-			super(height, texture, textureBounds);
+		public Floor(float height, Material material, Rectangle3D textureBounds) {
+			super(height, material, textureBounds);
 		}
 		
 		@Override
@@ -121,15 +124,17 @@ public class RoomDef {
 		private float z;
 		private float bottom;
 		private float top;
+		private Material material;
 		private Texture texture;
 		private Rectangle3D textureBounds;
 
-		public Vertex(float x, float z, float bottom, float top, Texture texture, Rectangle3D textureBounds) {
+		public Vertex(float x, float z, float bottom, float top, Material material, Rectangle3D textureBounds) {
 			this.x = x;
 			this.z = z;
 			this.bottom = bottom;
 			this.top = top;
-			this.texture = texture;
+			this.material = material;
+			this.texture = material.texture;
 			this.textureBounds = textureBounds;
 		}
 
@@ -201,8 +206,8 @@ public class RoomDef {
 	 the floor to the ceiling. If the texture is null,
 	 no polygon for the wall is created.
 	 */
-	public void addVertex(float x, float z, Texture texture) {
-		addVertex(x, z, Math.min(floor.height, ceil.height), Math.max(floor.height, ceil.height), texture);
+	public void addVertex(float x, float z, Material material) {
+		addVertex(x, z, Math.min(floor.height, ceil.height), Math.max(floor.height, ceil.height), material);
 	}
 
 	/**
@@ -211,8 +216,8 @@ public class RoomDef {
 	 location. If the texture is null, no polygon for the wall
 	 is created.
 	 */
-	public void addVertex(float x, float z, float bottom, float top, Texture texture) {
-		vertices.addElement(new Vertex(x, z, bottom, top, texture, null));
+	public void addVertex(float x, float z, float bottom, float top, Material material) {
+		vertices.addElement(new Vertex(x, z, bottom, top, material, null));
 	}
 
 	/**
@@ -221,8 +226,8 @@ public class RoomDef {
 	 location, and top location. If the texture is null, no
 	 polygon for the wall is created.
 	 */
-	public void addVertex(float x, float z, float bottom, float top, Texture texture, Rectangle3D texBounds) {
-		vertices.addElement(new Vertex(x, z, bottom, top, texture, texBounds));
+	public void addVertex(float x, float z, float bottom, float top, Material material, Rectangle3D texBounds) {
+		vertices.addElement(new Vertex(x, z, bottom, top, material, texBounds));
 	}
 	
 	public void setVertexX(Vertex v, float x) {
@@ -251,8 +256,8 @@ public class RoomDef {
 	 height of the floor is used as the default bottom wall
 	 boundary.
 	 */
-	public void setFloor(float height, Texture texture) {
-		setFloor(height, texture, null);
+	public void setFloor(float height, Material material) {
+		setFloor(height, material, null);
 	}
 
 	/**
@@ -262,12 +267,13 @@ public class RoomDef {
 	 the default bottom wall boundary. If the texture bounds is
 	 null, a default texture bounds is used.
 	 */
-	public void setFloor(float height, Texture texture, Rectangle3D texBounds) {
+	public void setFloor(float height, Material material, Rectangle3D texBounds) {
+		Texture texture = material.texture;
 		if (texture != null && texBounds == null) {
 			texBounds = new Rectangle3D(new Vector3D(0, height, 0), new Vector3D(1, 0, 0), new Vector3D(0, 0, -1),
 					texture.getWidth(), texture.getHeight());
 		}
-		floor = new Floor(height, texture, texBounds);
+		floor = new Floor(height, material, texBounds);
 	}
 
 	/**
@@ -276,8 +282,8 @@ public class RoomDef {
 	 the height of the ceiling is used as the default top wall
 	 boundary.
 	 */
-	public void setCeil(float height, Texture texture) {
-		setCeil(height, texture, null);
+	public void setCeil(float height, Material material) {
+		setCeil(height, material, null);
 	}
 
 	/**
@@ -287,12 +293,13 @@ public class RoomDef {
 	 used as the default bottom wall boundary. If the texture
 	 bounds is null, a default texture bounds is used.
 	 */
-	public void setCeil(float height, Texture texture, Rectangle3D texBounds) {
+	public void setCeil(float height, Material material, Rectangle3D texBounds) {
+		Texture texture = material.texture;
 		if (texture != null && texBounds == null) {
 			texBounds = new Rectangle3D(new Vector3D(0, height, 0), new Vector3D(1, 0, 0), new Vector3D(0, 0, 1),
 					texture.getWidth(), texture.getHeight());
 		}
-		ceil = new Ceil(height, texture, texBounds);
+		ceil = new Ceil(height, material, texBounds);
 	}
 
 	/**
