@@ -1061,30 +1061,37 @@ class ObjectInspector extends JPanel {
 	class RoomDefVertexPanel extends JPanel {
 		
 		private RoomDef.Vertex vertex;
-		private JPanel vertexPanel;
 		
 		RoomDefVertexPanel(final RoomDef.Vertex vertex) {
-			
 			this.vertex = vertex;
 			setLayout(new BorderLayout());
-			
+		}
+		
+		@Override
+		public void repaint() {
+			super.repaint();
+			if (vertex != null) {
+				removeAll();
+				updateMaterialPanel(vertex);
+				updateVertexPanel(vertex);
+				revalidate();
+			}
+		}
+		
+		private void updateMaterialPanel(RoomDef.Vertex vertex) {
 			MaterialPanel materialPanel = new MaterialPanel(vertex.getMaterial());
 			materialPanel.setBorder(new LineBorder(Color.GRAY));
 			add(materialPanel, BorderLayout.CENTER);
-			
-			vertexPanel = new JPanel();
-			vertexPanel.setLayout(new BoxLayout(vertexPanel, BoxLayout.Y_AXIS));
-			vertexPanel.setBorder(new LineBorder(Color.GRAY));
-			add(vertexPanel, BorderLayout.NORTH);
-			
-			updateVertex(vertex);
 		}
 		
 
-		private void updateVertex(final RoomDef.Vertex vertex) {
+		private void updateVertexPanel(final RoomDef.Vertex vertex) {
 			
 			final RoomDef roomDef = vertex.getRoomDef();
 
+			JPanel vertexPanel = new JPanel();
+			vertexPanel.setLayout(new BoxLayout(vertexPanel, BoxLayout.Y_AXIS));
+			vertexPanel.setBorder(new LineBorder(Color.GRAY));
 			vertexPanel.removeAll();
 
 			JPanel linePanel = new JPanel();
@@ -1400,6 +1407,7 @@ class ResourceBrowser extends JTabbedPane {
 			texturesPanel.removeAll();
 			while(e.hasMoreElements()) {
 				Material material = (Material) e.nextElement();
+				material.library = materialFile.getName(); // Set library name manually because it can't be done by ObjectLoader
 				MaterialPanel materialPanel = new MaterialPanel(material);
 				texturesPanel.add(materialPanel);
 			}
