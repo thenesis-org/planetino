@@ -16,19 +16,33 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.Vector;
 
+import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.TreeModelEvent;
@@ -38,7 +52,6 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
-import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -54,6 +67,8 @@ import org.thenesis.planetino2.game.Player;
 import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.graphics.Toolkit;
 import org.thenesis.planetino2.input.InputManager;
+import org.thenesis.planetino2.math3D.ObjectLoader;
+import org.thenesis.planetino2.math3D.ObjectLoader.Material;
 import org.thenesis.planetino2.math3D.PolygonGroup;
 import org.thenesis.planetino2.math3D.Transform3D;
 import org.thenesis.planetino2.math3D.Vector3D;
@@ -73,6 +88,7 @@ public class Editor implements KeyListener, MouseListener, MouseMotionListener {
 
 	private MapInspector mapInspector;
 	private ObjectInspector objectInspector;
+	private ResourceBrowser resourceBrowser;
 	private Object selectedMapObject;
 
 	public static void main(String[] args) {
@@ -145,6 +161,8 @@ public class Editor implements KeyListener, MouseListener, MouseMotionListener {
 		objectInspector = new ObjectInspector(this, panelWidth, panelHeight);
 		editorFrame.add(objectInspector);
 		editorFrame.setResizable(false);
+		resourceBrowser = new ResourceBrowser(this);
+		editorFrame.add(resourceBrowser);
 		editorFrame.pack();
 		editorFrame.setLocationRelativeTo(null); // Center the frame
 		editorFrame.setVisible(true);
@@ -245,6 +263,16 @@ public class Editor implements KeyListener, MouseListener, MouseMotionListener {
 		engine.init();
 		engine.getGameObjectManager().getPlayer().getTransform().setTo(savedPlayerTransform);
 		updateUI();
+	}
+
+	public void applyMaterial(Material material) {
+		if (selectedMapObject instanceof RoomDef.Vertex) {
+			MapLoader loader = engine.getLoader();
+			RoomDef.Vertex vertex = (RoomDef.Vertex)getSelectedMapObject();
+			RoomDef roomDef = vertex.getRoomDef();
+			roomDef.setVertexMaterial(vertex, material);
+			notifyMapChanged();
+		}
 	}
 
 	//	public void windowClosing(WindowEvent e) {
@@ -1040,31 +1068,14 @@ class ObjectInspector extends JPanel {
 			this.vertex = vertex;
 			setLayout(new BorderLayout());
 			
-			/* Build buttons */
-			
-			JPanel buttonPanel = new JPanel();
-			buttonPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-			JLabel moveLabel = new JLabel("Texture");
-			final JTextField nameField = new JTextField(vertex.getMaterial().name +  " (" + vertex.getMaterial().textureFileName + ")", 30);
-			nameField.setEditable(false);
-			
-//			ActionListener actionListener = new ActionListener() {
-//				public void actionPerformed(ActionEvent e) {
-//					roomDef.setName(nameField.getText());
-//					editor.notifyMapChanged();
-//				}
-//			};
-			
-			//nameField.addActionListener(actionListener);
-			buttonPanel.add(moveLabel);
-			buttonPanel.add(nameField);
-			add(buttonPanel, BorderLayout.CENTER);
+			MaterialPanel materialPanel = new MaterialPanel(vertex.getMaterial());
+			materialPanel.setBorder(new LineBorder(Color.GRAY));
+			add(materialPanel, BorderLayout.CENTER);
 			
 			vertexPanel = new JPanel();
 			vertexPanel.setLayout(new BoxLayout(vertexPanel, BoxLayout.Y_AXIS));
-			ScrollPane scrollPane = new ScrollPane();
-			scrollPane.add(vertexPanel);
-			add(scrollPane, BorderLayout.NORTH);
+			vertexPanel.setBorder(new LineBorder(Color.GRAY));
+			add(vertexPanel, BorderLayout.NORTH);
 			
 			updateVertex(vertex);
 		}
@@ -1149,6 +1160,75 @@ class ObjectInspector extends JPanel {
 
 }
 
+class MaterialPanel extends JPanel {
+	
+	public MaterialPanel(Material material) {
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+		JLabel moveLabel = new JLabel("Material");
+		final JTextField nameField = new JTextField(material.name +  " (" + material.library + ":" + material.textureFileName + ")", 30);
+		nameField.setEditable(false);
+		buttonPanel.add(moveLabel);
+		buttonPanel.add(nameField);
+		add(buttonPanel);
+		if (material.texture != null) {
+			MaterialImagePanel materialPanel = new MaterialImagePanel(material);
+			add(materialPanel);
+		}
+		
+	}
+
+	class MaterialImagePanel extends JPanel {
+
+		private Material material;
+		private BufferedImage nativeImage;
+		private Dimension dimension;
+
+		//	float zoomFactorX;
+		//	float zoomFactorY;
+
+		public MaterialImagePanel(Material material) {
+			this.material = material;
+
+			//setFocusable(true);
+			int w = material.texture.getWidth();
+			int h = material.texture.getHeight();
+
+			this.dimension = new Dimension(w, h);
+
+			InputStream is = getClass().getResourceAsStream("/res/" + material.textureFileName);
+			try {
+				nativeImage = ImageIO.read(is);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			//setLayout(new FlowLayout(FlowLayout.CENTER));
+
+		}
+
+		@Override
+		public Dimension getMinimumSize() {
+			return dimension;
+		}
+
+		@Override
+		public Dimension getPreferredSize() {
+			return dimension;
+		}
+
+		@Override
+		public void paintComponent(Graphics g) {
+			super.paintComponent(g);
+			g.drawImage(nativeImage, (getWidth() - nativeImage.getWidth()) / 2, (getHeight() - nativeImage.getHeight()) / 2, null);
+		}
+
+	}
+}
+
+
+
 class ToolsPanel extends JPanel {
 	
 	private Editor editor;
@@ -1225,13 +1305,221 @@ class ToolsPanel extends JPanel {
 		add(scrollPane, BorderLayout.CENTER);
 		
 	}
+		
+		
+}
+
+class ResourceBrowser extends JTabbedPane {
 	
+	private Editor editor;
+	private MaterialsPanel materialsPanel;
+	private File[] materialFiles;
+	private Material[] materials;
+	private MapLoader mapLoader;
 	
+	public ResourceBrowser(Editor editor) {
+		this.editor = editor;
+		this.materialsPanel = new MaterialsPanel();
+		
+		EditorEngine engine = editor.getEngine();
+		this.mapLoader = engine.getLoader();
+		
+		addTab("Textures", materialsPanel);
+		addTab("Objects", new JPanel());
+	}
 	
-	
+	class MaterialsPanel extends JPanel implements ActionListener {
+		
+		private JComboBox materialList;
+		private ScrollPane textureScrollPane;
+		private JPanel texturesPanel;
+		
+		public MaterialsPanel() {
+			setLayout(new BorderLayout());
+			texturesPanel = new JPanel();
+			texturesPanel.setLayout(new BoxLayout(texturesPanel, BoxLayout.Y_AXIS));
+			textureScrollPane = new ScrollPane();
+			textureScrollPane.add(texturesPanel);
+			add(textureScrollPane, BorderLayout.CENTER);
+			materialList = new JComboBox();
+			materialList.addActionListener(MaterialsPanel.this);
+			add(materialList, BorderLayout.NORTH);
+			rebuildMaterialList();
+			materialList.setSelectedIndex(0);
+			rebuildMaterialPanel(materialFiles[0]);
+		}
+		
+		public void rebuildMaterialList() {
+
+			URL resourceDirURL = getClass().getResource("/res/");
+
+			File resDir;
+			try {
+				resDir = new File(resourceDirURL.toURI());
+				if (resDir == null) {
+					Editor.log("Can't find the material directory");
+					return;
+				}
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+				return;
+			}
+
+			materialFiles = resDir.listFiles(new FilenameFilter() {
+				public boolean accept(File dir, String name) {
+					if (name.endsWith(".mtl")) {
+						return true;
+					}
+					return false;
+				}
+			});
+
+			if (materialFiles != null) {
+
+				//String[] fileStrings = new String[materialFiles.length];
+				for (int i = 0; i < materialFiles.length; i++) {
+					//fileStrings[i] = materialFiles[i].getName();
+					materialList.addItem(materialFiles[i].getName());
+				}
+
+			}			
+
+		}
+		
+		public void rebuildMaterialPanel(File materialFile) {
+			ObjectLoader loader = new ObjectLoader();
+			try {
+				loader.loadObject("/res/", materialFile.getName());
+			} catch (IOException e) {
+				e.printStackTrace();
+				return;
+			}
+			
+			Hashtable materials = loader.getMaterials();
+			Enumeration e = materials.elements();
+			texturesPanel.removeAll();
+			while(e.hasMoreElements()) {
+				Material material = (Material) e.nextElement();
+				MaterialPanel materialPanel = new MaterialPanel(material);
+				texturesPanel.add(materialPanel);
+			}
+			texturesPanel.revalidate();
+			
+			
+		}
+		
+		public void actionPerformed(ActionEvent e) {
+			JComboBox cb = (JComboBox)e.getSource();
+	        int index = cb.getSelectedIndex();
+	        rebuildMaterialPanel(materialFiles[index]);	
+		}
+		
+		class MaterialPanel extends JPanel implements MouseListener {
+			
+			private Material material;
+			
+			public MaterialPanel(Material material) {
+				this.material = material;
+				setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+				Border border = BorderFactory.createEmptyBorder(4, 4, 8, 4);
+				//Border border = BorderFactory.createDashedBorder(Color.RED);
+				setBorder(border);
+				JPanel buttonPanel = new JPanel();
+				buttonPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+				JLabel moveLabel = new JLabel("Material");
+				final JTextField nameField = new JTextField(material.name +  " (" + material.textureFileName + ")", 30);
+				nameField.setEditable(false);
+				buttonPanel.add(moveLabel);
+				buttonPanel.add(nameField);
+				add(buttonPanel);
+				if (material.texture != null) {
+					MaterialImagePanel materialPanel = new MaterialImagePanel(material);
+					add(materialPanel);
+				}
+				addMouseListener(MaterialPanel.this);
+				
+			}
+			
+			public void mouseClicked(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void mouseEntered(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void mouseExited(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void mousePressed(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void mouseReleased(MouseEvent arg0) {
+				editor.applyMaterial(material);
+				
+			}
+
+			class MaterialImagePanel extends JPanel {
+
+				private Material material;
+				private BufferedImage nativeImage;
+				private Dimension dimension;
+
+				//	float zoomFactorX;
+				//	float zoomFactorY;
+
+				public MaterialImagePanel(Material material) {
+					this.material = material;
+
+					//setFocusable(true);
+					int w = material.texture.getWidth();
+					int h = material.texture.getHeight();
+
+					this.dimension = new Dimension(w, h);
+
+					InputStream is = getClass().getResourceAsStream("/res/" + material.textureFileName);
+					try {
+						nativeImage = ImageIO.read(is);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+
+					//setLayout(new FlowLayout(FlowLayout.CENTER));
+
+				}
+
+				@Override
+				public Dimension getMinimumSize() {
+					return dimension;
+				}
+
+				@Override
+				public Dimension getPreferredSize() {
+					return dimension;
+				}
+
+				@Override
+				public void paintComponent(Graphics g) {
+					super.paintComponent(g);
+					g.drawImage(nativeImage, (MaterialImagePanel.this.getWidth() - nativeImage.getWidth()) / 2, (MaterialImagePanel.this.getHeight() - nativeImage.getHeight()) / 2, null);
+				}
+
+			}
+
+		}
 		
 		
 	}
+	
+	
+	
+}
 
 
 

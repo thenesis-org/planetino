@@ -99,6 +99,7 @@ public class ObjectLoader {
 	public static class Material {
 		
 		//public File sourceFile;
+		public String library;
 		public String name;
 		public String textureFileName;
 		public ShadedTexture texture;
@@ -125,6 +126,7 @@ public class ObjectLoader {
 	protected String path;
 	protected Vector vertices;
 	protected Vector textureCoordinates;
+	protected String currentMaterialLib;
 	protected Material currentMaterial;
 	protected Hashtable materials;
 	protected Vector lights;
@@ -219,6 +221,14 @@ public class ObjectLoader {
 			index = vector3DList.size() + index + 1;
 		}
 		return (Vector3D) vector3DList.elementAt(index - 1);
+	}
+	
+	/**
+	 * Used by the editor.
+	 * @return the materials.
+	 */
+	public Hashtable getMaterials() {
+		return materials;
 	}
 
 	/**
@@ -496,6 +506,7 @@ public class ObjectLoader {
 			} else if (command.equals("mtllib")) {
 				// load materials from file
 				String name = tokenizer.nextToken();
+				currentMaterialLib = name;
 				parseFile(name);
 			} else if (command.equals("usemtl")) {
 				// define the current material
@@ -528,6 +539,7 @@ public class ObjectLoader {
 					currentMaterial = new Material(name);
 					materials.put(name, currentMaterial);
 				}
+				currentMaterial.library = currentMaterialLib;
 			} else if (command.equals("map_Kd")) {
 				// give the current material a texture
 				String name = tokenizer.nextToken();

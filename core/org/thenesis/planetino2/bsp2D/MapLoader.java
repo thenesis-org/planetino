@@ -260,6 +260,7 @@ public class MapLoader extends ObjectLoader {
             else if (command.equals("mtllib")) {
                 // load materials from file
                 String name = tokenizer.nextToken();
+                currentMaterialLib = name;
                 parseFile(name);
             }
             else if (command.equals("usemtl")) {

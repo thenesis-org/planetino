@@ -135,8 +135,7 @@ public class RoomDef {
 			this.z = z;
 			this.bottom = bottom;
 			this.top = top;
-			this.material = material;
-			this.texture = material.texture;
+			setMaterial(material);
 			this.textureBounds = textureBounds;
 		}
 
@@ -176,6 +175,11 @@ public class RoomDef {
 			this.top = top;
 		}
 		
+		public void setMaterial(Material material) {
+			this.material = material;
+			this.texture = material.texture;
+		}
+
 		public Material getMaterial() {
 			return material;
 		}
@@ -257,6 +261,11 @@ public class RoomDef {
 	
 	public void setVertexTop(Vertex v, float top) {
 		v.setTop(top);
+		invalidate();
+	}
+	
+	public void setVertexMaterial(Vertex v, Material material) {
+		v.setMaterial(material);
 		invalidate();
 	}
 
