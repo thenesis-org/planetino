@@ -79,19 +79,30 @@ public class RoomDef {
 		Material material;
 		Texture texture;
 		Rectangle3D textureBounds;
+		RoomDef roomDef;
 
-		public HorizontalAreaDef(float height, Material material, Rectangle3D textureBounds) {
+		public HorizontalAreaDef(RoomDef roomDef, float height, Material material, Rectangle3D textureBounds) {
+			this.roomDef = roomDef;
 			this.height = height;
-			this.material = material;
-			this.texture = material.texture;
+			setMaterial(material);
 			this.textureBounds = textureBounds;
 		}
+		
+		public void setMaterial(Material material) {
+			this.material = material;
+			this.texture = material.texture;
+		}
+
+		public RoomDef getRoomDef() {
+			return roomDef;
+		}
+		
 	}
 	
 	public static class Ceil extends HorizontalAreaDef {
 
-		public Ceil(float height, Material material, Rectangle3D textureBounds) {
-			super(height, material, textureBounds);
+		public Ceil(RoomDef roomDef, float height, Material material, Rectangle3D textureBounds) {
+			super(roomDef, height, material, textureBounds);
 		}
 		
 		@Override
@@ -103,8 +114,8 @@ public class RoomDef {
 	
 	public static class Floor extends HorizontalAreaDef {
 
-		public Floor(float height, Material material, Rectangle3D textureBounds) {
-			super(height, material, textureBounds);
+		public Floor(RoomDef roomDef, float height, Material material, Rectangle3D textureBounds) {
+			super(roomDef, height, material, textureBounds);
 		}
 		
 		@Override
@@ -268,6 +279,16 @@ public class RoomDef {
 		v.setMaterial(material);
 		invalidate();
 	}
+	
+	public void setCeilMaterial(Ceil c, Material material) {
+		c.setMaterial(material);
+		invalidate();
+	}
+	
+	public void setFloorMaterial(Floor f, Material material) {
+		f.setMaterial(material);
+		invalidate();
+	}
 
 	/**
 	 Sets the floor height and floor texture of this room. If
@@ -292,7 +313,7 @@ public class RoomDef {
 			texBounds = new Rectangle3D(new Vector3D(0, height, 0), new Vector3D(1, 0, 0), new Vector3D(0, 0, -1),
 					texture.getWidth(), texture.getHeight());
 		}
-		floor = new Floor(height, material, texBounds);
+		floor = new Floor(this, height, material, texBounds);
 	}
 
 	/**
@@ -318,7 +339,7 @@ public class RoomDef {
 			texBounds = new Rectangle3D(new Vector3D(0, height, 0), new Vector3D(1, 0, 0), new Vector3D(0, 0, 1),
 					texture.getWidth(), texture.getHeight());
 		}
-		ceil = new Ceil(height, material, texBounds);
+		ceil = new Ceil(this, height, material, texBounds);
 	}
 
 	/**
