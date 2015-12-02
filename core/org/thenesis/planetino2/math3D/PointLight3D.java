@@ -143,4 +143,10 @@ public class PointLight3D extends Vector3D {
 		this.distanceFalloff = distanceFalloff;
 	}
 
+	@Override
+	public String toString() {
+		return "PointLight (" + x + "," + y + "," + z + ")";
+	}
+	
+
 }

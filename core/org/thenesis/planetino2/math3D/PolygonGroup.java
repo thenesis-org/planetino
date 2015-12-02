@@ -281,4 +281,11 @@ public class PolygonGroup implements Transformable {
 		transform.rotateAngleZ(-xform.getAngleZ());
 	}
 
+	@Override
+	public String toString() {
+		return "Object " + name + " (" + filename + ")";
+	}
+	
+	
+
 }

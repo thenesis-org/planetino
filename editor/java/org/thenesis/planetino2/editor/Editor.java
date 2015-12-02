@@ -69,6 +69,7 @@ import org.thenesis.planetino2.graphics.Toolkit;
 import org.thenesis.planetino2.input.InputManager;
 import org.thenesis.planetino2.math3D.ObjectLoader;
 import org.thenesis.planetino2.math3D.ObjectLoader.Material;
+import org.thenesis.planetino2.math3D.PointLight3D;
 import org.thenesis.planetino2.math3D.PolygonGroup;
 import org.thenesis.planetino2.math3D.Transform3D;
 import org.thenesis.planetino2.math3D.Vector3D;
@@ -463,8 +464,42 @@ class Map2DPanel extends JPanel implements MouseListener {
 		v.multiply(8);
 		int x2 = (int) (x + v.x);
 		int y2 = (int) (y + v.z);
-		map2DGraphics.setColor(Color.YELLOW);
+		map2DGraphics.setColor(Color.ORANGE);
 		map2DGraphics.drawLine(x, y, x2, y2);
+	}
+	
+	public void drawObjects() {
+		Vector objects = mapLoader.getObjectsInMap();
+		int objectCount = objects.size();
+		for (int i = 0; i < objectCount; i++) {
+			PolygonGroup mapObject = (PolygonGroup) objects.elementAt(i);
+			int x = (int) ((mapObject.getTransform().getLocation().x + shiftX) / zoomFactorX);
+			int y = (int) ((mapObject.getTransform().getLocation().z + shiftY) / zoomFactorY);
+			//System.out.println(x + " " + y);
+			if (editor.getSelectedMapObject() == mapObject) {
+				map2DGraphics.setColor(Color.RED);
+			} else {
+				map2DGraphics.setColor(Color.GREEN);
+			}
+			map2DGraphics.fillRect(x - 2, y - 2, 4, 4);
+		}
+	}
+	
+	public void drawLights() {
+		Vector lights = mapLoader.getLights();
+		int objectCount = lights.size();
+		for (int i = 0; i < objectCount; i++) {
+			PointLight3D light = (PointLight3D) lights.elementAt(i);
+			int x = (int) ((light.x + shiftX) / zoomFactorX);
+			int y = (int) ((light.z + shiftY) / zoomFactorY);
+			//System.out.println(x + " " + y);
+			if (editor.getSelectedMapObject() == light) {
+				map2DGraphics.setColor(Color.RED);
+			} else {
+				map2DGraphics.setColor(Color.YELLOW);
+			}
+			map2DGraphics.fillRect(x - 1, y - 1, 2, 2);
+		}
 	}
 
 	@Override
@@ -482,17 +517,8 @@ class Map2DPanel extends JPanel implements MouseListener {
 		super.paintComponent(g);
 		drawMap2D();
 		drawPlayer();
-
-		Vector objects = mapLoader.getObjectsInMap();
-		int objectCount = objects.size();
-		for (int i = 0; i < objectCount; i++) {
-			PolygonGroup mapObject = (PolygonGroup) objects.elementAt(i);
-			int x = (int) ((mapObject.getTransform().getLocation().x + shiftX) / zoomFactorX);
-			int y = (int) ((mapObject.getTransform().getLocation().z + shiftY) / zoomFactorY);
-			//System.out.println(x + " " + y);
-			map2DGraphics.setColor(Color.GREEN);
-			map2DGraphics.fillRect(x - 2, y - 2, 4, 4);
-		}
+		drawObjects();
+		drawLights();
 
 		g.drawImage(map2DImage, 0, 0, null);
 
@@ -659,9 +685,11 @@ class MapInspector extends JPanel implements ActionListener {
 		//		treePanel.addObject(p2, c1Name);
 		//		treePanel.addObject(p2, c2Name);
 		MapLoader mapLoader = engine.getLoader();
+		
+		/* Rooms */
+		
 		Vector rooms = mapLoader.getRooms();
 		int roomCount = rooms.size();
-
 		for (int i = 0; i < roomCount; i++) {
 			RoomDef roomDef = (RoomDef) rooms.elementAt(i);
 			DefaultMutableTreeNode node = treePanel.addObject(null, roomDef);
@@ -681,6 +709,29 @@ class MapInspector extends JPanel implements ActionListener {
 				treePanel.addObject(node, vertex);
 			}
 		}
+		
+		
+		/* Objects */
+		
+		Vector objectList = mapLoader.getObjectsInMap();
+		int size = objectList.size();
+		for (int i = 0; i < size; i++) {
+			PolygonGroup polygonGroup = (PolygonGroup) objectList.elementAt(i);
+			DefaultMutableTreeNode node = treePanel.addObject(null, polygonGroup);
+		}
+		
+		/* Lights */
+		
+		Vector lightList = mapLoader.getLights();
+		size = lightList.size();
+		for (int i = 0; i < size; i++) {
+			PointLight3D light = (PointLight3D) lightList.elementAt(i);
+			DefaultMutableTreeNode node = treePanel.addObject(null, light);
+		}
+		
+		 
+		
+		
 	}
 
 	public void actionPerformed(ActionEvent e) {

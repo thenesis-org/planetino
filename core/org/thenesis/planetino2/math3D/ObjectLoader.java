@@ -230,6 +230,15 @@ public class ObjectLoader {
 	public Hashtable getMaterials() {
 		return materials;
 	}
+	
+	
+	/**
+	 * Used by the editor.
+	 * @return the lights.
+	 */
+	public Vector getLights() {
+		return lights;
+	}
 
 	/**
 	 Parses an OBJ (ends with ".obj") or MTL file (ends with
