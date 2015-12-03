@@ -145,7 +145,7 @@ public class PointLight3D extends Vector3D {
 
 	@Override
 	public String toString() {
-		return "PointLight (" + x + "," + y + "," + z + ")";
+		return "PointLight (" + x + ", " + y + ", " + z + ")";
 	}
 	
 

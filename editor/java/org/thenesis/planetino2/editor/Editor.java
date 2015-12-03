@@ -62,6 +62,7 @@ import org.thenesis.planetino2.bsp2D.MapLoader;
 import org.thenesis.planetino2.bsp2D.RoomDef;
 import org.thenesis.planetino2.bsp2D.RoomDef.Ceil;
 import org.thenesis.planetino2.bsp2D.RoomDef.Floor;
+import org.thenesis.planetino2.bsp2D.RoomDef.HorizontalAreaDef;
 import org.thenesis.planetino2.game.GameObjectManager;
 import org.thenesis.planetino2.game.Player;
 import org.thenesis.planetino2.graphics.Screen;
@@ -915,9 +916,14 @@ class RoomAmbientLightIntensity {
 		this.roomDef = roomDef;
 	}
 	
+	
+	public RoomDef getRoomDef() {
+		return roomDef;
+	}
+
 	@Override
 	public String toString() {
-		return "Ambient light intensity (" + roomDef.getAmbientLightIntensity() + ")";
+		return "Ambient light (" + roomDef.getAmbientLightIntensity() + ")";
 	}
 	
 }
@@ -950,7 +956,31 @@ class ObjectInspector extends JPanel {
 			add(currentObjectPanel, BorderLayout.CENTER);
 			setVisible(true);
 			revalidate();
-		}else {
+		} else if (mapObject instanceof RoomDef.HorizontalAreaDef) {
+			currentObjectPanel = new HorizontalAreaDefPanel((RoomDef.HorizontalAreaDef)mapObject);
+			removeAll();
+			add(currentObjectPanel, BorderLayout.CENTER);
+			setVisible(true);
+			revalidate();
+		} else if (mapObject instanceof RoomAmbientLightIntensity) {
+			currentObjectPanel = new AmbientLightPanel((RoomAmbientLightIntensity)mapObject);
+			removeAll();
+			add(currentObjectPanel, BorderLayout.CENTER);
+			setVisible(true);
+			revalidate();
+		}  else if (mapObject instanceof PolygonGroup) {
+			currentObjectPanel = new GameObjectPanel((PolygonGroup)mapObject);
+			removeAll();
+			add(currentObjectPanel, BorderLayout.CENTER);
+			setVisible(true);
+			revalidate();
+		} else if (mapObject instanceof PointLight3D) {
+			currentObjectPanel = new PointLightPanel((PointLight3D)mapObject);
+			removeAll();
+			add(currentObjectPanel, BorderLayout.CENTER);
+			setVisible(true);
+			revalidate();
+		} else {
 			setVisible(false);
 		}
 		
@@ -1031,6 +1061,8 @@ class ObjectInspector extends JPanel {
 				JPanel linePanel = new JPanel();
 				linePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 				// Spinner for X
+				JLabel xLabel = new JLabel("X");
+				linePanel.add(xLabel);
 				SpinnerNumberModel model = new SpinnerNumberModel();
 				model.setValue(vertex.getX());
 				model.setStepSize(1);				
@@ -1046,6 +1078,8 @@ class ObjectInspector extends JPanel {
 				});
 				linePanel.add(spinner);
 				// Spinner for Z
+				JLabel zLabel = new JLabel("Z");
+				linePanel.add(zLabel);
 				model = new SpinnerNumberModel();
 				model.setValue(vertex.getZ());
 				model.setStepSize(1);				
@@ -1061,6 +1095,8 @@ class ObjectInspector extends JPanel {
 				});
 				linePanel.add(spinner);
 				// Spinner for Bottom
+				JLabel bottomLabel = new JLabel("Bottom");
+				linePanel.add(bottomLabel);
 				model = new SpinnerNumberModel();
 				model.setValue(vertex.getBottom());
 				model.setStepSize(1);				
@@ -1076,6 +1112,8 @@ class ObjectInspector extends JPanel {
 				});
 				linePanel.add(spinner);
 				// Spinner for Top
+				JLabel topLabel = new JLabel("Top");
+				linePanel.add(topLabel);
 				model = new SpinnerNumberModel();
 				model.setValue(vertex.getTop());
 				model.setStepSize(1);				
@@ -1157,6 +1195,8 @@ class ObjectInspector extends JPanel {
 			JPanel linePanel = new JPanel();
 			linePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 			// Spinner for X
+			JLabel xLabel = new JLabel("X");
+			linePanel.add(xLabel);
 			SpinnerNumberModel model = new SpinnerNumberModel();
 			model.setValue(vertex.getX());
 			model.setStepSize(1);
@@ -1172,6 +1212,8 @@ class ObjectInspector extends JPanel {
 			});
 			linePanel.add(spinner);
 			// Spinner for Z
+			JLabel yLabel = new JLabel("Y");
+			linePanel.add(yLabel);
 			model = new SpinnerNumberModel();
 			model.setValue(vertex.getZ());
 			model.setStepSize(1);
@@ -1187,6 +1229,8 @@ class ObjectInspector extends JPanel {
 			});
 			linePanel.add(spinner);
 			// Spinner for Bottom
+			JLabel bottomLabel = new JLabel("Bottom");
+			linePanel.add(bottomLabel);
 			model = new SpinnerNumberModel();
 			model.setValue(vertex.getBottom());
 			model.setStepSize(1);
@@ -1202,6 +1246,8 @@ class ObjectInspector extends JPanel {
 			});
 			linePanel.add(spinner);
 			// Spinner for Top
+			JLabel topLabel = new JLabel("Top");
+			linePanel.add(topLabel);
 			model = new SpinnerNumberModel();
 			model.setValue(vertex.getTop());
 			model.setStepSize(1);
@@ -1218,8 +1264,394 @@ class ObjectInspector extends JPanel {
 			linePanel.add(spinner);
 
 			vertexPanel.add(linePanel);
+			add(vertexPanel, BorderLayout.NORTH);
 
 			revalidate();
+
+		}
+		
+	}
+	
+	class HorizontalAreaDefPanel extends JPanel {
+		
+		private HorizontalAreaDef horizontalArea;
+		
+		HorizontalAreaDefPanel(final HorizontalAreaDef horizontalArea) {
+			this.horizontalArea = horizontalArea;
+			setLayout(new BorderLayout());
+		}
+		
+		@Override
+		public void repaint() {
+			super.repaint();
+			if (horizontalArea != null) {
+				removeAll();
+				updateMaterialPanel(horizontalArea);
+				updateVertexPanel(horizontalArea);
+				revalidate();
+			}
+		}
+		
+		private void updateMaterialPanel(HorizontalAreaDef horizontalArea) {
+			MaterialPanel materialPanel = new MaterialPanel(horizontalArea.getMaterial());
+			materialPanel.setBorder(new LineBorder(Color.GRAY));
+			add(materialPanel, BorderLayout.CENTER);
+		}
+		
+		private void updateVertexPanel(final HorizontalAreaDef horizontalArea) {
+			
+			final RoomDef roomDef = horizontalArea.getRoomDef();
+
+			JPanel vertexPanel = new JPanel();
+			vertexPanel.setLayout(new BoxLayout(vertexPanel, BoxLayout.Y_AXIS));
+			vertexPanel.setBorder(new LineBorder(Color.GRAY));
+			vertexPanel.removeAll();
+
+			JPanel linePanel = new JPanel();
+			linePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+			// Spinner for height
+			SpinnerNumberModel model = new SpinnerNumberModel();
+			model.setValue(horizontalArea.getHeight());
+			model.setStepSize(1);
+			JLabel heightLabel = new JLabel("Height");
+			linePanel.add(heightLabel);
+			JSpinner spinner = new JSpinner(model);
+			spinner.addChangeListener(new ChangeListener() {
+				public void stateChanged(ChangeEvent e) {
+					JSpinner mySpinner = (JSpinner) (e.getSource());
+					SpinnerNumberModel myModel = (SpinnerNumberModel) (mySpinner.getModel());
+					roomDef.setHorizontalAreaHeight(horizontalArea, Float.valueOf((Float) myModel.getValue()));
+					Editor.log("spinner value changed: " + myModel.getValue());
+					editor.notifyMapChanged();
+				}
+			});
+			linePanel.add(spinner);
+			vertexPanel.add(linePanel);
+			add(vertexPanel, BorderLayout.NORTH);
+
+			revalidate();
+
+		}
+		
+	}
+	
+	class AmbientLightPanel extends JPanel {
+		
+		private RoomAmbientLightIntensity intensity;
+		
+		AmbientLightPanel(RoomAmbientLightIntensity intensity) {
+			this.intensity = intensity;
+			setLayout(new BorderLayout());
+		}
+		
+		@Override
+		public void repaint() {
+			super.repaint();
+			if (intensity != null) {
+				removeAll();
+				updateAmbientLightPanel(intensity);
+				revalidate();
+			}
+		}
+		
+		private void updateAmbientLightPanel(final RoomAmbientLightIntensity intensity) {
+
+			JPanel vertexPanel = new JPanel();
+			vertexPanel.setLayout(new BoxLayout(vertexPanel, BoxLayout.Y_AXIS));
+			vertexPanel.setBorder(new LineBorder(Color.GRAY));
+
+			JPanel linePanel = new JPanel();
+			linePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+			// Spinner for height
+			SpinnerNumberModel model = new SpinnerNumberModel();
+			model.setValue(intensity.getRoomDef().getAmbientLightIntensity());
+//			model.setMinimum(0);
+//			model.setMaximum(1);
+			model.setStepSize(0.1);
+			JLabel heightLabel = new JLabel("Intensity");
+			linePanel.add(heightLabel);
+			JSpinner spinner = new JSpinner(model);
+			spinner.addChangeListener(new ChangeListener() {
+				public void stateChanged(ChangeEvent e) {
+					JSpinner mySpinner = (JSpinner) (e.getSource());
+					SpinnerNumberModel myModel = (SpinnerNumberModel) (mySpinner.getModel());
+					intensity.getRoomDef().setAmbientLightIntensity(Float.valueOf((Float) myModel.getValue()));
+					Editor.log("spinner value changed: " + myModel.getValue());
+					editor.notifyMapChanged();
+				}
+			});
+			linePanel.add(spinner);
+			vertexPanel.add(linePanel);
+			add(vertexPanel, BorderLayout.CENTER);
+
+		}
+		
+	}
+	
+	class GameObjectPanel extends JPanel {
+		
+		private PolygonGroup polygonGroup;
+		
+		GameObjectPanel(PolygonGroup polygonGroup) {
+			this.polygonGroup = polygonGroup;
+			setLayout(new BorderLayout());
+		}
+		
+		@Override
+		public void repaint() {
+			super.repaint();
+			if (polygonGroup != null) {
+				removeAll();
+				//updatePicturePanel(polygonGroup);
+				updateInfoPanel(polygonGroup);
+				revalidate();
+			}
+		}
+		
+//		private void updatePicturePanel(PolygonGroup polygonGroup) {
+//			MaterialPanel materialPanel = new MaterialPanel(horizontalArea.getMaterial());
+//			materialPanel.setBorder(new LineBorder(Color.GRAY));
+//			add(materialPanel, BorderLayout.CENTER);
+//		}
+		
+		private void updateInfoPanel(final PolygonGroup polygonGroup) {
+
+			JPanel infoPanel = new JPanel();
+			infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+			infoPanel.setBorder(new LineBorder(Color.GRAY));
+			
+			final Vector3D location = polygonGroup.getTransform().getLocation();
+			
+			/* Name */
+
+			JPanel linePanel = new JPanel();
+			linePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+			JLabel nameLabel = new JLabel("Name");
+			final JTextField nameField = new JTextField(polygonGroup.getName(), 10);
+			ActionListener actionListener = new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					polygonGroup.setName(nameField.getText());
+					editor.notifyMapChanged();
+				}
+			};
+			nameField.addActionListener(actionListener);
+			linePanel.add(nameLabel);
+			linePanel.add(nameField);
+			infoPanel.add(linePanel);
+			
+			/* Filename */
+			
+			linePanel = new JPanel();
+			linePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+			JLabel fileNameLabel = new JLabel("File: " + polygonGroup.getFilename());
+			linePanel.add(fileNameLabel);
+			infoPanel.add(linePanel);
+			
+			/* Coordinates */
+			
+			linePanel = new JPanel();
+			linePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+			// Spinner for X
+			SpinnerNumberModel model = new SpinnerNumberModel();
+			model.setValue(location.x);
+			model.setStepSize(1);
+			JLabel label = new JLabel("X");
+			linePanel.add(label);
+			JSpinner spinner = new JSpinner(model);
+			spinner.addChangeListener(new ChangeListener() {
+				public void stateChanged(ChangeEvent e) {
+					JSpinner mySpinner = (JSpinner) (e.getSource());
+					SpinnerNumberModel myModel = (SpinnerNumberModel) (mySpinner.getModel());
+					location.x = Float.valueOf((Float) myModel.getValue());
+					Editor.log("spinner value changed: " + myModel.getValue());
+					editor.notifyMapChanged();
+				}
+			});
+			linePanel.add(spinner);
+			// Spinner for Y
+			model = new SpinnerNumberModel();
+			model.setValue(location.y);
+			model.setStepSize(1);
+			label = new JLabel("Y");
+			linePanel.add(label);
+			spinner = new JSpinner(model);
+			spinner.addChangeListener(new ChangeListener() {
+				public void stateChanged(ChangeEvent e) {
+					JSpinner mySpinner = (JSpinner) (e.getSource());
+					SpinnerNumberModel myModel = (SpinnerNumberModel) (mySpinner.getModel());
+					location.y = Float.valueOf((Float) myModel.getValue());
+					Editor.log("spinner value changed: " + myModel.getValue());
+					editor.notifyMapChanged();
+				}
+			});
+			linePanel.add(spinner);
+			// Spinner for Z
+			model = new SpinnerNumberModel();
+			model.setValue(location.z);
+			model.setStepSize(1);
+			label = new JLabel("Z");
+			linePanel.add(label);
+			spinner = new JSpinner(model);
+			spinner.addChangeListener(new ChangeListener() {
+				public void stateChanged(ChangeEvent e) {
+					JSpinner mySpinner = (JSpinner) (e.getSource());
+					SpinnerNumberModel myModel = (SpinnerNumberModel) (mySpinner.getModel());
+					location.z = Float.valueOf((Float) myModel.getValue());
+					Editor.log("spinner value changed: " + myModel.getValue());
+					editor.notifyMapChanged();
+				}
+			});
+			linePanel.add(spinner);
+			// Spinner for angle
+			model = new SpinnerNumberModel();
+			model.setValue(polygonGroup.getTransform().getAngleY() * 180 / Math.PI);
+			model.setStepSize(1);
+			label = new JLabel("Angle");
+			linePanel.add(label);
+			spinner = new JSpinner(model);
+			spinner.addChangeListener(new ChangeListener() {
+				public void stateChanged(ChangeEvent e) {
+					JSpinner mySpinner = (JSpinner) (e.getSource());
+					SpinnerNumberModel myModel = (SpinnerNumberModel) (mySpinner.getModel());
+					float angle = (float) (((Double) myModel.getValue()) / 180.0f * Math.PI);
+					polygonGroup.getTransform().setAngleY(angle);
+					Editor.log("spinner value changed: " + angle);
+					editor.notifyMapChanged();
+				}
+			});
+			linePanel.add(spinner);
+			
+			infoPanel.add(linePanel);
+			add(infoPanel, BorderLayout.NORTH);
+
+
+		}
+		
+	}
+	
+	class PointLightPanel extends JPanel {
+		
+		private PointLight3D pointLight;
+		
+		PointLightPanel(PointLight3D pointLight) {
+			this.pointLight = pointLight;
+			setLayout(new BorderLayout());
+		}
+		
+		@Override
+		public void repaint() {
+			super.repaint();
+			if (pointLight != null) {
+				removeAll();
+				updateLightPanel(pointLight);
+				revalidate();
+			}
+		}
+		
+		private void updateLightPanel(final PointLight3D pointLight) {
+
+			JPanel vertexPanel = new JPanel();
+			vertexPanel.setLayout(new BoxLayout(vertexPanel, BoxLayout.Y_AXIS));
+			vertexPanel.setBorder(new LineBorder(Color.GRAY));
+
+			/* Coordinates */
+			
+			JPanel linePanel = new JPanel();
+			linePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+			// Spinner for X
+			SpinnerNumberModel model = new SpinnerNumberModel();
+			model.setValue(pointLight.x);
+			model.setStepSize(1);
+			JLabel label = new JLabel("X");
+			linePanel.add(label);
+			JSpinner spinner = new JSpinner(model);
+			spinner.addChangeListener(new ChangeListener() {
+				public void stateChanged(ChangeEvent e) {
+					JSpinner mySpinner = (JSpinner) (e.getSource());
+					SpinnerNumberModel myModel = (SpinnerNumberModel) (mySpinner.getModel());
+					pointLight.x = Float.valueOf((Float) myModel.getValue());
+					Editor.log("spinner value changed: " + myModel.getValue());
+					editor.notifyMapChanged();
+				}
+			});
+			linePanel.add(spinner);
+			// Spinner for Y
+			model = new SpinnerNumberModel();
+			model.setValue(pointLight.y);
+			model.setStepSize(1);
+			label = new JLabel("Y");
+			linePanel.add(label);
+			spinner = new JSpinner(model);
+			spinner.addChangeListener(new ChangeListener() {
+				public void stateChanged(ChangeEvent e) {
+					JSpinner mySpinner = (JSpinner) (e.getSource());
+					SpinnerNumberModel myModel = (SpinnerNumberModel) (mySpinner.getModel());
+					pointLight.y = Float.valueOf((Float) myModel.getValue());
+					Editor.log("spinner value changed: " + myModel.getValue());
+					editor.notifyMapChanged();
+				}
+			});
+			linePanel.add(spinner);
+			// Spinner for Z
+			model = new SpinnerNumberModel();
+			model.setValue(pointLight.z);
+			model.setStepSize(1);
+			label = new JLabel("Z");
+			linePanel.add(label);
+			spinner = new JSpinner(model);
+			spinner.addChangeListener(new ChangeListener() {
+				public void stateChanged(ChangeEvent e) {
+					JSpinner mySpinner = (JSpinner) (e.getSource());
+					SpinnerNumberModel myModel = (SpinnerNumberModel) (mySpinner.getModel());
+					pointLight.z = Float.valueOf((Float) myModel.getValue());
+					Editor.log("spinner value changed: " + myModel.getValue());
+					editor.notifyMapChanged();
+				}
+			});
+			linePanel.add(spinner);
+			vertexPanel.add(linePanel);
+			
+			/* Properties */
+			
+			linePanel = new JPanel();
+			linePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+			// Spinner for  intensity
+			model = new SpinnerNumberModel();
+			model.setValue(pointLight.getIntensity());
+			model.setStepSize(0.1);
+			label = new JLabel("Intensity");
+			linePanel.add(label);
+			spinner = new JSpinner(model);
+			spinner.addChangeListener(new ChangeListener() {
+				public void stateChanged(ChangeEvent e) {
+					JSpinner mySpinner = (JSpinner) (e.getSource());
+					SpinnerNumberModel myModel = (SpinnerNumberModel) (mySpinner.getModel());
+					pointLight.setIntensity((Float) myModel.getValue());
+					Editor.log("spinner value changed: " + myModel.getValue());
+					editor.notifyMapChanged();
+				}
+			});
+			linePanel.add(spinner);
+			// Spinner for distance falloff
+			model = new SpinnerNumberModel();
+			model.setValue(pointLight.getDistanceFalloff());
+			model.setStepSize(1);
+			label = new JLabel("Distance falloff");
+			linePanel.add(label);
+			spinner = new JSpinner(model);
+			spinner.addChangeListener(new ChangeListener() {
+				public void stateChanged(ChangeEvent e) {
+					JSpinner mySpinner = (JSpinner) (e.getSource());
+					SpinnerNumberModel myModel = (SpinnerNumberModel) (mySpinner.getModel());
+					pointLight.setDistanceFalloff((Float) myModel.getValue());
+					Editor.log("spinner value changed: " + myModel.getValue());
+					editor.notifyMapChanged();
+				}
+			});
+			linePanel.add(spinner);
+			vertexPanel.add(linePanel);
+			
+			add(vertexPanel, BorderLayout.NORTH);
 
 		}
 		

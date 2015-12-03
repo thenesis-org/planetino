@@ -74,7 +74,7 @@ public class RoomDef {
 	/**
 	 The HorizontalAreaDef class represents a floor or ceiling.
 	 */
-	private abstract static class HorizontalAreaDef {
+	public abstract static class HorizontalAreaDef {
 		float height;
 		Material material;
 		Texture texture;
@@ -93,8 +93,20 @@ public class RoomDef {
 			this.texture = material.texture;
 		}
 
+		public Material getMaterial() {
+			return material;
+		}
+
 		public RoomDef getRoomDef() {
 			return roomDef;
+		}
+		
+		public void setHeight(float height) {
+			this.height = height;
+		}
+
+		public float getHeight() {
+			return height;
 		}
 		
 	}
@@ -201,7 +213,7 @@ public class RoomDef {
 
 		@Override
 		public String toString() {
-			return "Vertex (" + x + " " + z + ")";
+			return "Vertex (" + x + ", " + z + ", " + bottom + ", " + top + ")";
 		}
 		
 	}
@@ -282,6 +294,11 @@ public class RoomDef {
 	
 	public void setCeilMaterial(Ceil c, Material material) {
 		c.setMaterial(material);
+		invalidate();
+	}
+	
+	public void setHorizontalAreaHeight(HorizontalAreaDef h, float height) {
+		h.setHeight(height);
 		invalidate();
 	}
 	
@@ -573,6 +590,13 @@ public class RoomDef {
 	public float getAmbientLightIntensity() {
 		return ambientLightIntensity;
 	}
+
+	public void setAmbientLightIntensity(float ambientLightIntensity) {
+		this.ambientLightIntensity = ambientLightIntensity;
+		invalidate();
+	}
+	
+	
 	
 
 }
