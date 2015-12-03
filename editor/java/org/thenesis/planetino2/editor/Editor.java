@@ -1774,7 +1774,68 @@ class ToolsPanel extends JPanel {
 					} else if (e.getSource() == yButton) {
 						roomDef.moveY((Integer) model.getNumber());
 					}
-				}
+				} else if (selectedMapObject instanceof RoomDef.Vertex) {
+					RoomDef.Vertex v = (RoomDef.Vertex) selectedMapObject;
+					RoomDef roomDef = v.getRoomDef();
+					int value = (Integer) model.getNumber();
+					if (e.getSource() == xLessButton) {
+						roomDef.setVertexX(v, v.getX() - value); 
+					} else if (e.getSource() == xButton) {
+						roomDef.setVertexX(v, v.getX() + value);
+					} else if (e.getSource() == zLessButton) {
+						roomDef.setVertexZ(v, v.getZ() - value);
+					} else if (e.getSource() == zButton) {
+						roomDef.setVertexZ(v, v.getZ() + value);
+					} else if (e.getSource() == yLessButton) {
+						roomDef.setVertexBottom(v, v.getBottom() - value);
+						roomDef.setVertexTop(v, v.getTop() - value);
+					} else if (e.getSource() == yButton) {
+						roomDef.setVertexBottom(v, v.getBottom() + value);
+						roomDef.setVertexTop(v, v.getTop() + value);
+					}
+				} else if (selectedMapObject instanceof RoomDef.HorizontalAreaDef) {
+					RoomDef.HorizontalAreaDef h = (RoomDef.HorizontalAreaDef) selectedMapObject;
+					RoomDef roomDef = h.getRoomDef();
+					int value = (Integer) model.getNumber();
+					if (e.getSource() == yLessButton) {
+						roomDef.setHorizontalAreaHeight(h, h.getHeight() - value);
+					} else if (e.getSource() == yButton) {
+						roomDef.setHorizontalAreaHeight(h, h.getHeight() + value);
+					}
+				} else if (selectedMapObject instanceof PolygonGroup) {
+					PolygonGroup p = (PolygonGroup) selectedMapObject;
+					Vector3D location = p.getTransform().getLocation();
+					int value = (Integer) model.getNumber();
+					if (e.getSource() == xLessButton) {
+						location.x -= value;
+					} else if (e.getSource() == xButton) {
+						location.x += value;
+					} else if (e.getSource() == zLessButton) {
+						location.z -= value;
+					} else if (e.getSource() == zButton) {
+						location.z += value;
+					} else if (e.getSource() == yLessButton) {
+						location.y -= value;
+					} else if (e.getSource() == yButton) {
+						location.y += value;
+					}
+				} else if (selectedMapObject instanceof PointLight3D) {
+					PointLight3D p = (PointLight3D) selectedMapObject;
+					int value = (Integer) model.getNumber();
+					if (e.getSource() == xLessButton) {
+						p.x -= value;
+					} else if (e.getSource() == xButton) {
+						p.x += value;
+					} else if (e.getSource() == zLessButton) {
+						p.z -= value;
+					} else if (e.getSource() == zButton) {
+						p.z += value;
+					} else if (e.getSource() == yLessButton) {
+						p.y -= value;
+					} else if (e.getSource() == yButton) {
+						p.y += value;
+					}
+				} 
 
 				editor.notifyMapChanged();
 			}
