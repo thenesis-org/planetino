@@ -1741,19 +1741,54 @@ class ToolsPanel extends JPanel {
 		/* Build buttons */
 		
 		JPanel buttonPanel = new JPanel();
-		buttonPanel.setLayout(new FlowLayout());
-		JLabel moveLabel = new JLabel("Move");
+		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+		JPanel linePanel = new JPanel();
+		linePanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		JLabel label = new JLabel("Move");
 		final JButton xLessButton = new JButton("-X");
 		final JButton xButton = new JButton("X");
 		final JButton zLessButton = new JButton("-Z");
 		final JButton zButton = new JButton("Z");
 		final JButton yLessButton = new JButton("-Y");
 		final JButton yButton = new JButton("Y");
-		final SpinnerNumberModel model = new SpinnerNumberModel();
-		model.setValue(100);
-		model.setStepSize(10);
+		final SpinnerNumberModel moveModel = new SpinnerNumberModel();
+		moveModel.setValue(100);
+		moveModel.setStepSize(10);
 		//model.setMinimum(0);
-		JSpinner spinner = new JSpinner(model);
+		JSpinner spinner = new JSpinner(moveModel);
+		linePanel.add(label);
+		linePanel.add(xLessButton);
+		linePanel.add(xButton);
+		linePanel.add(zLessButton);
+		linePanel.add(zButton);
+		linePanel.add(yLessButton);
+		linePanel.add(yButton);
+		linePanel.add(spinner);
+		buttonPanel.add(linePanel);
+		
+		linePanel = new JPanel();
+		linePanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		label = new JLabel("Stretch");
+		final JButton xLessStretchButton = new JButton("-X");
+		final JButton xStretchButton = new JButton("X");
+		final JButton zLessStretchButton = new JButton("-Z");
+		final JButton zStretchButton = new JButton("Z");
+		final JButton yLessStretchButton = new JButton("-Y");
+		final JButton yStretchButton = new JButton("Y");
+		final SpinnerNumberModel stretchModel = new SpinnerNumberModel();
+		stretchModel.setValue(100);
+		stretchModel.setStepSize(10);
+		//model.setMinimum(0);
+		spinner = new JSpinner(stretchModel);
+		linePanel.add(label);
+		linePanel.add(xLessStretchButton);
+		linePanel.add(xStretchButton);
+		linePanel.add(zLessStretchButton);
+		linePanel.add(zStretchButton);
+		linePanel.add(yLessStretchButton);
+		linePanel.add(yStretchButton);
+		linePanel.add(spinner);
+		buttonPanel.add(linePanel);
 		
 		ActionListener actionListener = new ActionListener() {
 
@@ -1762,22 +1797,34 @@ class ToolsPanel extends JPanel {
 				if (selectedMapObject instanceof RoomDef) {
 					RoomDef roomDef = (RoomDef) selectedMapObject;
 					if (e.getSource() == xLessButton) {
-						roomDef.moveX(-(Integer) model.getNumber());
+						roomDef.moveX(-(Integer) moveModel.getNumber());
 					} else if (e.getSource() == xButton) {
-						roomDef.moveX((Integer) model.getNumber());
+						roomDef.moveX((Integer) moveModel.getNumber());
 					} else if (e.getSource() == zLessButton) {
-						roomDef.moveZ(-(Integer) model.getNumber());
+						roomDef.moveZ(-(Integer) moveModel.getNumber());
 					} else if (e.getSource() == zButton) {
-						roomDef.moveZ((Integer) model.getNumber());
+						roomDef.moveZ((Integer) moveModel.getNumber());
 					} else if (e.getSource() == yLessButton) {
-						roomDef.moveY(-(Integer) model.getNumber());
+						roomDef.moveY(-(Integer) moveModel.getNumber());
 					} else if (e.getSource() == yButton) {
-						roomDef.moveY((Integer) model.getNumber());
+						roomDef.moveY((Integer) moveModel.getNumber());
+					} else if (e.getSource() == xLessStretchButton) {
+						roomDef.stretchX(-(Integer) stretchModel.getNumber());
+					} else if (e.getSource() == xStretchButton) {
+						roomDef.stretchX((Integer) stretchModel.getNumber());
+					} else if (e.getSource() == zLessStretchButton) {
+						roomDef.stretchZ(-(Integer) stretchModel.getNumber());
+					} else if (e.getSource() == zStretchButton) {
+						roomDef.stretchZ((Integer) stretchModel.getNumber());
+					} else if (e.getSource() == yLessStretchButton) {
+						roomDef.stretchY(-(Integer) stretchModel.getNumber());
+					} else if (e.getSource() == yStretchButton) {
+						roomDef.stretchY((Integer) stretchModel.getNumber());
 					}
 				} else if (selectedMapObject instanceof RoomDef.Vertex) {
 					RoomDef.Vertex v = (RoomDef.Vertex) selectedMapObject;
 					RoomDef roomDef = v.getRoomDef();
-					int value = (Integer) model.getNumber();
+					int value = (Integer) moveModel.getNumber();
 					if (e.getSource() == xLessButton) {
 						roomDef.setVertexX(v, v.getX() - value); 
 					} else if (e.getSource() == xButton) {
@@ -1796,7 +1843,7 @@ class ToolsPanel extends JPanel {
 				} else if (selectedMapObject instanceof RoomDef.HorizontalAreaDef) {
 					RoomDef.HorizontalAreaDef h = (RoomDef.HorizontalAreaDef) selectedMapObject;
 					RoomDef roomDef = h.getRoomDef();
-					int value = (Integer) model.getNumber();
+					int value = (Integer) moveModel.getNumber();
 					if (e.getSource() == yLessButton) {
 						roomDef.setHorizontalAreaHeight(h, h.getHeight() - value);
 					} else if (e.getSource() == yButton) {
@@ -1805,7 +1852,7 @@ class ToolsPanel extends JPanel {
 				} else if (selectedMapObject instanceof PolygonGroup) {
 					PolygonGroup p = (PolygonGroup) selectedMapObject;
 					Vector3D location = p.getTransform().getLocation();
-					int value = (Integer) model.getNumber();
+					int value = (Integer) moveModel.getNumber();
 					if (e.getSource() == xLessButton) {
 						location.x -= value;
 					} else if (e.getSource() == xButton) {
@@ -1821,7 +1868,7 @@ class ToolsPanel extends JPanel {
 					}
 				} else if (selectedMapObject instanceof PointLight3D) {
 					PointLight3D p = (PointLight3D) selectedMapObject;
-					int value = (Integer) model.getNumber();
+					int value = (Integer) moveModel.getNumber();
 					if (e.getSource() == xLessButton) {
 						p.x -= value;
 					} else if (e.getSource() == xButton) {
@@ -1847,15 +1894,13 @@ class ToolsPanel extends JPanel {
 		zButton.addActionListener(actionListener);
 		yLessButton.addActionListener(actionListener);
 		yButton.addActionListener(actionListener);
+		xLessStretchButton.addActionListener(actionListener);
+		xStretchButton.addActionListener(actionListener);
+		zLessStretchButton.addActionListener(actionListener);
+		zStretchButton.addActionListener(actionListener);
+		yLessStretchButton.addActionListener(actionListener);
+		yStretchButton.addActionListener(actionListener);
 		
-		buttonPanel.add(moveLabel);
-		buttonPanel.add(xLessButton);
-		buttonPanel.add(xButton);
-		buttonPanel.add(zLessButton);
-		buttonPanel.add(zButton);
-		buttonPanel.add(yLessButton);
-		buttonPanel.add(yButton);
-		buttonPanel.add(spinner);
 		add(buttonPanel, BorderLayout.NORTH);
 		
 		vertexPanel = new JPanel();

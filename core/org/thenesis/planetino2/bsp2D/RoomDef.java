@@ -547,6 +547,87 @@ public class RoomDef {
 		invalidate();
 	}
 	
+	public void stretchX(float x) {
+		
+		int wallVertexCount = vertices.size();
+		if (wallVertexCount <= 0) {
+			return;
+		}
+		
+		Vertex vertex = (Vertex) vertices.elementAt(0);
+		float minX = vertex.getX();
+		float maxX = vertex.getX();
+		for (int i = 1; i < wallVertexCount; i++) {
+			vertex = (Vertex) vertices.elementAt(i);
+			minX = Math.min(vertex.getX(), minX);
+			maxX = Math.max(vertex.getX(), maxX);
+		}
+		
+		float middleX = minX + (maxX - minX) / 2;
+		
+		for (int i = 0; i < wallVertexCount; i++) {
+			vertex = (Vertex) vertices.elementAt(i);
+			float diff = vertex.getX() - middleX;
+			if (diff < 0) {
+				vertex.setX(vertex.getX() - x);
+			} else {
+				vertex.setX(vertex.getX() + x);
+			}
+		}
+		
+		invalidate();
+	}
+	
+	public void stretchZ(float z) {
+		
+		int wallVertexCount = vertices.size();
+		if (wallVertexCount <= 0) {
+			return;
+		}
+		
+		Vertex vertex = (Vertex) vertices.elementAt(0);
+		float minZ = vertex.getZ();
+		float maxZ = vertex.getZ();
+		for (int i = 1; i < wallVertexCount; i++) {
+			vertex = (Vertex) vertices.elementAt(i);
+			minZ = Math.min(vertex.getZ(), minZ);
+			maxZ = Math.max(vertex.getZ(), maxZ);
+		}
+		
+		float middleZ = minZ + (maxZ - minZ) / 2;
+		
+		for (int i = 0; i < wallVertexCount; i++) {
+			vertex = (Vertex) vertices.elementAt(i);
+			float diff = vertex.getZ() - middleZ;
+			if (diff < 0) {
+				vertex.setZ(vertex.getZ() - z);
+			} else {
+				vertex.setZ(vertex.getZ() + z);
+			}
+		}
+		
+		invalidate();
+	}
+	
+	
+	public void stretchY(float y) {
+		
+		int wallVertexCount = vertices.size();
+		if (wallVertexCount <= 0) {
+			return;
+		}
+		
+		for (int i = 0; i < wallVertexCount; i++) {
+			Vertex vertex = (Vertex) vertices.elementAt(i);
+			vertex.setBottom(vertex.getBottom() - y);
+			vertex.setTop(vertex.getTop() + y);
+		}
+		floor.height -= y;
+		ceil.height += y;
+		
+		invalidate();
+	}
+	
 	/**
 	 * Should be called when a vertex has been modified after RoomDef creation
 	 */
