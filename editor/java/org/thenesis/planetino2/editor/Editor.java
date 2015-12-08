@@ -270,8 +270,8 @@ public class Editor implements KeyListener, MouseListener, MouseMotionListener {
 	public void applyMaterial(Material material) {
 		if (selectedMapObject instanceof RoomDef) {
 			RoomDef roomDef = (RoomDef)getSelectedMapObject();
-			roomDef.setFloorMaterial(roomDef.getFloor(), material);
-			roomDef.setCeilMaterial(roomDef.getCeil(), material);
+			roomDef.setFloorMaterial(material);
+			roomDef.setCeilMaterial(material);
 			Vector vertices = roomDef.getWallVertices();
 			int size = vertices.size();
 			for (int i = 0; i < size; i++) {
@@ -287,12 +287,12 @@ public class Editor implements KeyListener, MouseListener, MouseMotionListener {
 		} else if (selectedMapObject instanceof RoomDef.Ceil) {
 			RoomDef.Ceil ceil = (RoomDef.Ceil)getSelectedMapObject();
 			RoomDef roomDef = ceil.getRoomDef();
-			roomDef.setCeilMaterial(ceil, material);
+			roomDef.setCeilMaterial(material); // Warning: don't reuse ceil object after this !
 			notifyMapChanged();
 		} else if (selectedMapObject instanceof RoomDef.Floor) {
 			RoomDef.Floor floor = (RoomDef.Floor)getSelectedMapObject();
 			RoomDef roomDef = floor.getRoomDef();
-			roomDef.setFloorMaterial(floor, material);
+			roomDef.setFloorMaterial(material); // Warning: don't reuse floor object after this !
 			notifyMapChanged();
 		}
 	}

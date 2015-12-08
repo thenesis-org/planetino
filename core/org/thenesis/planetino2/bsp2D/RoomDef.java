@@ -108,6 +108,10 @@ public class RoomDef {
 		public float getHeight() {
 			return height;
 		}
+
+		public void setTextureBounds(Rectangle3D textureBounds) {
+			this.textureBounds = textureBounds;
+		}
 		
 	}
 	
@@ -296,8 +300,14 @@ public class RoomDef {
 		invalidate();
 	}
 	
-	public void setCeilMaterial(Ceil c, Material material) {
-		c.setMaterial(material);
+	public void setCeilMaterial(Material material) {
+		ceil.setMaterial(material);
+		Texture texture = material.texture;
+		if (texture != null) {
+			Rectangle3D texBounds = new Rectangle3D(new Vector3D(0, ceil.getHeight() , 0), new Vector3D(1, 0, 0), new Vector3D(0, 0, -1),
+					texture.getWidth(), texture.getHeight());
+			ceil.setTextureBounds(texBounds);
+		}
 		invalidate();
 	}
 	
@@ -306,8 +316,14 @@ public class RoomDef {
 		invalidate();
 	}
 	
-	public void setFloorMaterial(Floor f, Material material) {
-		f.setMaterial(material);
+	public void setFloorMaterial(Material material) {
+		floor.setMaterial(material);
+		Texture texture = material.texture;
+		if (texture != null) {
+			Rectangle3D texBounds = new Rectangle3D(new Vector3D(0, floor.getHeight() , 0), new Vector3D(1, 0, 0), new Vector3D(0, 0, -1),
+					texture.getWidth(), texture.getHeight());
+			floor.setTextureBounds(texBounds);
+		}
 		invalidate();
 	}
 
