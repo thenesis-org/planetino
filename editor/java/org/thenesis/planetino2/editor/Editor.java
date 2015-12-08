@@ -638,7 +638,8 @@ class EditorToolkit extends AWTToolkit {
 
 class MapInspector extends JPanel implements ActionListener {
 	private int newNodeSuffix = 1;
-	private static String ADD_COMMAND = "add";
+	private static String ADD_ROOM_COMMAND = "addRoom";
+	private static String ADD_VERTEX_COMMAND = "addVertex";
 	private static String REMOVE_COMMAND = "remove";
 	private static String CLEAR_COMMAND = "clear";
 
@@ -655,27 +656,55 @@ class MapInspector extends JPanel implements ActionListener {
 		treePanel = new DynamicTree();
 		populateTree(treePanel);
 
-		JButton addButton = new JButton("Add");
-		addButton.setActionCommand(ADD_COMMAND);
-		addButton.addActionListener(this);
+		JButton addRoomButton = new JButton("Add Room");
+		addRoomButton.setActionCommand(ADD_ROOM_COMMAND);
+		addRoomButton.addActionListener(this);
+		
+		JButton addVertexButton = new JButton("Add Vertex");
+		addVertexButton.setActionCommand(ADD_VERTEX_COMMAND);
+		addVertexButton.addActionListener(this);
 
 		JButton removeButton = new JButton("Remove");
 		removeButton.setActionCommand(REMOVE_COMMAND);
 		removeButton.addActionListener(this);
 
-		JButton clearButton = new JButton("Clear");
-		clearButton.setActionCommand(CLEAR_COMMAND);
-		clearButton.addActionListener(this);
+//		JButton clearButton = new JButton("Clear");
+//		clearButton.setActionCommand(CLEAR_COMMAND);
+//		clearButton.addActionListener(this);
 
 		//Lay everything out.
 		this.setPreferredSize(new Dimension(panelWidth, panelHeight));
 		add(treePanel, BorderLayout.CENTER);
 
 		JPanel panel = new JPanel(new GridLayout(0, 1));
-		panel.add(addButton);
+		panel.add(addRoomButton);
+		panel.add(addVertexButton);
 		panel.add(removeButton);
-		panel.add(clearButton);
+//		panel.add(clearButton);
 		add(panel, BorderLayout.LINE_END);
+	}
+	
+	private DefaultMutableTreeNode addRoomDef(RoomDef roomDef) {
+		
+		DefaultMutableTreeNode roomNode = treePanel.addObject(null, roomDef);
+		
+		RoomAmbientLightIntensity roomAmbientLightIntensity = new RoomAmbientLightIntensity(roomDef);
+		treePanel.addObject(roomNode, roomAmbientLightIntensity);
+		
+		Floor floor = roomDef.getFloor();
+		treePanel.addObject(roomNode, floor);
+		Ceil ceil = roomDef.getCeil();
+		treePanel.addObject(roomNode, ceil);
+		
+		Vector wallVertices = roomDef.getWallVertices();
+		int wallVertexCount = wallVertices.size();
+		for (int j = 0; j < wallVertexCount; j++) {
+			RoomDef.Vertex vertex = (RoomDef.Vertex) wallVertices.elementAt(j);
+			treePanel.addObject(roomNode, vertex);
+		}
+		
+		return roomNode;
+		
 	}
 
 	public void populateTree(DynamicTree treePanel) {
@@ -702,22 +731,7 @@ class MapInspector extends JPanel implements ActionListener {
 		int roomCount = rooms.size();
 		for (int i = 0; i < roomCount; i++) {
 			RoomDef roomDef = (RoomDef) rooms.elementAt(i);
-			DefaultMutableTreeNode node = treePanel.addObject(null, roomDef);
-			
-			RoomAmbientLightIntensity roomAmbientLightIntensity = new RoomAmbientLightIntensity(roomDef);
-			treePanel.addObject(node, roomAmbientLightIntensity);
-			
-			Floor floor = roomDef.getFloor();
-			treePanel.addObject(node, floor);
-			Ceil ceil = roomDef.getCeil();
-			treePanel.addObject(node, ceil);
-			
-			Vector wallVertices = roomDef.getWallVertices();
-			int wallVertexCount = wallVertices.size();
-			for (int j = 0; j < wallVertexCount; j++) {
-				RoomDef.Vertex vertex = (RoomDef.Vertex) wallVertices.elementAt(j);
-				treePanel.addObject(node, vertex);
-			}
+			addRoomDef(roomDef);
 		}
 		
 		
@@ -747,12 +761,75 @@ class MapInspector extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		String command = e.getActionCommand();
 
-		if (ADD_COMMAND.equals(command)) {
+		if (ADD_ROOM_COMMAND.equals(command)) {
 			//Add button clicked
-			treePanel.addObject("New Node " + newNodeSuffix++);
+			//treePanel.addObject("New Node " + newNodeSuffix++);
+			
+			MapLoader mapLoader = engine.getLoader();
+			
+			// Look for a a default material
+			Enumeration enumeration = mapLoader.getMaterials().elements();
+			if (!enumeration.hasMoreElements()) {
+				return;
+			}
+			Material material = null;
+			while(enumeration.hasMoreElements()) {
+				material = (Material)enumeration.nextElement();
+				if (material.texture != null) {
+					break;
+				}
+			}
+			if (material == null) {
+				Editor.log("Can't create new Room because no texture is available");
+				return;
+			}
+			
+			// Create the room with the default material at the player location
+			RoomDef room  = new RoomDef();
+			room.setName("New");
+			room.setFloor(10, material);
+			room.setCeil(200, material);
+			int size = 70;
+			Vector3D playerLocation = engine.getGameObjectManager().getPlayer().getLocation();
+			room.addVertex(playerLocation.x - size, playerLocation.z - size, material);
+			room.addVertex(playerLocation.x - size, playerLocation.z + size, 10, 32, material);
+			room.addVertex(playerLocation.x + size, playerLocation.z + size, material);
+			room.addVertex(playerLocation.x + size, playerLocation.z - size, material);
+			
+			Vector rooms = mapLoader.getRooms();
+			rooms.addElement(room);
+			
+			DefaultMutableTreeNode node = addRoomDef(room);
+			TreePath path = new TreePath(node.getPath());
+			treePanel.tree.setSelectionPath(path);
+			treePanel.tree.scrollPathToVisible(path);
+			
+			editor.notifyMapChanged();
+			
 		} else if (REMOVE_COMMAND.equals(command)) {
-			//Remove button clicked
-			treePanel.removeCurrentNode();
+			
+			Object selectedObject = getSelectedObject();
+			
+			if (selectedObject instanceof RoomDef) {
+				RoomDef room = (RoomDef) selectedObject;
+				MapLoader mapLoader = engine.getLoader();
+				Vector rooms = mapLoader.getRooms();
+				rooms.remove(room);
+				treePanel.removeCurrentNode();
+				editor.notifyMapChanged();
+			} else if (selectedObject instanceof RoomDef.Vertex) {
+				RoomDef.Vertex vertex = (RoomDef.Vertex) selectedObject;
+				RoomDef roomDef = vertex.getRoomDef();
+				Vector vertices = roomDef.getWallVertices();
+				if (vertices.size() > 3) { // We need at least 3 vertices (??)
+					roomDef.removeVertex(vertex);
+					treePanel.removeCurrentNode();
+					editor.notifyMapChanged();
+				}
+			}
+			
+			
+			
 		} else if (CLEAR_COMMAND.equals(command)) {
 			//Clear button clicked.
 			treePanel.clear();
@@ -832,13 +909,20 @@ class MapInspector extends JPanel implements ActionListener {
 		}
 
 		public DefaultMutableTreeNode addObject(DefaultMutableTreeNode parent, Object child, boolean shouldBeVisible) {
+			if (parent == null) {
+				parent = rootNode;
+			}
+			return addObject(parent, child, shouldBeVisible, parent.getChildCount());
+		}
+		
+		public DefaultMutableTreeNode addObject(DefaultMutableTreeNode parent, Object child, boolean shouldBeVisible, int index) {
 			DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(child);
 
 			if (parent == null) {
 				parent = rootNode;
 			}
 
-			treeModel.insertNodeInto(childNode, parent, parent.getChildCount());
+			treeModel.insertNodeInto(childNode, parent, index);
 
 			//Make sure the user can see the lovely new node.
 			if (shouldBeVisible) {

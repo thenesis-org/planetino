@@ -628,6 +628,11 @@ public class RoomDef {
 		invalidate();
 	}
 	
+	public void removeVertex(Vertex vertex) {
+		vertices.remove(vertex);
+		invalidate(); // Not really needed currently
+	}
+	
 	/**
 	 * Should be called when a vertex has been modified after RoomDef creation
 	 */
