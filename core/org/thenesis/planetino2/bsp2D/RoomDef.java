@@ -653,8 +653,9 @@ public class RoomDef {
 		invalidate(); // Not really needed currently
 	}
 	
-	public void addVertex(Vertex vertex) {
-		vertices.addElement(vertex);
+	public void addVertexAfter(Vertex newVertex, Vertex vertex) {
+		int index = vertices.indexOf(vertex);
+		vertices.insertElementAt(newVertex, index + 1);
 		invalidate(); // Not really needed currently
 	}
 	

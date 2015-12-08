@@ -664,7 +664,7 @@ class EditorToolkit extends AWTToolkit {
 class MapInspector extends JPanel implements ActionListener {
 	private int newNodeSuffix = 1;
 	private static String ADD_ROOM_COMMAND = "addRoom";
-	private static String ADD_VERTEX_COMMAND = "addVertex";
+	private static String COPY_VERTEX_COMMAND = "addVertex";
 	private static String REMOVE_COMMAND = "remove";
 	private static String CLEAR_COMMAND = "clear";
 
@@ -685,8 +685,8 @@ class MapInspector extends JPanel implements ActionListener {
 		addRoomButton.setActionCommand(ADD_ROOM_COMMAND);
 		addRoomButton.addActionListener(this);
 		
-		JButton addVertexButton = new JButton("Add Vertex");
-		addVertexButton.setActionCommand(ADD_VERTEX_COMMAND);
+		JButton addVertexButton = new JButton("Copy Vertex");
+		addVertexButton.setActionCommand(COPY_VERTEX_COMMAND);
 		addVertexButton.addActionListener(this);
 
 		JButton removeButton = new JButton("Remove");
@@ -832,35 +832,21 @@ class MapInspector extends JPanel implements ActionListener {
 			editor.notifyMapChanged();
 			
 		}
-		if (ADD_VERTEX_COMMAND.equals(command)) {
+		if (COPY_VERTEX_COMMAND.equals(command)) {
 			Object selectedObject = getSelectedObject();
-			DefaultMutableTreeNode roomDefNode = getSelectedNode();
-			
-			RoomDef roomDef = null;
-			if (selectedObject instanceof RoomDef) {
-				roomDef = (RoomDef) selectedObject;
-			} else {
-				DefaultMutableTreeNode node = (DefaultMutableTreeNode)roomDefNode.getParent();
-				if (node == null) {
-					return;
-				} 
-				Object obj = node.getUserObject();
-				if (obj instanceof RoomDef) {
-					roomDef = (RoomDef) obj;
-					roomDefNode = node;
-				} else {
-					return;
-				}
+			if (!(selectedObject instanceof RoomDef.Vertex)) {
+				return;
 			}
-
-			Vector vertices = roomDef.getWallVertices();
-			RoomDef.Vertex vertex = (RoomDef.Vertex) vertices.lastElement();
+			
+			RoomDef.Vertex vertex = (RoomDef.Vertex) selectedObject;
+			RoomDef roomDef = vertex.getRoomDef();
 			RoomDef.Vertex newVertex = (RoomDef.Vertex) vertex.clone();
-			roomDef.addVertex(newVertex);
-			treePanel.addObject(roomDefNode, newVertex, true);
+			roomDef.addVertexAfter(newVertex, vertex);
+			DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode)getSelectedNode();
+			DefaultMutableTreeNode roomDefNode = (DefaultMutableTreeNode)selectedNode.getParent();
+			treePanel.addObject(roomDefNode, newVertex, true, roomDefNode.getIndex(selectedNode) + 1);
 			
 			editor.notifyMapChanged();
-
 		} else if (REMOVE_COMMAND.equals(command)) {
 			
 			Object selectedObject = getSelectedObject();
