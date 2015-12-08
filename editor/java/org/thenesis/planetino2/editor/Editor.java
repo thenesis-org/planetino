@@ -465,6 +465,20 @@ class Map2DPanel extends JPanel implements MouseListener {
 					map2DGraphics.drawLine(x1, y1, x2, y2);
 				}
 			}
+			
+			Vector vertices = roomDef.getWallVertices();
+			int size = vertices.size();
+			for (int j = 0; j < size; j++) {
+				RoomDef.Vertex vertex = (RoomDef.Vertex) vertices.elementAt(j);
+				if (editor.getSelectedMapObject() == vertex) {
+					//Editor.log(bspPolygon.getLine().x1 + " " + bspPolygon.getLine().y1 + " " + bspPolygon.getLine().x2 + " " + bspPolygon.getLine().y2);
+					int x = (int) ((vertex.getX() + shiftX) / zoomFactorX);
+					int y = (int) ((vertex.getZ() + shiftY) / zoomFactorY);
+					//System.out.println(x + " " + y);
+					map2DGraphics.setColor(Color.RED);
+					map2DGraphics.fillRect(x - 2, y - 2, 4, 4);
+				}
+			}
 		}
 	}
 
