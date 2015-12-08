@@ -210,6 +210,10 @@ public class RoomDef {
 		public RoomDef getRoomDef() {
 			return roomDef;
 		}
+		
+		public Object clone() {
+			return new Vertex(roomDef, x, z, bottom, top, material, null);
+		}
 
 		@Override
 		public String toString() {
@@ -629,7 +633,12 @@ public class RoomDef {
 	}
 	
 	public void removeVertex(Vertex vertex) {
-		vertices.remove(vertex);
+		vertices.removeElement(vertex);
+		invalidate(); // Not really needed currently
+	}
+	
+	public void addVertex(Vertex vertex) {
+		vertices.addElement(vertex);
 		invalidate(); // Not really needed currently
 	}
 	

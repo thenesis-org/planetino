@@ -806,6 +806,36 @@ class MapInspector extends JPanel implements ActionListener {
 			
 			editor.notifyMapChanged();
 			
+		}
+		if (ADD_VERTEX_COMMAND.equals(command)) {
+			Object selectedObject = getSelectedObject();
+			DefaultMutableTreeNode roomDefNode = getSelectedNode();
+			
+			RoomDef roomDef = null;
+			if (selectedObject instanceof RoomDef) {
+				roomDef = (RoomDef) selectedObject;
+			} else {
+				DefaultMutableTreeNode node = (DefaultMutableTreeNode)roomDefNode.getParent();
+				if (node == null) {
+					return;
+				} 
+				Object obj = node.getUserObject();
+				if (obj instanceof RoomDef) {
+					roomDef = (RoomDef) obj;
+					roomDefNode = node;
+				} else {
+					return;
+				}
+			}
+
+			Vector vertices = roomDef.getWallVertices();
+			RoomDef.Vertex vertex = (RoomDef.Vertex) vertices.lastElement();
+			RoomDef.Vertex newVertex = (RoomDef.Vertex) vertex.clone();
+			roomDef.addVertex(newVertex);
+			treePanel.addObject(roomDefNode, newVertex, true);
+			
+			editor.notifyMapChanged();
+
 		} else if (REMOVE_COMMAND.equals(command)) {
 			
 			Object selectedObject = getSelectedObject();
@@ -834,6 +864,10 @@ class MapInspector extends JPanel implements ActionListener {
 			//Clear button clicked.
 			treePanel.clear();
 		}
+	}
+	
+	public DefaultMutableTreeNode getSelectedNode() {
+		return treePanel.getSelectedNode();
 	}
 	
 	public Object getSelectedObject() {
@@ -929,6 +963,12 @@ class MapInspector extends JPanel implements ActionListener {
 				tree.scrollPathToVisible(new TreePath(childNode.getPath()));
 			}
 			return childNode;
+		}
+		
+		
+		public DefaultMutableTreeNode getSelectedNode() {
+			DefaultMutableTreeNode node = (DefaultMutableTreeNode) (tree.getSelectionPath().getLastPathComponent());
+			return node;
 		}
 		
 		public Object getSelectedObject() {
