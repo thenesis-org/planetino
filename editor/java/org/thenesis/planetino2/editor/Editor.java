@@ -268,7 +268,18 @@ public class Editor implements KeyListener, MouseListener, MouseMotionListener {
 	}
 
 	public void applyMaterial(Material material) {
-		if (selectedMapObject instanceof RoomDef.Vertex) {
+		if (selectedMapObject instanceof RoomDef) {
+			RoomDef roomDef = (RoomDef)getSelectedMapObject();
+			roomDef.setFloorMaterial(roomDef.getFloor(), material);
+			roomDef.setCeilMaterial(roomDef.getCeil(), material);
+			Vector vertices = roomDef.getWallVertices();
+			int size = vertices.size();
+			for (int i = 0; i < size; i++) {
+				RoomDef.Vertex vertex = (RoomDef.Vertex)vertices.elementAt(i);
+				roomDef.setVertexMaterial(vertex, material);
+			}
+			notifyMapChanged();
+		} else if (selectedMapObject instanceof RoomDef.Vertex) {
 			RoomDef.Vertex vertex = (RoomDef.Vertex)getSelectedMapObject();
 			RoomDef roomDef = vertex.getRoomDef();
 			roomDef.setVertexMaterial(vertex, material);
