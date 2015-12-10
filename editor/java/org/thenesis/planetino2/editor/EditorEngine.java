@@ -142,7 +142,7 @@ public class EditorEngine extends GameCore3D {
 		((BSPRenderer) polygonRenderer).setGameObjectManager(gameObjectManager);
 
 		createGameObjects(loader.getObjectsInMap());
-		Transform3D start = loader.getPlayerStartLocation();
+		Transform3D start = loader.getPlayerStartTransform();
 		gameObjectManager.getPlayer().getTransform().setTo(start);
 
 		//		CollisionDetection collisionDetection = new CollisionDetectionWithSliding(bspTree);
@@ -301,6 +301,11 @@ public class EditorEngine extends GameCore3D {
 	 */
 	public void rebuildMap() {
 		bspTree = loader.rebuildBSPTree();
+	}
+
+	public void saveMap(String filename) {
+		MapSaver mapSaver = new MapSaver(loader, filename);
+		mapSaver.save();
 	}
 	
 	

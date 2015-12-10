@@ -52,6 +52,8 @@ import java.util.Vector;
  */
 public class PolygonGroup implements Transformable {
 
+	public static final String NO_NAME = "unnamed";
+	
 	private String name;
 	private String filename;
 	private Vector objects;
@@ -62,7 +64,7 @@ public class PolygonGroup implements Transformable {
 	 Creates a new, empty PolygonGroup.
 	 */
 	public PolygonGroup() {
-		this("unnamed");
+		this(NO_NAME);
 	}
 
 	/**

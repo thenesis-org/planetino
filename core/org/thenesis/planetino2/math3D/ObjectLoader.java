@@ -552,8 +552,10 @@ public class ObjectLoader {
 			} else if (command.equals("map_Kd")) {
 				// give the current material a texture
 				String name = tokenizer.nextToken();
-				currentMaterial.textureFileName = name;
-				currentMaterial.texture = (ShadedTexture) Texture.createTexture(path, name, true);
+				if (!name.equals(currentMaterial.textureFileName)) {
+					currentMaterial.textureFileName = name;
+					currentMaterial.texture = (ShadedTexture) Texture.createTexture(path, name, true);
+				}
 				//				File file = new File(path, name);
 				//				if (!file.equals(currentMaterial.sourceFile)) {
 				//					currentMaterial.sourceFile = file;

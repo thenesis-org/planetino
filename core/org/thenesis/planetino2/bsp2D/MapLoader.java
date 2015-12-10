@@ -224,7 +224,7 @@ public class MapLoader extends ObjectLoader {
     /**
         Gets the player start location defined in the map file.
     */
-    public Transform3D getPlayerStartLocation() {
+    public Transform3D getPlayerStartTransform() {
         return playerStart;
     }
 

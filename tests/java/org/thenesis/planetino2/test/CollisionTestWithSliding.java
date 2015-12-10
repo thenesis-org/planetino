@@ -121,7 +121,7 @@ public class CollisionTestWithSliding extends ShooterCore {
 		((BSPRenderer) polygonRenderer).setGameObjectManager(gameObjectManager);
 
 		createGameObjects(loader.getObjectsInMap());
-		Transform3D start = loader.getPlayerStartLocation();
+		Transform3D start = loader.getPlayerStartTransform();
 		gameObjectManager.getPlayer().getTransform().setTo(start);
 	}
 

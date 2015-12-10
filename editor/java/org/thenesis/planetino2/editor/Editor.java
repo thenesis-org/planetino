@@ -33,12 +33,16 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.JTree;
+import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
@@ -104,6 +108,8 @@ public class Editor implements KeyListener, MouseListener, MouseMotionListener {
 	}
 
 	private void createAndShowGUI() {
+		
+		/* Engine */
 
 		Toolkit.setToolkit(new EditorToolkit(this));
 
@@ -145,11 +151,33 @@ public class Editor implements KeyListener, MouseListener, MouseMotionListener {
 		//			// TODO Auto-generated catch block
 		//			e.printStackTrace();
 		//		}
+		
+		/* Frame */
 
 		log("Created GUI on EDT? " + SwingUtilities.isEventDispatchThread());
 		editorFrame = new JFrame("Planetino Map Editor");
 		editorFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		editorFrame.setLayout(new GridLayout(2, 3));
+		
+		/* Menu */
+		
+		JMenuBar menuBar = new JMenuBar();
+		JMenu menu = new JMenu("File");
+		menu.setMnemonic(KeyEvent.VK_F);
+		menuBar.add(menu);
+		JMenuItem menuItem = new JMenuItem("Save", KeyEvent.VK_S);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
+		menuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				String filename = "trunk/demos/resources/res/test.map";
+				engine.saveMap(filename);
+			}
+		});
+		menu.add(menuItem);
+		editorFrame.setJMenuBar(menuBar);
+		
+		/* Panels */
+		
 		panel3D = screen.getPanel();
 		//panel3D.setBorder(BorderFactory.createLineBorder(Color.ORANGE));
 		editorFrame.add(panel3D);
