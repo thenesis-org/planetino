@@ -31,6 +31,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -53,6 +54,7 @@ import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
@@ -96,6 +98,8 @@ public class Editor implements KeyListener, MouseListener, MouseMotionListener {
 	private ObjectInspector objectInspector;
 	private ResourceBrowser resourceBrowser;
 	private Object selectedMapObject;
+	
+	private JFileChooser fileChooser = new JFileChooser();
 
 	public static void main(String[] args) {
 
@@ -141,6 +145,7 @@ public class Editor implements KeyListener, MouseListener, MouseMotionListener {
 		inputManager.mapToKey(EditorEngine.zoom, KeyEvent.VK_S);
 
 		engine = new EditorEngine(screen, inputManager);
+		engine.loadMap("quake-one_bot.map");
 		engine.init();
 		engine.tick(DEFAULT_ELAPSED_TIME);
 		//		Thread engineThread = new Thread(engine);
@@ -159,13 +164,64 @@ public class Editor implements KeyListener, MouseListener, MouseMotionListener {
 		editorFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		editorFrame.setLayout(new GridLayout(2, 3));
 		
+		/* File chooser */
+		
+		fileChooser = new JFileChooser("trunk/demos/resources/res");
+		fileChooser.setAcceptAllFileFilterUsed(false);
+		fileChooser.addChoosableFileFilter(new FileFilter() {
+
+			@Override
+			public boolean accept(File f) {
+				String extension = getExtension(f);
+				if (extension.equals("map")) {
+					return true;
+				}
+				return false;
+			}
+
+			@Override
+			public String getDescription() {
+				return ".map";
+			}
+			
+		    public String getExtension(File f) {
+		        String ext = null;
+		        String s = f.getName();
+		        int i = s.lastIndexOf('.');
+
+		        if (i > 0 &&  i < s.length() - 1) {
+		            ext = s.substring(i+1).toLowerCase();
+		        }
+		        return ext;
+		    }
+			
+		});
+		
 		/* Menu */
 		
 		JMenuBar menuBar = new JMenuBar();
 		JMenu menu = new JMenu("File");
 		menu.setMnemonic(KeyEvent.VK_F);
 		menuBar.add(menu);
-		JMenuItem menuItem = new JMenuItem("Save", KeyEvent.VK_S);
+		JMenuItem menuItem = new JMenuItem("Load", KeyEvent.VK_L);
+		menuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				int returnVal = fileChooser.showOpenDialog(editorFrame);
+		        if (returnVal == JFileChooser.APPROVE_OPTION) {
+		            File file = fileChooser.getSelectedFile();
+		            //String filename = "trunk/demos/resources/res/test.map";
+		            String filename = file.getName();
+		            engine.loadMap(filename);
+		    		engine.init();
+		    		engine.tick(DEFAULT_ELAPSED_TIME);
+		    		mapInspector.populateTree();
+		    		notifyMapChanged();
+		        }
+		       
+			}
+		});
+		menu.add(menuItem);
+		menuItem = new JMenuItem("Save", KeyEvent.VK_S);
 		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
@@ -409,10 +465,8 @@ class Map2DPanel extends JPanel implements MouseListener {
 	final Dimension dimension;
 	private int map2DWidth = 320;
 	private int map2DHeight = 320;
-	private MapLoader mapLoader;
 	private Graphics map2DGraphics;
 	private Editor editor;
-	private EditorEngine engine;
 
 	float zoomFactorX;
 	float zoomFactorY;
@@ -421,8 +475,6 @@ class Map2DPanel extends JPanel implements MouseListener {
 
 	public Map2DPanel(Editor editor, int width, int height) {
 		this.editor = editor;
-		this.engine = editor.getEngine();
-		this.mapLoader = engine.getLoader();
 		this.map2DWidth = width;
 		this.map2DHeight = height;
 		setFocusable(true);
@@ -435,6 +487,9 @@ class Map2DPanel extends JPanel implements MouseListener {
 
 	public void drawMap2D() {
 
+		EditorEngine engine = editor.getEngine();
+		MapLoader mapLoader = engine.getLoader();
+		
 		Vector rooms = mapLoader.getRooms();
 		int roomCount = rooms.size();
 
@@ -511,6 +566,7 @@ class Map2DPanel extends JPanel implements MouseListener {
 	}
 
 	public void drawPlayer() {
+		EditorEngine engine = editor.getEngine();
 		GameObjectManager gameObjectManager = engine.getGameObjectManager();
 		Player player = (Player) gameObjectManager.getPlayer();
 		int x = (int) ((player.getX() + shiftX) / zoomFactorX);
@@ -532,6 +588,8 @@ class Map2DPanel extends JPanel implements MouseListener {
 	}
 	
 	public void drawObjects() {
+		EditorEngine engine = editor.getEngine();
+		MapLoader mapLoader = engine.getLoader();
 		Vector objects = mapLoader.getObjectsInMap();
 		int objectCount = objects.size();
 		for (int i = 0; i < objectCount; i++) {
@@ -549,6 +607,8 @@ class Map2DPanel extends JPanel implements MouseListener {
 	}
 	
 	public void drawLights() {
+		EditorEngine engine = editor.getEngine();
+		MapLoader mapLoader = engine.getLoader();
 		Vector lights = mapLoader.getLights();
 		int objectCount = lights.size();
 		for (int i = 0; i < objectCount; i++) {
@@ -698,16 +758,14 @@ class MapInspector extends JPanel implements ActionListener {
 
 	private DynamicTree treePanel;
 	private Editor editor;
-	private EditorEngine engine;
 
 	public MapInspector(Editor editor, int panelWidth, int panelHeight) {
 		super(new BorderLayout());
 		this.editor = editor;
-		this.engine = editor.getEngine();
 
 		//Create the components.
 		treePanel = new DynamicTree();
-		populateTree(treePanel);
+		populateTree();
 
 		JButton addRoomButton = new JButton("Add Room");
 		addRoomButton.setActionCommand(ADD_ROOM_COMMAND);
@@ -760,7 +818,7 @@ class MapInspector extends JPanel implements ActionListener {
 		
 	}
 
-	public void populateTree(DynamicTree treePanel) {
+	public void populateTree() {
 		//		String p1Name = new String("Parent 1");
 		//		String p2Name = new String("Parent 2");
 		//		String c1Name = new String("Child 1");
@@ -776,6 +834,10 @@ class MapInspector extends JPanel implements ActionListener {
 		//
 		//		treePanel.addObject(p2, c1Name);
 		//		treePanel.addObject(p2, c2Name);
+		
+		treePanel.clear();
+		
+		EditorEngine engine = editor.getEngine();
 		MapLoader mapLoader = engine.getLoader();
 		
 		/* Rooms */
@@ -817,7 +879,7 @@ class MapInspector extends JPanel implements ActionListener {
 		if (ADD_ROOM_COMMAND.equals(command)) {
 			//Add button clicked
 			//treePanel.addObject("New Node " + newNodeSuffix++);
-			
+			EditorEngine engine = editor.getEngine();
 			MapLoader mapLoader = engine.getLoader();
 			
 			// Look for a a default material
@@ -881,6 +943,7 @@ class MapInspector extends JPanel implements ActionListener {
 			
 			if (selectedObject instanceof RoomDef) {
 				RoomDef room = (RoomDef) selectedObject;
+				EditorEngine engine = editor.getEngine();
 				MapLoader mapLoader = engine.getLoader();
 				Vector rooms = mapLoader.getRooms();
 				rooms.remove(room);

@@ -90,7 +90,9 @@ public class EditorEngine extends GameCore3D {
 	public EditorEngine(Screen screen, InputManager inputManager) {
 		super(screen, inputManager);
 		this.inputManager = inputManager;
-		
+	}
+	
+	public void loadMap(String filename) {
 		
 		float ambientLightIntensity = .2f;
 		Vector lights = new Vector();
@@ -101,11 +103,12 @@ public class EditorEngine extends GameCore3D {
 		try {
 			//bspTree = loader.loadMap("/res/", "cacao_demo.map");
 			//bspTree = loader.loadMap("/res/", "quake.map"); //quake-one_bot.map
-			bspTree = loader.loadMap("/res/", "quake-one_bot.map");
+			bspTree = loader.loadMap("/res/", filename);
 			//bspTree = loader.loadMap("/res/", "linuxtag.map");
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
+		
 	}
 	
 	@Override
