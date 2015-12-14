@@ -230,6 +230,23 @@ public class Editor implements KeyListener, MouseListener, MouseMotionListener {
 			}
 		});
 		menu.add(menuItem);
+		menuItem = new JMenuItem("Save As");
+		menuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				int returnVal = fileChooser.showSaveDialog(editorFrame);
+		        if (returnVal == JFileChooser.APPROVE_OPTION) {
+		            File file = fileChooser.getSelectedFile();
+					try {
+						 //String filename = "trunk/demos/resources/res/test.map";
+						String filename = file.getCanonicalPath();
+						engine.saveMap(filename);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+		        }
+			}
+		});
+		menu.add(menuItem);
 		editorFrame.setJMenuBar(menuBar);
 		
 		/* Panels */
