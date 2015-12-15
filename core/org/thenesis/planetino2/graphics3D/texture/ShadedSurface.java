@@ -55,7 +55,7 @@ import org.thenesis.planetino2.math3D.Vector3D;
  A ShadedSurface is a pre-shaded Texture that maps onto a
  polygon.
  */
-public class ShadedSurface extends Texture {
+public abstract class ShadedSurface extends Texture {
 
 	public static final int SURFACE_BORDER_SIZE = 1;
 
@@ -65,36 +65,24 @@ public class ShadedSurface extends Texture {
 	public static final int SHADE_RES_SQ = SHADE_RES * SHADE_RES;
 	public static final int SHADE_RES_SQ_BITS = SHADE_RES_BITS * 2;
 
-	private int[] buffer;
-	//private SoftReference bufferReference;
-	private boolean dirty;
-	private ShadedTexture sourceTexture;
-	private Rectangle3D sourceTextureBounds;
-	private Rectangle3D surfaceBounds;
-	private byte[] shadeMap;
-	private int shadeMapWidth;
-	private int shadeMapHeight;
+	protected boolean dirty;
+	protected ShadedTexture sourceTexture;
+	protected Rectangle3D sourceTextureBounds;
+	protected Rectangle3D surfaceBounds;
+	protected byte[] shadeMap;
+	protected int shadeMapWidth;
+	protected int shadeMapHeight;
 
 	// for incrementally calculating shade values
-	private int shadeValue;
-	private int shadeValueInc;
+	protected int shadeValue;
+	protected int shadeValueInc;
 
 	/**
 	 Creates a ShadedSurface with the specified width and
 	 height.
 	 */
 	public ShadedSurface(int width, int height) {
-		this(null, width, height);
-	}
-
-	/**
-	 Creates a ShadedSurface with the specified buffer,
-	 width and height.
-	 */
-	public ShadedSurface(int[] buffer, int width, int height) {
 		super(width, height);
-		this.buffer = buffer;
-		//bufferReference = new SoftReference(buffer);
 		sourceTextureBounds = new Rectangle3D();
 		dirty = true;
 	}
@@ -142,8 +130,15 @@ public class ShadedSurface extends Texture {
 		surfaceBounds.setWidth(width);
 		surfaceBounds.setHeight(height);
 
-		// create the shaded surface texture
-		ShadedSurface surface = new ShadedSurface(width, height);
+		// Create the shaded surface texture 
+		// If surface is too big, disable lightning for now (FIXME)
+ 		ShadedSurface surface = null;
+ 		int surfaceSize = width * height;
+		if (surfaceSize > (1024 * 1024)) {
+			surface = new DisabledShadingSurface(width, height, ambientLightIntensity);
+		} else {
+			surface = new PreShadedSurface(width, height);
+		}
 		surface.setTexture(texture, textureBounds);
 		surface.setSurfaceBounds(surfaceBounds);
 
@@ -160,22 +155,7 @@ public class ShadedSurface extends Texture {
 	 the bounds of the surface; otherwise an
 	 ArrayIndexOutOfBoundsException occurs.
 	 */
-	public int getColor(int x, int y) {
-		
-//		Texture.print(buffer, width, height);
-		
-		return buffer[x + y * width]; // << 16 | 0xFF000000;
-		
-		//Texture.print(buffer, width, height);
-		//try {
-		//return (0xFF000000 | Color.convertRBG565To888(buffer[x + y * width]));
-		//return sourceTexture.getColor(x, y);
-		//}
-		//catch (ArrayIndexOutOfBoundsException ex) {
-		//    return -2048;
-		//}
-
-	}
+	public abstract int getColor(int x, int y);
 
 //	private int getColor565(int x, int y) {
 //		return buffer[x + y * width];
@@ -218,40 +198,15 @@ public class ShadedSurface extends Texture {
 	}
 
 	/**
-	 Creates a new surface and add a SoftReference to it.
-	 */
-	protected void newSurface(int width, int height) {
-		buffer = new int[width * height];
-		//bufferReference = new SoftReference(buffer);
-	}
-
-	/**
 	 Clears this surface, allowing the garbage collector to
 	 remove it from memory if needed.
 	 */
-	public void clearSurface() {
-		buffer = null;
-	}
+	public abstract void clearSurface();
 
 	/**
 	 Checks if the surface has been cleared.
 	 */
-	public boolean isCleared() {
-		return (buffer == null);
-	}
-
-	/**
-	 If the buffer has been previously built and cleared but
-	 not yet removed from memory by the garbage collector,
-	 then this method attempts to retrieve it. Returns true if
-	 successfull.
-	 */
-	    public boolean retrieveSurface() {
-//	        if (buffer == null) {
-//	            buffer = (short[])bufferReference.get();
-//	        }
-	        return !(buffer == null);
-	    }
+	public abstract boolean isCleared();
 
 	/**
 	 Sets the source texture for this ShadedSurface.
@@ -291,143 +246,41 @@ public class ShadedSurface extends Texture {
 	 rebuilt. If not, the surface is built by tiling the
 	 source texture and apply the shade map.
 	 */
-	public void buildSurface() {
+	public abstract void buildSurface();
 
-		        if (retrieveSurface()) {
-		            return;
-		        }
+	/**
+	    Gets the shade (from the shade map) for the  specified
+	    (u,v) location. The u and v values should be
+	    left-shifted by SHADE_RES_BITS, and the extra bits are
+	    used to interpolate between values. For an interpolation
+	    example, a location halfway between shade values 1 and 3
+	    would return 2.
+	*/
+	protected int getInterpolatedShade(int u, int v) {
 
-		        int width = (int)surfaceBounds.getWidth();
-		        int height = (int)surfaceBounds.getHeight();
-		
-		        // create a new surface (buffer)
-		        newSurface(width, height);
-		
-		        // builds the surface.
-		        // assume surface bounds and texture bounds are aligned
-		        // (possibly with different origins)
-		        Vector3D origin = sourceTextureBounds.getOrigin();
-		        Vector3D directionU = sourceTextureBounds.getDirectionU();
-		        Vector3D directionV = sourceTextureBounds.getDirectionV();
-		
-		        Vector3D d = new Vector3D(surfaceBounds.getOrigin());
-		        d.subtract(origin);
-		        int startU = (int)((d.getDotProduct(directionU) -
-		            SURFACE_BORDER_SIZE));
-		        int startV = (int)((d.getDotProduct(directionV) -
-		            SURFACE_BORDER_SIZE));
-		        int offset = 0;
-		        int shadeMapOffsetU = SHADE_RES - SURFACE_BORDER_SIZE -
-		            startU;
-		        int shadeMapOffsetV = SHADE_RES - SURFACE_BORDER_SIZE -
-		            startV;
-		
-		        for (int v=startV; v<startV + height; v++) {
-		            sourceTexture.setCurrRow(v);
-		            int u = startU;
-		            int amount = SURFACE_BORDER_SIZE;
-		            while (u < startU + width) {
-		                getInterpolatedShade(u + shadeMapOffsetU,
-		                    v + shadeMapOffsetV);
-		
-		                // keep drawing until we need to recalculate
-		                // the interpolated shade. (every SHADE_RES pixels)
-		                int endU = Math.min(startU + width, u + amount);
-		                while (u < endU) {
-		                    buffer[offset++] =
-		                        sourceTexture.getColorCurrRow(u,
-		                             shadeValue >> SHADE_RES_SQ_BITS);
-		                    shadeValue+=shadeValueInc;
-		                    u++;
-		                }
-		                amount = SHADE_RES;
-		            }
-		        }
+		int fracU = u & SHADE_RES_MASK;
+		int fracV = v & SHADE_RES_MASK;
 
-		// if the surface bounds is not aligned with the texture
-		// bounds, use this (slower) code.
-		/*Vector3D origin = sourceTextureBounds.getOrigin();
-		 Vector3D directionU = sourceTextureBounds.getDirectionU();
-		 Vector3D directionV = sourceTextureBounds.getDirectionV();
+		int offset = (u >> SHADE_RES_BITS) + ((v >> SHADE_RES_BITS) * shadeMapWidth);
 
-		 Vector3D d = new Vector3D(surfaceBounds.getOrigin());
-		 d.subtract(origin);
-		 int initTextureU = (int)(SCALE *
-		 (d.getDotProduct(directionU) - SURFACE_BORDER_SIZE));
-		 int initTextureV = (int)(SCALE *
-		 (d.getDotProduct(directionV) - SURFACE_BORDER_SIZE));
-		 int textureDu1 = (int)(SCALE * directionU.getDotProduct(
-		 surfaceBounds.getDirectionV()));
-		 int textureDv1 = (int)(SCALE * directionV.getDotProduct(
-		 surfaceBounds.getDirectionV()));
-		 int textureDu2 = (int)(SCALE * directionU.getDotProduct(
-		 surfaceBounds.getDirectionU()));
-		 int textureDv2 = (int)(SCALE * directionV.getDotProduct(
-		 surfaceBounds.getDirectionU()));
+		int shade00 = (SHADE_RES - fracV) * shadeMap[offset];
+		int shade01 = fracV * shadeMap[offset + shadeMapWidth];
+		int shade10 = (SHADE_RES - fracV) * shadeMap[offset + 1];
+		int shade11 = fracV * shadeMap[offset + shadeMapWidth + 1];
 
-		 int shadeMapOffset = SHADE_RES - SURFACE_BORDER_SIZE;
+		shadeValue = SHADE_RES_SQ / 2 + (SHADE_RES - fracU) * shade00 + (SHADE_RES - fracU) * shade01 + fracU * shade10 + fracU * shade11;
 
-		 for (int v=0; v<height; v++) {
-		 int textureU = initTextureU;
-		 int textureV = initTextureV;
+		// the value to increment as u increments
+		shadeValueInc = -shade00 - shade01 + shade10 + shade11;
 
-		 for (int u=0; u<width; u++) {
-		 if (((u + shadeMapOffset) & SHADE_RES_MASK) == 0) {
-		 getInterpolatedShade(u + shadeMapOffset,
-		 v + shadeMapOffset);
-		 }
-		 buffer[offset++] = sourceTexture.getColor(
-		 textureU >> SCALE_BITS,
-		 textureV >> SCALE_BITS,
-		 shadeValue >> SHADE_RES_SQ_BITS);
-		 textureU+=textureDu2;
-		 textureV+=textureDv2;
-		 shadeValue+=shadeValueInc;
-
-		 }
-		 initTextureU+=textureDu1;
-		 initTextureV+=textureDv1;
-		 }*/
+		return shadeValue >> SHADE_RES_SQ_BITS;
 	}
-
-	    /**
-	        Gets the shade (from the shade map) for the  specified
-	        (u,v) location. The u and v values should be
-	        left-shifted by SHADE_RES_BITS, and the extra bits are
-	        used to interpolate between values. For an interpolation
-	        example, a location halfway between shade values 1 and 3
-	        would return 2.
-	    */
-	    public int getInterpolatedShade(int u, int v) {
-	
-	        int fracU = u & SHADE_RES_MASK;
-	        int fracV = v & SHADE_RES_MASK;
-	
-	        int offset = (u >> SHADE_RES_BITS) +
-	            ((v >> SHADE_RES_BITS) * shadeMapWidth);
-	
-	        int shade00 = (SHADE_RES-fracV) * shadeMap[offset];
-	        int shade01 = fracV * shadeMap[offset + shadeMapWidth];
-	        int shade10 = (SHADE_RES-fracV) * shadeMap[offset + 1];
-	        int shade11 = fracV * shadeMap[offset + shadeMapWidth + 1];
-	
-	        shadeValue = SHADE_RES_SQ/2 +
-	            (SHADE_RES-fracU) * shade00 +
-	            (SHADE_RES-fracU) * shade01 +
-	            fracU * shade10 +
-	            fracU * shade11;
-	
-	        // the value to increment as u increments
-	        shadeValueInc = -shade00 - shade01 + shade10 + shade11;
-	
-	        return shadeValue >> SHADE_RES_SQ_BITS;
-	    }
 
 	/**
 	 Gets the shade (from the built shade map) for the
 	 specified (u,v) location.
 	 */
-	public int getShade(int u, int v) {
+	protected int getShade(int u, int v) {
 		return shadeMap[u + v * shadeMapWidth];
 	}
 
@@ -435,7 +288,7 @@ public class ShadedSurface extends Texture {
 	 Builds the shade map for this surface from the specified
 	 list of point lights and the ambiant light intensity.
 	 */
-	public void buildShadeMap(Vector pointLights, float ambientLightIntensity) {
+	protected void buildShadeMap(Vector pointLights, float ambientLightIntensity) {
 
 		Vector3D surfaceNormal = surfaceBounds.getNormal();
 

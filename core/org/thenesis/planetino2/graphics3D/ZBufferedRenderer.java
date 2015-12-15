@@ -50,6 +50,7 @@ import org.thenesis.planetino2.game.GameObjectRenderer;
 import org.thenesis.planetino2.graphics.Graphics;
 import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.graphics3D.texture.PowerOf2Texture;
+import org.thenesis.planetino2.graphics3D.texture.PreShadedSurface;
 import org.thenesis.planetino2.graphics3D.texture.ShadedSurface;
 import org.thenesis.planetino2.graphics3D.texture.ShadedTexture;
 import org.thenesis.planetino2.graphics3D.texture.SmallShadedSurface;
@@ -94,7 +95,7 @@ public class ZBufferedRenderer extends ShadedSurfacePolygonRenderer implements G
 		scanRenderers = new Hashtable();
 		scanRenderers.put(PowerOf2Texture.class, new PowerOf2TextureZRenderer());
 		scanRenderers.put(ShadedTexture.class, new ShadedTextureZRenderer());
-		scanRenderers.put(ShadedSurface.class, new ShadedSurfaceZRenderer());
+		scanRenderers.put(PreShadedSurface.class, new ShadedSurfaceZRenderer());
 	}
 
 	public void startFrame(Screen screen) {

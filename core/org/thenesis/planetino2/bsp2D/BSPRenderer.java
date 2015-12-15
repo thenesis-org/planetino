@@ -51,8 +51,9 @@ import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.graphics3D.ScanConverter;
 import org.thenesis.planetino2.graphics3D.SortedScanConverter;
 import org.thenesis.planetino2.graphics3D.ZBufferedRenderer;
+import org.thenesis.planetino2.graphics3D.texture.DisabledShadingSurface;
 import org.thenesis.planetino2.graphics3D.texture.PowerOf2Texture;
-import org.thenesis.planetino2.graphics3D.texture.ShadedSurface;
+import org.thenesis.planetino2.graphics3D.texture.PreShadedSurface;
 import org.thenesis.planetino2.graphics3D.texture.ShadedTexture;
 import org.thenesis.planetino2.graphics3D.texture.SmallShadedSurface;
 import org.thenesis.planetino2.graphics3D.texture.Texture;
@@ -113,24 +114,20 @@ public class BSPRenderer extends ZBufferedRenderer
         destPolygon = new TexturedPolygon3D();
         scanConverter = new SortedScanConverter(viewWindow);
 
-        // create renderers for each texture (HotSpot optimization)
-        scanRenderers = new Hashtable();
-        scanRenderers.put(PowerOf2Texture.class,
-            new PowerOf2TextureZRenderer());
-        scanRenderers.put(ShadedTexture.class,
-            new ShadedTextureZRenderer());
-        scanRenderers.put(ShadedSurface.class,
-            new ShadedSurfaceZRenderer());
-        scanRenderers.put(SmallShadedSurface.class, new SmallShadedSurfaceZRenderer());
+		// create renderers for each texture (HotSpot optimization)
+		scanRenderers = new Hashtable();
+		scanRenderers.put(PowerOf2Texture.class, new PowerOf2TextureZRenderer());
+		scanRenderers.put(ShadedTexture.class, new ShadedTextureZRenderer());
+		scanRenderers.put(PreShadedSurface.class, new ShadedSurfaceZRenderer());
+		scanRenderers.put(DisabledShadingSurface.class, new ShadedSurfaceZRenderer());
+		scanRenderers.put(SmallShadedSurface.class, new SmallShadedSurfaceZRenderer());
 
-        // same thing, for bsp tree polygons
-        bspScanRenderers = new Hashtable();
-        bspScanRenderers.put(PowerOf2Texture.class,
-            new PowerOf2TextureRenderer());
-        bspScanRenderers.put(ShadedTexture.class,
-            new ShadedTextureRenderer());
-        bspScanRenderers.put(ShadedSurface.class,
-            new ShadedSurfaceRenderer());
+		// same thing, for bsp tree polygons
+		bspScanRenderers = new Hashtable();
+		bspScanRenderers.put(PowerOf2Texture.class, new PowerOf2TextureRenderer());
+		bspScanRenderers.put(ShadedTexture.class, new ShadedTextureRenderer());
+		bspScanRenderers.put(PreShadedSurface.class, new ShadedSurfaceRenderer());
+		bspScanRenderers.put(DisabledShadingSurface.class, new ShadedSurfaceRenderer());
     }
 
 
