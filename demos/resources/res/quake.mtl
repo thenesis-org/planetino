@@ -64,4 +64,10 @@ map_Kd alien_wall3_s.jpg
 newmtl wall4
 map_Kd sci_fi_wall1_s.jpg
 
+newmtl disco
+map_Kd disco_128-animated.png
+
+newmtl triangle_tunnel
+map_Kd triangle_tunnel-animated.png
+
 

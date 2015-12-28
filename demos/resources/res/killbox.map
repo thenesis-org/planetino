@@ -1,0 +1,47 @@
+# Default material library
+mtllib textures.mtl
+
+# Player start location
+v 400.0 0.0 300.0
+player -1 
+
+###############
+# Rooms
+###############
+
+ambientLightIntensity 0.7
+room New
+mtllib quake.mtl
+usemtl wall2
+floor -7990.0
+mtllib Droid.mtl
+usemtl Droid.jpg
+ceil 8200.0
+mtllib drfreak.mtl
+usemtl drfreak.jpg
+wall -11670.0 -7770.0 -7990.0 8200.0
+wall -11670.0 8370.0 -7990.0 8032.0
+wall 12470.0 8370.0 -7990.0 8200.0
+wall 12470.0 -7770.0 -7990.0 8200.0
+
+###############
+# Objects
+###############
+
+v 500 -7730 1200
+obj scaredybot1 DemonicEye2.obj -1
+
+###############
+# Lights
+###############
+
+v 400.0 200.0 100.0
+pointlight -1 1.0 300.0
+
+v 700.0 200.0 400.0
+pointlight -1 0.5 1000.0
+
+v 65.0 200.0 385.0
+pointlight -1 1.0 100.0
+
+

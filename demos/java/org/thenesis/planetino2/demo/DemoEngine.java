@@ -61,20 +61,16 @@ import org.thenesis.planetino2.bsp2D.BSPTree;
 import org.thenesis.planetino2.bsp2D.BSPTreeBuilderWithPortals;
 import org.thenesis.planetino2.bsp2D.MapLoader;
 import org.thenesis.planetino2.engine.GameCore3D;
-import org.thenesis.planetino2.engine.shooter3D.Bot;
-import org.thenesis.planetino2.engine.shooter3D.HeadsUpDisplay;
 import org.thenesis.planetino2.game.CollisionDetection;
 import org.thenesis.planetino2.game.CollisionDetectionWithSliding;
 import org.thenesis.planetino2.game.GameObject;
-import org.thenesis.planetino2.game.GameObjectManager;
 import org.thenesis.planetino2.game.GameObjectRenderer;
-import org.thenesis.planetino2.game.GridGameObjectManager;
 import org.thenesis.planetino2.game.MessageQueue;
 import org.thenesis.planetino2.game.Player;
+import org.thenesis.planetino2.game.Poster;
 import org.thenesis.planetino2.graphics.Color;
 import org.thenesis.planetino2.graphics.Graphics;
 import org.thenesis.planetino2.graphics.Screen;
-import org.thenesis.planetino2.input.GameAction;
 import org.thenesis.planetino2.input.InputManager;
 import org.thenesis.planetino2.math3D.MovingTransform3D;
 import org.thenesis.planetino2.math3D.ObjectLoader;
@@ -188,7 +184,7 @@ public class DemoEngine extends GameCore3D {
 
 		try {
 			//bspTree = loader.loadMap("/res/", "cacao_demo.map");
-			//bspTree = loader.loadMap("/res/", "quake.map"); //quake-one_bot.map
+			//bspTree = loader.loadMap("/res/", "quake.map"); //quake-one_bot.map, killbox.map
 			bspTree = loader.loadMap("/res/", "quake-one_bot.map");
 			//bspTree = loader.loadMap("/res/", "linuxtag.map");
 		} catch (IOException ex) {
@@ -285,6 +281,8 @@ public class DemoEngine extends GameCore3D {
 				mainTransform.rotateAngleY(50f);
 				mainTransform.rotateAngleX(50f);
 				gameObjectManager.add(new GameObject(group));
+			} else if ("poster_internal.obj".equals(filename)) {
+				gameObjectManager.add(new Poster(group));
 			} else {
 				// static object
 				gameObjectManager.add(new GameObject(group));

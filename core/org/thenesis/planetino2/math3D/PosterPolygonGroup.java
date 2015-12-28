@@ -10,12 +10,15 @@ public class PosterPolygonGroup extends PolygonGroup {
 	private Material posterMaterial;
 	private int framesPerSecond;
 	private int milisecondsPerFrame;
+	private TexturedPolygon3D polygon;
+	private long timeSinceLastFrame;
 
 	public PosterPolygonGroup(Vector3D location, Vector3D edge, float height, Material material) {
 		super();
 		this.edge = edge;
 		this.posterHeight = height;
 		this.posterMaterial = material;
+		this.timeSinceLastFrame = 0;
 		setFramesPerSecond(25);
 		build(location);
 	}
@@ -28,7 +31,7 @@ public class PosterPolygonGroup extends PolygonGroup {
     	v1.subtract(location);
     	Vector3D v2 = new Vector3D(v1.x , v1.y + h, v1.z);
     	Vector3D v3 = new Vector3D(v0.x , v0.y + h, v0.z);
-    	TexturedPolygon3D polygon = new TexturedPolygon3D(v0, v1, v2, v3);
+    	polygon = new TexturedPolygon3D(v0, v1, v2, v3);
 
     	buildSurface(polygon, posterMaterial);
     	
@@ -36,9 +39,7 @@ public class PosterPolygonGroup extends PolygonGroup {
     	setFilename("poster_internal.obj");
     	
     	addPolygon(polygon);
-    	getTransform().getLocation().setTo(location);
-    	
-    	Rectangle3D br = polygon.calcBoundingRectangle();
+    	getTransform().getLocation().setTo(location);    	
 
 	}
 	
@@ -65,9 +66,7 @@ public class PosterPolygonGroup extends PolygonGroup {
     		int rectH = (int) Math.floor(h + 0.5d);
     		AnimatedRectangularSurface rectTexture = new AnimatedRectangularSurface(posterMaterial.texture, rectW, rectH);
     		v0.subtract(v3);
-    		//Rectangle3D textureBounds = new Rectangle3D(v3, v1, v0, rectW, rectH); 
     		Rectangle3D textureBounds = new Rectangle3D(v3, v1, v0, rectW, rectH); 
-    		System.out.println("rectW= " + rectW + " rectH=" + rectH);
     		polygon.setTexture(rectTexture, textureBounds);
     	}
 		
@@ -82,11 +81,19 @@ public class PosterPolygonGroup extends PolygonGroup {
 		milisecondsPerFrame = (int) (1000.0f / framesPerSecond);
 	}
 
-	//@Override
-	public void update(long elapsedTime) {
-		super.update(elapsedTime);
-		int frames = (int) (elapsedTime / milisecondsPerFrame);
-		
+	public void updateImage(long elapsedTime) {
+		timeSinceLastFrame += elapsedTime;
+		int frames = (int) (timeSinceLastFrame / milisecondsPerFrame);
+		if (frames > 0) {
+			//System.out.println("timeSinceLastFrame=" + timeSinceLastFrame + " milisecondsPerFrame=" + milisecondsPerFrame + " frames=" + frames);
+			AnimatedRectangularSurface rectTexture = (AnimatedRectangularSurface) polygon.getTexture();
+			int index = rectTexture.getImageIndex() + frames;
+			if (index >= rectTexture.getImageCount()) {
+				index = 0;
+			}
+			rectTexture.setImageIndex(index);
+			timeSinceLastFrame = 0;
+		}
 	}
 	
 

@@ -1,11 +1,12 @@
 package org.thenesis.planetino2.game;
 
+import org.thenesis.planetino2.math3D.PolygonGroup;
 import org.thenesis.planetino2.math3D.PosterPolygonGroup;
 import org.thenesis.planetino2.sound.Music;
 
 public class Poster extends GameObject implements NoisyObject {
 
-	public Poster(PosterPolygonGroup polygonGroup) {
+	public Poster(PolygonGroup polygonGroup) {
 		super(polygonGroup);
 	}
 	
@@ -13,7 +14,7 @@ public class Poster extends GameObject implements NoisyObject {
 	public void update(GameObject player, long elapsedTime) {
 		super.update(player, elapsedTime);
 		PosterPolygonGroup posterPeer = (PosterPolygonGroup)getPolygonGroup();
-		posterPeer.update(elapsedTime);
+		posterPeer.updateImage(elapsedTime);
 	}
 
 	//@Override
