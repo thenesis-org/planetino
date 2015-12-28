@@ -76,6 +76,7 @@ import org.thenesis.planetino2.math3D.MovingTransform3D;
 import org.thenesis.planetino2.math3D.ObjectLoader;
 import org.thenesis.planetino2.math3D.PointLight3D;
 import org.thenesis.planetino2.math3D.PolygonGroup;
+import org.thenesis.planetino2.math3D.PosterPolygonGroup;
 import org.thenesis.planetino2.math3D.Transform3D;
 import org.thenesis.planetino2.math3D.Vector3D;
 import org.thenesis.planetino2.math3D.ViewWindow;
@@ -281,7 +282,7 @@ public class DemoEngine extends GameCore3D {
 				mainTransform.rotateAngleY(50f);
 				mainTransform.rotateAngleX(50f);
 				gameObjectManager.add(new GameObject(group));
-			} else if ("poster_internal.obj".equals(filename)) {
+			} else if (PosterPolygonGroup.POSTER_FILENAME.equals(filename)) {
 				gameObjectManager.add(new Poster(group));
 			} else {
 				// static object

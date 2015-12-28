@@ -5,6 +5,8 @@ import org.thenesis.planetino2.math3D.ObjectLoader.Material;
 
 public class PosterPolygonGroup extends PolygonGroup {
 	
+	public static final String POSTER_FILENAME = "poster_internal.obj";
+	
 	private float posterHeight;
 	private Vector3D edge;
 	private Material posterMaterial;
@@ -36,7 +38,7 @@ public class PosterPolygonGroup extends PolygonGroup {
     	buildSurface(polygon, posterMaterial);
     	
     	// Add the polygon group to the object list
-    	setFilename("poster_internal.obj");
+    	setFilename(POSTER_FILENAME);
     	
     	addPolygon(polygon);
     	getTransform().getLocation().setTo(location);    	
