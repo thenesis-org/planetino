@@ -49,6 +49,7 @@ import org.thenesis.planetino2.game.GameObject;
 import org.thenesis.planetino2.game.GameObjectRenderer;
 import org.thenesis.planetino2.graphics.Graphics;
 import org.thenesis.planetino2.graphics.Screen;
+import org.thenesis.planetino2.graphics3D.texture.AnimatedRectangularSurface;
 import org.thenesis.planetino2.graphics3D.texture.PowerOf2Texture;
 import org.thenesis.planetino2.graphics3D.texture.PreShadedSurface;
 import org.thenesis.planetino2.graphics3D.texture.ShadedSurface;
@@ -132,6 +133,9 @@ public class ZBufferedRenderer extends ShadedSurfacePolygonRenderer implements G
 		TexturedPolygon3D poly = (TexturedPolygon3D) destPolygon;
 		Texture texture = poly.getTexture();
 		ScanRenderer scanRenderer = (ScanRenderer) scanRenderers.get(texture.getClass());
+		if (scanRenderer == null) {
+			System.out.println();
+		}
 		scanRenderer.setTexture(texture);
 		Rectangle3D textureBounds = poly.getTextureBounds();
 
@@ -491,6 +495,120 @@ public class ZBufferedRenderer extends ShadedSurfacePolygonRenderer implements G
 
 //			Texture texture = currentTexture;
 			SmallShadedSurface texture = (SmallShadedSurface) currentTexture;
+//			ShadedTexture srcTexture = texture.getSourceTexture();
+//			int[] buffer = srcTexture.getRawData();
+//			int widthBits = srcTexture.getWidthBits();
+//			int widthMask = srcTexture.getWidthMask();
+//			int heightBits = srcTexture.getHeightBits();
+//			int heightMask = srcTexture.getHeightMask();
+
+			float u = SCALE * a.getDotProduct(viewPos);
+			float v = SCALE * b.getDotProduct(viewPos);
+			float z = c.getDotProduct(viewPos);
+			float du = INTERP_SIZE * SCALE * a.x;
+			float dv = INTERP_SIZE * SCALE * b.x;
+			float dz = INTERP_SIZE * c.x;
+			int nextTx = (int) (u / z);
+			int nextTy = (int) (v / z);
+			int depth = (int) (w * z);
+			int dDepth = (int) (w * c.x);
+			int x = left;
+			while (x <= right) {
+				int tx = nextTx;
+				int ty = nextTy;
+				int maxLength = right - x + 1;
+				if (maxLength > INTERP_SIZE) {
+					u += du;
+					v += dv;
+					z += dz;
+					nextTx = (int) (u / z);
+					nextTy = (int) (v / z);
+					int dtx = (nextTx - tx) >> INTERP_SIZE_BITS;
+					int dty = (nextTy - ty) >> INTERP_SIZE_BITS;
+					int endOffset = offset + INTERP_SIZE;
+					while (offset < endOffset) {
+						if (zBuffer.checkDepth(offset, (short) (depth >> SCALE_BITS))) {
+//							doubleBufferData[offset] = buffer[((tx >> SCALE_BITS) & widthMask)
+//									+ (((ty >> SCALE_BITS) & heightMask) << widthBits)];
+							doubleBufferData[offset] = texture.getColor(tx >> SCALE_BITS, ty >> SCALE_BITS);
+							//doubleBufferData[offset] = Color.convertRBG565To888(texture.getColor(tx >> SCALE_BITS, ty >> SCALE_BITS));
+							//doubleBufferData[offset] = 0xFFFF00FF;
+						}
+						offset++;
+						tx += dtx;
+						ty += dty;
+						depth += dDepth;
+					}
+					x += INTERP_SIZE;
+				} else {
+					// variable interpolation size
+					int interpSize = maxLength;
+					u += interpSize * SCALE * a.x;
+					v += interpSize * SCALE * b.x;
+					z += interpSize * c.x;
+					nextTx = (int) (u / z);
+					nextTy = (int) (v / z);
+
+					// make sure tx, ty, nextTx, and nextTy are
+					// all within bounds
+					tx = checkBounds(tx, texture.getWidth());
+					ty = checkBounds(ty, texture.getHeight());
+					nextTx = checkBounds(nextTx, texture.getWidth());
+					nextTy = checkBounds(nextTy, texture.getHeight());
+
+					int dtx = (nextTx - tx) / interpSize;
+					int dty = (nextTy - ty) / interpSize;
+					int endOffset = offset + interpSize;
+					while (offset < endOffset) {
+						if (zBuffer.checkDepth(offset, (short) (depth >> SCALE_BITS))) {
+//							doubleBufferData[offset] = buffer[((tx >> SCALE_BITS) & widthMask)
+//									+ (((ty >> SCALE_BITS) & heightMask) << widthBits)];
+							doubleBufferData[offset] = texture.getColor(tx >> SCALE_BITS, ty >> SCALE_BITS);
+							//doubleBufferData[offset] = Color.convertRBG565To888(texture.getColor(tx >> SCALE_BITS, ty >> SCALE_BITS));
+							//doubleBufferData[offset] = 0xFF00FF00;
+						}
+						offset++;
+						tx += dtx;
+						ty += dty;
+						depth += dDepth;
+					}
+					x += interpSize;
+
+				}
+
+			}
+		}
+	}
+
+	public class AnimatedSurfaceZRenderer extends ScanRenderer {
+
+		public int checkBounds(int vScaled, int bounds) {
+			int v = vScaled >> SCALE_BITS;
+			if (v < 0) {
+				vScaled = 0;
+			} else if (v >= bounds) {
+				vScaled = (bounds - 1) << SCALE_BITS;
+			}
+			return vScaled;
+		}
+
+		public void render(int offset, int left, int right) {
+
+			//throw new UnsupportedOperationException();
+			//System.out.println("[DEBUG] ShadedSurfaceZRenderer.render()");
+
+			//			doubleBufferData[offset] = 0xFFFF0000;
+			//			
+			//			int x = left;
+			//			while (x <= right) {
+			//				
+			//				doubleBufferData[offset + x] = 0xFF00FF00 + x;
+			//				x++;
+			//			}
+
+
+//			Texture texture = currentTexture;
+			AnimatedRectangularSurface texture = (AnimatedRectangularSurface) currentTexture;
 //			ShadedTexture srcTexture = texture.getSourceTexture();
 //			int[] buffer = srcTexture.getRawData();
 //			int widthBits = srcTexture.getWidthBits();

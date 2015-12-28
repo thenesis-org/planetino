@@ -51,6 +51,8 @@ import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.graphics3D.ScanConverter;
 import org.thenesis.planetino2.graphics3D.SortedScanConverter;
 import org.thenesis.planetino2.graphics3D.ZBufferedRenderer;
+import org.thenesis.planetino2.graphics3D.ZBufferedRenderer.AnimatedSurfaceZRenderer;
+import org.thenesis.planetino2.graphics3D.texture.AnimatedRectangularSurface;
 import org.thenesis.planetino2.graphics3D.texture.DisabledShadingSurface;
 import org.thenesis.planetino2.graphics3D.texture.PowerOf2Texture;
 import org.thenesis.planetino2.graphics3D.texture.PreShadedSurface;
@@ -121,6 +123,7 @@ public class BSPRenderer extends ZBufferedRenderer
 		scanRenderers.put(PreShadedSurface.class, new ShadedSurfaceZRenderer());
 		scanRenderers.put(DisabledShadingSurface.class, new ShadedSurfaceZRenderer());
 		scanRenderers.put(SmallShadedSurface.class, new SmallShadedSurfaceZRenderer());
+		scanRenderers.put(AnimatedRectangularSurface.class, new AnimatedSurfaceZRenderer());
 
 		// same thing, for bsp tree polygons
 		bspScanRenderers = new Hashtable();

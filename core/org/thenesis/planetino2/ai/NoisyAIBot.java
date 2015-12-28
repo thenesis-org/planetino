@@ -2,12 +2,13 @@ package org.thenesis.planetino2.ai;
 
 import org.thenesis.planetino2.game.CollisionDetection;
 import org.thenesis.planetino2.game.GameObject;
+import org.thenesis.planetino2.game.NoisyObject;
 import org.thenesis.planetino2.game.Player;
 import org.thenesis.planetino2.math3D.PolygonGroup;
 import org.thenesis.planetino2.sound.Music;
 import org.thenesis.planetino2.sound.SoundManager;
 
-public class NoisyAIBot extends AIBot {
+public class NoisyAIBot extends AIBot implements NoisyObject {
 	
 	private static final String BOT_SOUND = "drown.wav";
 	private static final String DEATH_SOUND = "death3.wav";
@@ -24,7 +25,10 @@ public class NoisyAIBot extends AIBot {
 		soundLevel = MAX_SOUND_LEVEL;
 	}
 	
-	public static double getMaxSoundLevel() {
+	/* (non-Javadoc)
+	 * @see org.thenesis.planetino2.ai.NoisyObject#getMaxSoundLevel()
+	 */
+	public double getMaxSoundLevel() {
 		return MAX_SOUND_LEVEL;
 	}
 	
@@ -38,6 +42,9 @@ public class NoisyAIBot extends AIBot {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.thenesis.planetino2.ai.NoisyObject#getSoundLoop()
+	 */
 	public Music getSoundLoop() {
 		if (soundLoop == null) {
 			soundLoop = soundManager.getMusic(BOT_SOUND);
@@ -45,6 +52,9 @@ public class NoisyAIBot extends AIBot {
 		return soundLoop;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.thenesis.planetino2.ai.NoisyObject#setSoundLoop(java.lang.String)
+	 */
 	public void setSoundLoop(String name) {
 		soundLoop = soundManager.getMusic(name);
 	}

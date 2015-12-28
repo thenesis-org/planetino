@@ -49,9 +49,13 @@ import java.util.Hashtable;
 import java.util.NoSuchElementException;
 import java.util.Vector;
 
+import org.thenesis.planetino2.graphics3D.texture.AnimatedRectangularSurface;
 import org.thenesis.planetino2.math3D.ObjectLoader;
 import org.thenesis.planetino2.math3D.PointLight3D;
 import org.thenesis.planetino2.math3D.PolygonGroup;
+import org.thenesis.planetino2.math3D.PosterPolygonGroup;
+import org.thenesis.planetino2.math3D.Rectangle3D;
+import org.thenesis.planetino2.math3D.TexturedPolygon3D;
 import org.thenesis.planetino2.math3D.Transform3D;
 import org.thenesis.planetino2.math3D.Vector3D;
 import org.thenesis.planetino2.util.StringTokenizer;
@@ -74,15 +78,15 @@ import org.thenesis.planetino2.util.StringTokenizer;
         [value]          - Defines the ambient light intensity
                            for the next room, from 0 to 1.
     pointlight [v]       - Defines a point light located at the
-        [intensity]        specfied vector. Optionally, light
-        [falloff]          intesity and falloff distance can
+        [intensity]        specified vector. Optionally, light
+        [falloff]          intensity and falloff distance can
                            be specified.
     player [v] [angle]   - Specifies the starting location of the
                            player and optionally a starting
                            angle, in radians, around the y-axis.
     obj [uniqueName]     - Defines an object from an external
         [filename] [v]     OBJ file. The unique name allows this
-        [angle]            object to be uniquely identfied, but
+        [angle]            object to be uniquely identified, but
                            can be "null" if no unique name is
                            needed. The filename is an external
                            OBJ file. Optionally, the starting
@@ -118,6 +122,9 @@ import org.thenesis.planetino2.util.StringTokenizer;
                            are used. If the current material is
                            null, or bottom is equal to top, no
                            wall polygon is created.
+    poster [v]           - Defines a poster located at the specified 
+           [width]         vector.
+           [height]       
     </pre>
 */
 public class MapLoader extends ObjectLoader {
@@ -370,6 +377,44 @@ public class MapLoader extends ObjectLoader {
                     currentRoom.addVertex(x, z,
                         currentMaterial);
                 }
+            }
+            else if (command.equals("poster")) {
+//            	String uniqueName = tokenizer.nextToken();
+//            	Vector3D v0 = new Vector3D(0 , 0, 0);
+//            	Vector3D location = getVector(tokenizer.nextToken());
+//            	Vector3D v1 = getVector(tokenizer.nextToken());
+//            	v1.y = location.y; // Force poster to be a rectangle
+//            	v1.subtract(location);
+//                float h = Float.parseFloat(tokenizer.nextToken());
+//            	Vector3D v2 = new Vector3D(v1.x , v1.y + h, v1.z);
+//            	Vector3D v3 = new Vector3D(v0.x , v0.y + h, v0.z);
+//            	TexturedPolygon3D polygon = new TexturedPolygon3D(v0, v1, v2, v3);
+//            	
+//            	if(currentMaterial.texture != null) {
+////            		polygon.setTexture(currentMaterial.texture);
+////            		Rectangle3D boundingRect = polygon.calcBoundingRectangle();
+////            		int rectW = (int) Math.floor(boundingRect.getWidth() + 0.5d);
+////            		int rectH = (int) Math.floor(boundingRect.getHeight() + 0.5d);
+//            		int rectW = (int) Math.floor(v1.length() + 0.5d);
+//            		int rectH = (int) Math.floor(h + 0.5d);
+//            		AnimatedRectangularSurface rectTexture = new AnimatedRectangularSurface(currentMaterial.texture, rectW, rectH);
+//            		v0.subtract(v3);
+//            		Rectangle3D textureBounds = new Rectangle3D(v3, v1, v0, rectW, rectH); 
+//            		polygon.setTexture(rectTexture, textureBounds);
+//            	}
+            	
+            	// Add the polygon group to the object list
+            	String uniqueName = tokenizer.nextToken();
+            	Vector3D location = getVector(tokenizer.nextToken());
+            	Vector3D edge = getVector(tokenizer.nextToken());
+            	float h = Float.parseFloat(tokenizer.nextToken());
+        		PosterPolygonGroup poster = new PosterPolygonGroup(location, edge, h, currentMaterial);
+            	if (!uniqueName.equals("null")) {
+            		poster.setName(uniqueName);
+                }
+            	mapObjects.addElement(poster);
+            	
+            	
             }
             else {
                 System.out.println("Unknown command: " + command);
