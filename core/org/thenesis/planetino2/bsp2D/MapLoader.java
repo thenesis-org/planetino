@@ -405,16 +405,29 @@ public class MapLoader extends ObjectLoader {
             	
             	// Add the polygon group to the object list
             	String uniqueName = tokenizer.nextToken();
+            	String typeString = tokenizer.nextToken();
+            	int type;
+            	if (typeString.equalsIgnoreCase("wall")) {
+            		type = PosterPolygonGroup.TYPE_WALL;
+            	} else if (typeString.equalsIgnoreCase("floor")) {
+            		type = PosterPolygonGroup.TYPE_FLOOR;
+            	} else if (typeString.equalsIgnoreCase("ceil")) {
+            		type = PosterPolygonGroup.TYPE_CEIL;
+            	} else {
+            		type = PosterPolygonGroup.TYPE_UNKNOWN;
+            	}
             	Vector3D location = getVector(tokenizer.nextToken());
             	Vector3D edge = getVector(tokenizer.nextToken());
             	float h = Float.parseFloat(tokenizer.nextToken());
-        		PosterPolygonGroup poster = new PosterPolygonGroup(location, edge, h, currentMaterial);
+        		PosterPolygonGroup poster = new PosterPolygonGroup(type, location, edge, h, currentMaterial);
             	if (!uniqueName.equals("null")) {
             		poster.setName(uniqueName);
                 }
+            	if (tokenizer.hasMoreTokens()) {
+            		poster.getTransform().setAngleY(
+                        Float.parseFloat(tokenizer.nextToken()));
+                }
             	mapObjects.addElement(poster);
-            	
-            	
             }
             else {
                 System.out.println("Unknown command: " + command);

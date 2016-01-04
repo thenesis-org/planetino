@@ -5,8 +5,15 @@ import org.thenesis.planetino2.math3D.ObjectLoader.Material;
 
 public class PosterPolygonGroup extends PolygonGroup {
 	
+	public static final int TYPE_UNKNOWN = 0;
+	public static final int TYPE_WALL = 1;
+	public static final int TYPE_FLOOR = 2;
+	public static final int TYPE_CEIL = 3;
+	
 	public static final String POSTER_FILENAME = "poster_internal.obj";
 	
+	private int type;
+	private Vector3D location;
 	private float posterHeight;
 	private Vector3D edge;
 	private Material posterMaterial;
@@ -15,8 +22,10 @@ public class PosterPolygonGroup extends PolygonGroup {
 	private TexturedPolygon3D polygon;
 	private long timeSinceLastFrame;
 
-	public PosterPolygonGroup(Vector3D location, Vector3D edge, float height, Material material) {
+	public PosterPolygonGroup(int type, Vector3D location, Vector3D edge, float height, Material material) {
 		super();
+		this.location = location;
+		this.type = type;
 		this.edge = edge;
 		this.posterHeight = height;
 		this.posterMaterial = material;
@@ -31,9 +40,25 @@ public class PosterPolygonGroup extends PolygonGroup {
     	Vector3D v1 = new Vector3D(edge);
     	v1.y = location.y; // Force poster to be a rectangle
     	v1.subtract(location);
-    	Vector3D v2 = new Vector3D(v1.x , v1.y + h, v1.z);
-    	Vector3D v3 = new Vector3D(v0.x , v0.y + h, v0.z);
-    	polygon = new TexturedPolygon3D(v0, v1, v2, v3);
+    	Vector3D v2;
+    	Vector3D v3;
+    	if (type == TYPE_WALL) {
+    		v2 = new Vector3D(v1.x , v1.y + h, v1.z);
+    		v3 = new Vector3D(v0.x , v0.y + h, v0.z);
+    		polygon = new TexturedPolygon3D(v0, v1, v2, v3);
+    	} else if (type == TYPE_FLOOR){
+    		v2 = new Vector3D(v1.x , v1.y, v1.z + h);
+    		v3 = new Vector3D(v0.x , v0.y, v0.z + h);
+    		polygon = new TexturedPolygon3D(v0, v1, v2, v3);
+    	} else if (type == TYPE_CEIL){
+    		v2 = new Vector3D(v1.x , v1.y, v1.z + h);
+    		v3 = new Vector3D(v0.x , v0.y, v0.z + h);
+    		//polygon = new TexturedPolygon3D(v1, v0, v3, v2);
+    		polygon = new TexturedPolygon3D(v0, v3, v2, v1);
+    	} else {
+    		System.out.println("[ERROR] Poster type unknown. Set to type wall as default");
+    		return;
+    	}
 
     	buildSurface(polygon, posterMaterial);
     	
@@ -56,8 +81,11 @@ public class PosterPolygonGroup extends PolygonGroup {
 		Vector3D v1 = new Vector3D(polygon.getVertex(1));
 		Vector3D v3 = new Vector3D(polygon.getVertex(3));
 		
-		float w = v1.length();
-		float h = v3.y - v0.y;
+		//float w = v1.length();
+		//float h = posterHeight;
+		float w = (float) Math.sqrt(v1.getDistanceSq(v0));
+		float h = (float) Math.sqrt(v3.getDistanceSq(v0));
+		
 		
 		if(material.texture != null) {
 //    		polygon.setTexture(currentMaterial.texture);
@@ -97,6 +125,35 @@ public class PosterPolygonGroup extends PolygonGroup {
 			timeSinceLastFrame = 0;
 		}
 	}
+
+	public int getType() {
+		return type;
+	}
+
+	public Vector3D getLocation() {
+		return getTransform().getLocation();
+	}
+
+	public float getPosterHeight() {
+		return posterHeight;
+	}
+
+	public Vector3D getEdge() {
+		resetIterator();
+		Polygon3D polygon = new Polygon3D();
+		nextPolygonTransformed(polygon);
+		if (type == TYPE_CEIL) {
+			return polygon.getVertex(3);
+		} else {
+			return polygon.getVertex(1); 
+		}
+	}
+
+	public Material getPosterMaterial() {
+		return posterMaterial;
+	}
+	
+	
 	
 
 }

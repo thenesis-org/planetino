@@ -14,6 +14,7 @@ import org.thenesis.planetino2.bsp2D.RoomDef.Vertex;
 import org.thenesis.planetino2.math3D.ObjectLoader.Material;
 import org.thenesis.planetino2.math3D.PointLight3D;
 import org.thenesis.planetino2.math3D.PolygonGroup;
+import org.thenesis.planetino2.math3D.PosterPolygonGroup;
 import org.thenesis.planetino2.math3D.Transform3D;
 import org.thenesis.planetino2.math3D.Vector3D;
 
@@ -187,21 +188,52 @@ public class MapSaver {
 	    
 	    size = mapObjects.size();
 	    for (int i = 0; i < size; i++) {
-	    	PolygonGroup polygonGroup = (PolygonGroup) mapObjects.elementAt(i);
-	    	Vector3D location = polygonGroup.getTransform().getLocation();
-	    	angle = polygonGroup.getTransform().getAngleY();
-	    	writeVector3D(location);
-	    	String name = polygonGroup.getName();
-	    	if (name.equals(PolygonGroup.NO_NAME)) {
-	    		name = "null";
-	    	}
-	    	writer.print("obj" + S + name + S + polygonGroup.getFilename() + S + "-1" + S);
-	    	if (angle != 0) {
-	    		writer.println(angle);
-	    	} else {
-	    		writer.println();
-	    	}
-	    	writer.println();
+			PolygonGroup polygonGroup = (PolygonGroup) mapObjects.elementAt(i);
+			if (polygonGroup instanceof PosterPolygonGroup) {
+				PosterPolygonGroup posterPolygonGroup =  (PosterPolygonGroup)polygonGroup;
+				Material material = posterPolygonGroup.getPosterMaterial();
+				writeUseMaterial(material);
+				Vector3D location = posterPolygonGroup.getLocation();
+				Vector3D edge = posterPolygonGroup.getEdge();
+				writeVector3D(location);
+				writeVector3D(edge);
+				String name = posterPolygonGroup.getName();
+				float height = posterPolygonGroup.getPosterHeight();
+				angle = posterPolygonGroup.getTransform().getAngleY();
+				int type = posterPolygonGroup.getType();
+				String typeString;
+            	if (type == PosterPolygonGroup.TYPE_WALL) {
+            		typeString = "wall";
+            	} else if (type == PosterPolygonGroup.TYPE_FLOOR) {
+            		typeString = "floor";
+            	} else if (type == PosterPolygonGroup.TYPE_CEIL) {
+            		typeString = "ceil";
+            	} else {
+            		typeString = "wall"; // Default is wall
+            	}
+            	writer.print("poster" + S + name + S + typeString + S + "-2" + S + "-1" + S + height);
+            	if (angle != 0) {
+					writer.println(S + angle);
+				} else {
+					writer.println();
+				}
+            	writer.println();
+			} else {
+				Vector3D location = polygonGroup.getTransform().getLocation();
+				angle = polygonGroup.getTransform().getAngleY();
+				writeVector3D(location);
+				String name = polygonGroup.getName();
+				if (name.equals(PolygonGroup.NO_NAME)) {
+					name = "null";
+				}
+				writer.print("obj" + S + name + S + polygonGroup.getFilename() + S + "-1");
+				if (angle != 0) {
+					writer.println(S + angle);
+				} else {
+					writer.println();
+				}
+				writer.println();
+			}
 	    }
 	    
 	    writer.println("###############");
