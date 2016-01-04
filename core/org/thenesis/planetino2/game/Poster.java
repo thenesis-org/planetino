@@ -8,6 +8,7 @@ public class Poster extends GameObject implements NoisyObject {
 
 	public Poster(PolygonGroup polygonGroup) {
 		super(polygonGroup);
+		getBounds().setRadius(0); // Prevent collision detection (FIXME ? hacky ?)
 	}
 	
 	//@Override
