@@ -70,4 +70,7 @@ map_Kd disco_128-animated.png
 newmtl triangle_tunnel
 map_Kd triangle_tunnel-animated.png
 
+newmtl moving_sky
+map_Kd moving_sky.png
+
 

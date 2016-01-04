@@ -10,6 +10,8 @@ public class PosterPolygonGroup extends PolygonGroup {
 	public static final int TYPE_FLOOR = 2;
 	public static final int TYPE_CEIL = 3;
 	
+	public static final float FRAMES_PER_SECOND_DEFAULT = 25;
+	
 	public static final String POSTER_FILENAME = "poster_internal.obj";
 	
 	private int type;
@@ -17,12 +19,12 @@ public class PosterPolygonGroup extends PolygonGroup {
 	private float posterHeight;
 	private Vector3D edge;
 	private Material posterMaterial;
-	private int framesPerSecond;
-	private int milisecondsPerFrame;
+	private float framesPerSecond;
+	private float milisecondsPerFrame;
 	private TexturedPolygon3D polygon;
 	private long timeSinceLastFrame;
 
-	public PosterPolygonGroup(int type, Vector3D location, Vector3D edge, float height, Material material) {
+	public PosterPolygonGroup(int type, Vector3D location, Vector3D edge, float height, Material material, float framesPerSecond) {
 		super();
 		this.location = location;
 		this.type = type;
@@ -30,7 +32,7 @@ public class PosterPolygonGroup extends PolygonGroup {
 		this.posterHeight = height;
 		this.posterMaterial = material;
 		this.timeSinceLastFrame = 0;
-		setFramesPerSecond(25);
+		setFramesPerSecond(framesPerSecond);
 		build(location);
 	}
 
@@ -102,13 +104,13 @@ public class PosterPolygonGroup extends PolygonGroup {
 		
 	}
 	
-	public int getFramesPerSecond() {
+	public float getFramesPerSecond() {
 		return framesPerSecond;
 	}
 
-	public void setFramesPerSecond(int framesPerSecond) {
+	public void setFramesPerSecond(float framesPerSecond) {
 		this.framesPerSecond = framesPerSecond;
-		milisecondsPerFrame = (int) (1000.0f / framesPerSecond);
+		milisecondsPerFrame = 1000.0f / framesPerSecond;
 	}
 
 	public void updateImage(long elapsedTime) {

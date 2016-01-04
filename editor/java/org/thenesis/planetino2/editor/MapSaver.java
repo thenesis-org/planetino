@@ -200,6 +200,7 @@ public class MapSaver {
 				String name = posterPolygonGroup.getName();
 				float height = posterPolygonGroup.getPosterHeight();
 				angle = posterPolygonGroup.getTransform().getAngleY();
+				float framesPerSecond = posterPolygonGroup.getFramesPerSecond();
 				int type = posterPolygonGroup.getType();
 				String typeString;
             	if (type == PosterPolygonGroup.TYPE_WALL) {
@@ -211,7 +212,7 @@ public class MapSaver {
             	} else {
             		typeString = "wall"; // Default is wall
             	}
-            	writer.print("poster" + S + name + S + typeString + S + "-2" + S + "-1" + S + height);
+            	writer.print("poster" + S + name + S + typeString + S + "-2" + S + "-1" + S + height + S + framesPerSecond);
             	if (angle != 0) {
 					writer.println(S + angle);
 				} else {

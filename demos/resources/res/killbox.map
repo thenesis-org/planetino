@@ -1,25 +1,35 @@
 # Player start location
-v 400.0 0.0 300.0
-player -1 
+v 5500.0 200.0 -5600.0
+player -1 2.5
 
 ###############
 # Rooms
 ###############
 
-ambientLightIntensity 0.7
-room New
+ambientLightIntensity 0.9
+room bridge
 mtllib quake.mtl
+usemtl texture_F
+floor 200.0
+ceil 0.0
+wall 5330.0 -5770.0 0.0 200.0
+wall 5330.0 6370.0 0.0 200.0
+wall 5670.0 6370.0 0.0 200.0
+wall 5670.0 -5770.0 0.0 200.0
+
+ambientLightIntensity 0.7
+room big_box
 usemtl wall2
-floor -7990.0
+floor -6000.0
 mtllib Droid.mtl
 usemtl Droid.jpg
-ceil 8200.0
+ceil 6000.0
 mtllib drfreak.mtl
 usemtl drfreak.jpg
-wall -6370.0 -5770.0 -7990.0 8200.0
-wall -6370.0 6370.0 -7990.0 8032.0
-wall 7170.0 6370.0 -7990.0 8200.0
-wall 7170.0 -5770.0 -7990.0 8200.0
+wall -6370.0 -5770.0 -6000.0 6000.0
+wall -6370.0 6370.0 -6000.0 6000.0
+wall 7170.0 6370.0 -6000.0 6000.0
+wall 7170.0 -5770.0 -6000.0 6000.0
 
 ###############
 # Objects
@@ -32,7 +42,12 @@ mtllib quake.mtl
 usemtl triangle_tunnel
 v 2000.0 -2000.0 6370.0
 v -2000.0 -2000.0 6370.0
-poster poster1 wall -2 -1 4000.0
+poster poster1 wall -2 -1 4000.0 25.0
+
+usemtl moving_sky
+v 7170.0 6000.0 -5770.0
+v -6370.0 6000.0 -5770.0
+poster poster2 ceil -2 -1 12140.0 10.0
 
 ###############
 # Lights

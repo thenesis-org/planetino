@@ -419,7 +419,8 @@ public class MapLoader extends ObjectLoader {
             	Vector3D location = getVector(tokenizer.nextToken());
             	Vector3D edge = getVector(tokenizer.nextToken());
             	float h = Float.parseFloat(tokenizer.nextToken());
-        		PosterPolygonGroup poster = new PosterPolygonGroup(type, location, edge, h, currentMaterial);
+            	float framesPerSecond = Float.parseFloat(tokenizer.nextToken());
+        		PosterPolygonGroup poster = new PosterPolygonGroup(type, location, edge, h, currentMaterial, framesPerSecond);
             	if (!uniqueName.equals("null")) {
             		poster.setName(uniqueName);
                 }
