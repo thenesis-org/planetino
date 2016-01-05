@@ -35,19 +35,29 @@ wall 7170.0 -5770.0 -6000.0 6000.0
 # Objects
 ###############
 
-v 500.0 -7730.0 1200.0
+v 5500.0 268.0 -5400
+obj GrindCable GrindCable.obj -1
+
+v 5500.0 200.0 -4000
 obj scaredybot1 DemonicEye2.obj -1
 
 mtllib quake.mtl
-usemtl triangle_tunnel
-v 2000.0 -2000.0 6370.0
-v -2000.0 -2000.0 6370.0
-poster poster1 wall -2 -1 4000.0 25.0
+usemtl circle_texels
+#v 2000.0 -2000.0 6370.0
+#v -2000.0 -2000.0 6370.0
+v -6370.0 -6000.0 6370.0
+v -6370.0 -6000.0 -5770.0
+poster circle1 wall -2 -1 12000.0 5.0
 
-usemtl moving_sky
-v 7170.0 6000.0 -5770.0
-v -6370.0 6000.0 -5770.0
-poster poster2 ceil -2 -1 12140.0 10.0
+#usemtl black_hole
+#v 7170.0 6000.0 -5770.0
+#v -6370.0 6000.0 -5770.0
+#poster poster2 ceil -2 -1 12140.0 10
+
+usemtl triangle_tunnel
+v 5670.0 -6000.0 -5770.0
+v 5330.0 -6000.0 -5770.0
+poster poster2 floor -2 -1 12370.0 10.0
 
 ###############
 # Lights
