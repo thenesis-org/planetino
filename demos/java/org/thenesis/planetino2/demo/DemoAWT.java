@@ -44,6 +44,11 @@
 package org.thenesis.planetino2.demo;
 
 import java.awt.event.KeyEvent;
+import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.ExecutionException;
+
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 
 import org.thenesis.planetino2.backend.awt.AWTToolkit;
 import org.thenesis.planetino2.graphics.Screen;
@@ -53,6 +58,11 @@ import org.thenesis.planetino2.input.InputManager;
 public class DemoAWT  {
 	
 	public static void main(String[] args) {
+		DemoAWT demo = new DemoAWT();
+		demo.start();
+	}
+	
+	public void start() {
 		Toolkit.setToolkit(new AWTToolkit());
 		
 		Screen screen = Toolkit.getInstance().getScreen(1024, 640);
@@ -81,11 +91,54 @@ public class DemoAWT  {
 		inputManager.setRelativeMouseMode(true);
 		inputManager.showCursor(false);
 		
+		/* Do all tasks in the Swing EDT to avoid thread issues */
+		//Thread engineThread = new Thread(engine);
+		//engineThread.start();
 		DemoEngine engine = new DemoEngine(screen, inputManager);
+		engine.init();
+		Worker worker = new Worker(engine);
+		try {
+			while(engine.isRunning()) {
+				SwingUtilities.invokeAndWait(worker);
+			}
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		engine.close();
+		engine.lazilyExit();
 		
-		Thread engineThread = new Thread(engine);
-		engineThread.start();
 	}
+	
+	
+	private class Worker implements Runnable {
+		 
+		 private DemoEngine engine;
+		 long startTime;
+		 long currTime;
+		 
+		 Worker(DemoEngine engine) {
+			 this.engine = engine;
+			 startTime = System.currentTimeMillis();
+			 currTime = startTime;
+		 }
+	      
+		public void run() {
+			long elapsedTime = System.currentTimeMillis() - currTime;
+			currTime += elapsedTime;
+
+			engine.tick(elapsedTime);
+
+//			// don't take a nap! run as fast as possible
+//			try {
+//				Thread.sleep(1);
+//			} catch (InterruptedException ex) {
+//			}
+			
+		}
+
+	   }
 
 
 	

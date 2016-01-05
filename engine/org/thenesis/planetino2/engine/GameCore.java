@@ -59,7 +59,7 @@ public abstract class GameCore implements Runnable {
 
     protected static final int DEFAULT_FONT_SIZE = 24;
 
-    private boolean isRunning;
+    private boolean running;
     protected Screen screen;
     protected int fontSize = DEFAULT_FONT_SIZE;
 
@@ -72,9 +72,12 @@ public abstract class GameCore implements Runnable {
         Signals the game loop that it's time to quit
     */
     public void stop() {
-        isRunning = false;
+        running = false;
     }
-
+    
+    public boolean isRunning() {
+		return running;
+	}
 
     /**
         Calls init() and gameLoop()
@@ -85,11 +88,18 @@ public abstract class GameCore implements Runnable {
             gameLoop();
         }
         finally {
-            if (screen != null) {
-                screen.restoreScreen();
-            }
+        	close();
             lazilyExit();
         }
+    }
+    
+    /**
+     * Close/free the resources used by the engine
+     */
+    public void close() {
+    	 if (screen != null) {
+             screen.restoreScreen();
+         }
     }
 
 
@@ -130,7 +140,7 @@ public abstract class GameCore implements Runnable {
 //      window.setBackground(Color.blue);
 //      window.setForeground(Color.white);
 
-      isRunning = true;
+      running = true;
     }
 
 
@@ -146,7 +156,7 @@ public abstract class GameCore implements Runnable {
         long startTime = System.currentTimeMillis();
         long currTime = startTime;
 
-        while (isRunning) {
+        while (running) {
             long elapsedTime =
                 System.currentTimeMillis() - currTime;
             currTime += elapsedTime;

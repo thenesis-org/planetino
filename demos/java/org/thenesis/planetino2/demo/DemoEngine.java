@@ -186,7 +186,7 @@ public class DemoEngine extends GameCore3D {
 		try {
 			//bspTree = loader.loadMap("/res/", "cacao_demo.map");
 			//bspTree = loader.loadMap("/res/", "quake.map"); //quake-one_bot.map, killbox.map
-			bspTree = loader.loadMap("/res/", "quake-one_bot.map");
+			bspTree = loader.loadMap("/res/", "killbox.map");
 			//bspTree = loader.loadMap("/res/", "linuxtag.map");
 		} catch (IOException ex) {
 			ex.printStackTrace();
