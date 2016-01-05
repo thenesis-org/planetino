@@ -31,6 +31,17 @@ wall -6370.0 6370.0 -6000.0 6000.0
 wall 7170.0 6370.0 -6000.0 6000.0
 wall 7170.0 -5770.0 -6000.0 6000.0
 
+ambientLightIntensity 0.9
+room floating_box
+mtllib quake.mtl
+usemtl texture_F
+floor 1000
+ceil 660
+wall 0.0 1660 
+wall 0.0 2000 
+wall 340 2000 
+wall 340 1660
+
 ###############
 # Objects
 ###############
@@ -43,21 +54,27 @@ obj scaredybot1 DemonicEye2.obj -1
 
 mtllib quake.mtl
 usemtl circle_texels
-#v 2000.0 -2000.0 6370.0
-#v -2000.0 -2000.0 6370.0
-v -6370.0 -6000.0 6370.0
-v -6370.0 -6000.0 -5770.0
-poster circle1 wall -2 -1 12000.0 5.0
-
-#usemtl black_hole
 #v 7170.0 6000.0 -5770.0
 #v -6370.0 6000.0 -5770.0
 #poster poster2 ceil -2 -1 12140.0 10
 
+v -6370.0 -6000.0 6370.0
+v -6370.0 -6000.0 -5770.0
+poster circle1 wall -2 -1 12000.0 10.0
+
 usemtl triangle_tunnel
 v 5670.0 -6000.0 -5770.0
 v 5330.0 -6000.0 -5770.0
-poster poster2 floor -2 -1 12370.0 10.0
+poster elevator1 floor -2 -1 12370.0 10.0
+
+v 340 -6000.0 1660.0
+v 0 -6000.0 1660.0
+poster elevator2 floor -2 -1 340 10.0
+
+#usemtl black_hole
+#v 2000.0 -2000.0 6320.0
+#v -2000.0 -2000.0 6320.0
+#poster poster1 wall -2 -1 4000.0 10.0
 
 ###############
 # Lights
