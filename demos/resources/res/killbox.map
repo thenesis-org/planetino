@@ -17,6 +17,26 @@ wall 5330.0 6370.0 0.0 200.0
 wall 5670.0 6370.0 0.0 200.0
 wall 5670.0 -5770.0 0.0 200.0
 
+ambientLightIntensity 0.9
+room corner_box_1
+usemtl texture_F
+floor 900.0
+ceil 560.0
+wall 6790.0 -5760.0 560.0 900.0
+wall 6790.0 -5420.0 560.0 900.0
+wall 7150.0 -5420.0 560.0 900.0
+wall 7150.0 -5760.0 560.0 900.0
+
+ambientLightIntensity 0.9
+room corner_box_2
+usemtl texture_F
+floor 900.0
+ceil 560.0
+wall 6800.0 5960.0 560.0 900.0
+wall 6800.0 6300.0 560.0 900.0
+wall 7140.0 6300.0 560.0 900.0
+wall 7140.0 5960.0 560.0 900.0
+
 ambientLightIntensity 0.7
 room big_box
 usemtl wall2
@@ -35,28 +55,29 @@ ambientLightIntensity 0.9
 room floating_box
 mtllib quake.mtl
 usemtl texture_F
-floor 1000
-ceil 660
-wall 0.0 1660 
-wall 0.0 2000 
-wall 340 2000 
-wall 340 1660
+floor 1000.0
+ceil 660.0
+wall 0.0 1660.0 660.0 1000.0
+wall 0.0 2000.0 660.0 1000.0
+wall 340.0 2000.0 660.0 1000.0
+wall 340.0 1660.0 660.0 1000.0
+
+
 
 ###############
 # Objects
 ###############
 
-v 5500.0 268.0 -5400
+v 5500.0 268.0 -5400.0
 obj GrindCable GrindCable.obj -1
 
-v 5500.0 200.0 -4000
+v 5500.0 200.0 -4000.0
 obj scaredybot1 DemonicEye2.obj -1
 
-mtllib quake.mtl
 usemtl circle_texels
-#v 7170.0 6000.0 -5770.0
-#v -6370.0 6000.0 -5770.0
-#poster poster2 ceil -2 -1 12140.0 10
+v 7170.0 6000.0 -5770.0
+v -6370.0 6000.0 -5770.0
+poster poster2 ceil -2 -1 12140.0 10.0
 
 v -6370.0 -6000.0 6370.0
 v -6370.0 -6000.0 -5770.0
@@ -67,14 +88,14 @@ v 5670.0 -6000.0 -5770.0
 v 5330.0 -6000.0 -5770.0
 poster elevator1 floor -2 -1 12370.0 10.0
 
-v 340 -6000.0 1660.0
-v 0 -6000.0 1660.0
-poster elevator2 floor -2 -1 340 10.0
+v 340.0 -6000.0 1660.0
+v 0.0 -6000.0 1660.0
+poster elevator2 floor -2 -1 340.0 10.0
 
-#usemtl black_hole
-#v 2000.0 -2000.0 6320.0
-#v -2000.0 -2000.0 6320.0
-#poster poster1 wall -2 -1 4000.0 10.0
+usemtl black_hole
+v 700.0 -1000.0 6320.0
+v -700.0 -1000.0 6320.0
+poster poster1 wall -2 -1 1400.0 10.0
 
 ###############
 # Lights
