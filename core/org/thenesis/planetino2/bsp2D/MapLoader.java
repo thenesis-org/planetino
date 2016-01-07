@@ -49,13 +49,12 @@ import java.util.Hashtable;
 import java.util.NoSuchElementException;
 import java.util.Vector;
 
-import org.thenesis.planetino2.graphics3D.texture.AnimatedRectangularSurface;
+import org.thenesis.planetino2.math3D.BoxPolygonGroup;
+import org.thenesis.planetino2.math3D.BoxModel;
 import org.thenesis.planetino2.math3D.ObjectLoader;
 import org.thenesis.planetino2.math3D.PointLight3D;
 import org.thenesis.planetino2.math3D.PolygonGroup;
 import org.thenesis.planetino2.math3D.PosterPolygonGroup;
-import org.thenesis.planetino2.math3D.Rectangle3D;
-import org.thenesis.planetino2.math3D.TexturedPolygon3D;
 import org.thenesis.planetino2.math3D.Transform3D;
 import org.thenesis.planetino2.math3D.Vector3D;
 import org.thenesis.planetino2.util.StringTokenizer;
@@ -133,8 +132,10 @@ public class MapLoader extends ObjectLoader {
     private Hashtable loadedObjects;
     private Transform3D playerStart;
     private RoomDef currentRoom;
+	public BoxModel currentBoxDef;
     private Vector rooms;
     private Vector mapObjects;
+	private Hashtable boxDefs;
 
     // use a separate ObjectLoader for objects
     private ObjectLoader objectLoader;
@@ -165,6 +166,7 @@ public class MapLoader extends ObjectLoader {
         loadedObjects = new Hashtable();
         rooms = new Vector();
         mapObjects = new Vector();
+        boxDefs = new Hashtable();
     }
 
 
@@ -180,6 +182,7 @@ public class MapLoader extends ObjectLoader {
         rooms.removeAllElements();
         vertices.removeAllElements();
         mapObjects.removeAllElements();
+        boxDefs.clear();
         playerStart = new Transform3D();
 
         parseFile(filename);
@@ -430,9 +433,52 @@ public class MapLoader extends ObjectLoader {
                 }
             	mapObjects.addElement(poster);
             }
+            else if (command.equals("BoxModel")) {
+            	String uniqueName = tokenizer.nextToken();
+            	if (tokenizer.hasMoreTokens()) {
+            		String endString = tokenizer.nextToken();
+            		checkKeyword(endString, "end");
+            		boxDefs.put(uniqueName, currentBoxDef);
+            	} else {
+            		currentBoxDef = BoxModel.createBoxDef(uniqueName);
+            	}
+            }
+            else if (command.equals("face")) {
+            	//face up/down/north/south/east/west <static/animated> <stretch/repeat> [frame_rate]
+            	String faceTypeString = tokenizer.nextToken();
+            	int type = BoxModel.FaceModel.getType(faceTypeString); 
+            	String animationMode = tokenizer.nextToken();
+            	boolean animated = true;
+            	String textureMode = tokenizer.nextToken();
+            	boolean stretched = true;
+            	float framesPerSecond = 0;
+            	if (tokenizer.hasMoreTokens()) {
+            		framesPerSecond = Float.parseFloat(tokenizer.nextToken());
+            	}
+            	currentBoxDef.setFaceModel(type, currentMaterial, animated, stretched, framesPerSecond);
+            } else if (command.equals("box")) {
+            	//box <boxes_name> <BoxDef_name> <location_index> <scale> [<rotate_x> <rotate_y> <rotate_z>]
+            	String uniqueName = tokenizer.nextToken();
+            	String boxDefName = tokenizer.nextToken();
+            	Vector3D location = getVector(tokenizer.nextToken());
+            	float scale = Float.parseFloat(tokenizer.nextToken());
+            	BoxModel boxDef = (BoxModel) boxDefs.get(boxDefName);
+            	BoxPolygonGroup box = new BoxPolygonGroup(boxDef, location);
+            	box.setScale(scale);
+            	box.rebuild();
+            	//box.getTransform().getLocation().setTo(location);
+            	if (!uniqueName.equals("null")) {
+            		box.setName(uniqueName);
+                }
+            	mapObjects.addElement(box);
+            }
             else {
                 System.out.println("Unknown command: " + command);
             }
         }
+    }
+    
+    public boolean checkKeyword(String keyword, String expectedString) {
+    	return true;
     }
 }

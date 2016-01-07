@@ -61,6 +61,7 @@ import org.thenesis.planetino2.bsp2D.BSPTree;
 import org.thenesis.planetino2.bsp2D.BSPTreeBuilderWithPortals;
 import org.thenesis.planetino2.bsp2D.MapLoader;
 import org.thenesis.planetino2.engine.GameCore3D;
+import org.thenesis.planetino2.game.Box;
 import org.thenesis.planetino2.game.CollisionDetection;
 import org.thenesis.planetino2.game.CollisionDetectionWithSliding;
 import org.thenesis.planetino2.game.GameObject;
@@ -72,6 +73,7 @@ import org.thenesis.planetino2.graphics.Color;
 import org.thenesis.planetino2.graphics.Graphics;
 import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.input.InputManager;
+import org.thenesis.planetino2.math3D.BoxPolygonGroup;
 import org.thenesis.planetino2.math3D.MovingTransform3D;
 import org.thenesis.planetino2.math3D.ObjectLoader;
 import org.thenesis.planetino2.math3D.PointLight3D;
@@ -284,6 +286,8 @@ public class DemoEngine extends GameCore3D {
 				gameObjectManager.add(new GameObject(group));
 			} else if (PosterPolygonGroup.POSTER_FILENAME.equals(filename)) {
 				gameObjectManager.add(new Poster(group));
+			} else if (BoxPolygonGroup.BOX_FILENAME.equals(filename)) {
+				gameObjectManager.add(new Box(group));
 			} else {
 				// static object
 				gameObjectManager.add(new GameObject(group));
