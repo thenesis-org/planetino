@@ -211,7 +211,7 @@ public abstract class ShadedSurface extends Texture {
 	/**
 	 Sets the source texture for this ShadedSurface.
 	 */
-	public void setTexture(ShadedTexture texture) {
+	private void setTexture(ShadedTexture texture) {
 		this.sourceTexture = texture;
 		sourceTextureBounds.setWidth(texture.getWidth());
 		sourceTextureBounds.setHeight(texture.getHeight());
@@ -221,7 +221,7 @@ public abstract class ShadedSurface extends Texture {
 	 Sets the source texture and source bounds for this
 	 ShadedSurface.
 	 */
-	public void setTexture(ShadedTexture texture, Rectangle3D bounds) {
+	private void setTexture(ShadedTexture texture, Rectangle3D bounds) {
 		setTexture(texture);
 		sourceTextureBounds.setTo(bounds);
 	}

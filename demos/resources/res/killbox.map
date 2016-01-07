@@ -1,9 +1,9 @@
 # Player start location
-v 5500.0 200.0 -5600.0
-player -1 2.5
+#v 5500.0 200.0 -5600.0
+#player -1 2.5
 
-#v 5500.0 200.0 -5400.0
-#player -1
+v 5500.0 200.0 -5600.0
+player -1 3.14
 
 ###############
 # Rooms
@@ -100,18 +100,20 @@ v 700.0 -1000.0 6320.0
 v -700.0 -1000.0 6320.0
 poster poster1 wall -2 -1 1400.0 10.0
 
-usemtl triangle_tunnel
-# box <boxes_name> <BoxDef_name> <location_index> <scale_x> <scale_y> <scale_z> 
+# box <boxes_name> <BoxDef_name> <location_index> <scale>
 BoxModel box_model1
-face up animated stretched 10
-face down animated stretched 10
-face north animated stretched 25
+usemtl rainbow
+face up animate stretch 10
+face down animate repeat 10
+usemtl triangle_tunnel
+face north animate stretch 5
+face south animate repeat 20
 usemtl black_hole
-face south animated stretched 1
-face east animated stretched 10
-face west animated stretched 10
+face east animate stretch 5
+face west animate repeat 20
 BoxModel box_model1 end
-v 5300.0 268.0 -5200.0
+
+v 5500.0 400.0 -5400.0
 box box1 box_model1 -1 20
 v 5500.0 268.0 -5200.0
 box box1 box_model1 -1 50

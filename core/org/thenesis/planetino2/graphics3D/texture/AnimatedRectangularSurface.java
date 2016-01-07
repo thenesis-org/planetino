@@ -2,13 +2,12 @@ package org.thenesis.planetino2.graphics3D.texture;
 
 public class AnimatedRectangularSurface extends Texture {
 	
-	private ShadedTexture texture;
-	private int[] rgbBuffer;
-	private int imageWidth;
-	private int imageHeight;
+	protected ShadedTexture texture;
+	protected int imageWidth;
+	protected int imageHeight;
 	private int imageSize;
 	private int imageCount;
-	private int imageIndex;
+	protected int imageIndex;
 
 	/**
 	 * An animated Texture
@@ -19,10 +18,6 @@ public class AnimatedRectangularSurface extends Texture {
 	public AnimatedRectangularSurface(ShadedTexture texture, int rectangleWidth, int rectangleHeight) {
 		super(rectangleWidth, rectangleHeight);
 		this.texture = texture;
-//		this.imageWidth = texture.getWidth();
-//		this.imageHeight = texture.getHeight();
-//		this.imageSize = imageWidth * imageHeight;
-//		this.imageCount = 1;
 		
 		this.imageWidth = texture.getWidth();
 		this.imageHeight = imageWidth;
@@ -52,17 +47,8 @@ public class AnimatedRectangularSurface extends Texture {
 
 	@Override
 	public int getColor(int x, int y) {
-		// Convert polygon coordinates in image coordinates. 
-		float ratioX = ((float)x) / width;
-		float ratioY = ((float)y) / height;
-		x = (int) (ratioX * imageWidth);
 		int offsetY = imageIndex * imageHeight; 
-		y = (int) (ratioY * imageHeight) + offsetY;
-		
-		//int index = imageSize * imageIndex + y * imageWidth + x;
-		//return rgbBuffer[index];
-		//System.out.println("x=" + x + " y=" + y);
-		return texture.getColor(x, y, ShadedTexture.MAX_LEVEL);
+		return texture.getColor(x, offsetY + y, ShadedTexture.MAX_LEVEL);
 	}
 
 }

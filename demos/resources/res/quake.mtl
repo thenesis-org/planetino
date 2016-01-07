@@ -76,4 +76,10 @@ map_Kd black_hole-animated.png
 newmtl circle_texels
 map_Kd circle_texels-animated.png
 
+newmtl rainbow
+map_Kd rainbow-animated.png
+
+newmtl texel_water
+map_Kd texel_water-animated.png
+
 

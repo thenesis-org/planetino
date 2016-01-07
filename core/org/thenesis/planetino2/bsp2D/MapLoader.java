@@ -450,7 +450,10 @@ public class MapLoader extends ObjectLoader {
             	String animationMode = tokenizer.nextToken();
             	boolean animated = true;
             	String textureMode = tokenizer.nextToken();
-            	boolean stretched = true;
+            	boolean stretched = false;
+            	if (textureMode.equalsIgnoreCase("stretch")) {
+            		stretched = true;
+            	}
             	float framesPerSecond = 0;
             	if (tokenizer.hasMoreTokens()) {
             		framesPerSecond = Float.parseFloat(tokenizer.nextToken());

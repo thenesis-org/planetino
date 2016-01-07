@@ -1,6 +1,7 @@
 package org.thenesis.planetino2.math3D;
 
 import org.thenesis.planetino2.graphics3D.texture.AnimatedRectangularSurface;
+import org.thenesis.planetino2.graphics3D.texture.StretchedAnimatedRectangularSurface;
 import org.thenesis.planetino2.math3D.BoxModel.FaceModel;
 
 public class BoxPolygonGroup extends PolygonGroup {
@@ -105,7 +106,12 @@ public class BoxPolygonGroup extends PolygonGroup {
 //				setTexture(material.texture);
 	    		int rectW = (int) Math.floor(w + 0.5d);
 	    		int rectH = (int) Math.floor(h + 0.5d);
-	    		AnimatedRectangularSurface rectTexture = new AnimatedRectangularSurface(material.texture, rectW, rectH);
+	    		AnimatedRectangularSurface rectTexture;
+	    		if(stretched) {
+	    			rectTexture = new StretchedAnimatedRectangularSurface(material.texture, rectW, rectH);
+	    		} else {
+	    			rectTexture = new AnimatedRectangularSurface(material.texture, rectW, rectH);
+	    		}
 	    		
 	    		Rectangle3D textureBounds = new Rectangle3D(origin, u, v, rectW, rectH); 
 	    		setTexture(rectTexture, textureBounds);
