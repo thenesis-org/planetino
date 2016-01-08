@@ -289,6 +289,9 @@ public class GridGameObjectManager implements GameObjectManager {
 						cell.objects.addElement(object);
 					}
 				}
+				
+				// send touch (and release) notifications
+                object.sendTouchNotifications();
 			}
 
 		}

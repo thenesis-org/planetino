@@ -43,6 +43,7 @@
  */
 package org.thenesis.planetino2.game;
 
+import java.util.Iterator;
 import java.util.Vector;
 
 import org.thenesis.planetino2.math3D.MovingTransform3D;
@@ -96,6 +97,8 @@ public class GameObject {
 	private float ceilHeight;
 	private Vector spawns;
 	private long noiseDuration;
+	private Vector touching;
+	private Vector touchingThisFrame;
 
 	/**
 	 Creates a new GameObject represented by the specified
@@ -105,6 +108,9 @@ public class GameObject {
 		this.polygonGroup = polygonGroup;
 		bounds = new PolygonGroupBounds(polygonGroup);
 		state = STATE_IDLE;
+		
+		touching = new Vector();
+        touchingThisFrame = new Vector();
 	}
 
 	/**
@@ -280,8 +286,16 @@ public class GameObject {
 	 with the specified object.  Does nothing by default.
 	 */
 	public void notifyObjectCollision(GameObject otherObject) {
-		// do nothing
+		touchingThisFrame.add(otherObject);
 	}
+	
+	 protected void notifyObjectTouch(GameObject otherObject) {
+	     // do nothing
+	 }
+
+	 protected void notifyObjectRelease(GameObject otherObject) {
+	     // do nothing
+	 }
 
 	/**
 	 Notifies this GameObject that when it moved, it collided
@@ -305,6 +319,35 @@ public class GameObject {
 	 */
 	public void notifyWallCollision() {
 		// do nothing
+	}
+	
+	/**
+	 * After this object has moved and collisions have been checked, this method
+	 * is called to send any touch/release notifications.
+	 */
+	public void sendTouchNotifications() {
+		// send release notifcations
+		Iterator i = touching.iterator();
+		while (i.hasNext()) {
+			GameObject obj = (GameObject) i.next();
+			if (!touchingThisFrame.contains(obj)) {
+				notifyObjectRelease(obj);
+				i.remove();
+			}
+		}
+
+		// send touch notifications
+		i = touchingThisFrame.iterator();
+		while (i.hasNext()) {
+			GameObject obj = (GameObject) i.next();
+			if (!touching.contains(obj)) {
+				notifyObjectTouch(obj);
+				touching.add(obj);
+			}
+		}
+
+		// clean up
+		touchingThisFrame.clear();
 	}
 
 	/**
