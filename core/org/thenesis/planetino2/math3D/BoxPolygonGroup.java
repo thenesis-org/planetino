@@ -13,7 +13,7 @@ public class BoxPolygonGroup extends PolygonGroup {
 	
 	private Face[] faces;
 	
-	public BoxPolygonGroup(BoxModel boxDef, Vector3D location) {
+	public BoxPolygonGroup(BoxModel boxDef, Vector3D location, float scale) {
 		this.boxDef = boxDef;
 		faces = new Face[BoxModel.FACES];
 		setFilename(BOX_FILENAME);
@@ -28,7 +28,11 @@ public class BoxPolygonGroup extends PolygonGroup {
 				addPolygon(face);
 			}
 		}
+		
+		setScale(scale);
 		getTransform().getLocation().setTo(location);
+		
+		rebuild();
 	}
 	
 	public void applyNewBoxDef(BoxModel boxDef) {

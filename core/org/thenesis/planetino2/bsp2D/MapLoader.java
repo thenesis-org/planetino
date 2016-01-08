@@ -49,8 +49,10 @@ import java.util.Hashtable;
 import java.util.NoSuchElementException;
 import java.util.Vector;
 
-import org.thenesis.planetino2.math3D.BoxPolygonGroup;
+import org.thenesis.planetino2.game.Box;
+import org.thenesis.planetino2.math3D.BoxBlockPolygonGroup;
 import org.thenesis.planetino2.math3D.BoxModel;
+import org.thenesis.planetino2.math3D.BoxPolygonGroup;
 import org.thenesis.planetino2.math3D.ObjectLoader;
 import org.thenesis.planetino2.math3D.PointLight3D;
 import org.thenesis.planetino2.math3D.PolygonGroup;
@@ -466,14 +468,31 @@ public class MapLoader extends ObjectLoader {
             	Vector3D location = getVector(tokenizer.nextToken());
             	float scale = Float.parseFloat(tokenizer.nextToken());
             	BoxModel boxDef = (BoxModel) boxDefs.get(boxDefName);
-            	BoxPolygonGroup box = new BoxPolygonGroup(boxDef, location);
-            	box.setScale(scale);
-            	box.rebuild();
+            	BoxPolygonGroup box = new BoxPolygonGroup(boxDef, location, scale);
             	//box.getTransform().getLocation().setTo(location);
             	if (!uniqueName.equals("null")) {
             		box.setName(uniqueName);
                 }
             	mapObjects.addElement(box);
+            } else if (command.equals("boxBlock")) {
+            	//box <boxes_name> <BoxDef_name> <location_index> <scale> [<rotate_x> <rotate_y> <rotate_z>]
+            	String uniqueName = tokenizer.nextToken();
+            	String boxDefName = tokenizer.nextToken();
+            	Vector3D location = getVector(tokenizer.nextToken());
+            	float scale = Float.parseFloat(tokenizer.nextToken());
+            	int countX = Integer.parseInt(tokenizer.nextToken());
+            	int countY = Integer.parseInt(tokenizer.nextToken());
+            	int countZ = Integer.parseInt(tokenizer.nextToken());
+            	BoxModel boxDef = (BoxModel) boxDefs.get(boxDefName);
+            	BoxBlockPolygonGroup block = new BoxBlockPolygonGroup(boxDef, location, scale, countX, countY, countZ);
+            	if (!uniqueName.equals("null")) {
+            		block.setName(uniqueName);
+                }
+            	Vector elements = block.getElements();
+				int size = elements.size();
+				for (int j = 0; j < size; j++) {
+					mapObjects.addElement((PolygonGroup)elements.elementAt(j));
+				}
             }
             else {
                 System.out.println("Unknown command: " + command);

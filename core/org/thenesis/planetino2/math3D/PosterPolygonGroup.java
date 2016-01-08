@@ -1,6 +1,7 @@
 package org.thenesis.planetino2.math3D;
 
 import org.thenesis.planetino2.graphics3D.texture.AnimatedRectangularSurface;
+import org.thenesis.planetino2.graphics3D.texture.StretchedAnimatedRectangularSurface;
 import org.thenesis.planetino2.math3D.ObjectLoader.Material;
 
 public class PosterPolygonGroup extends PolygonGroup {
@@ -96,7 +97,7 @@ public class PosterPolygonGroup extends PolygonGroup {
 //    		int rectH = (int) Math.floor(boundingRect.getHeight() + 0.5d);
     		int rectW = (int) Math.floor(w + 0.5d);
     		int rectH = (int) Math.floor(h + 0.5d);
-    		AnimatedRectangularSurface rectTexture = new AnimatedRectangularSurface(posterMaterial.texture, rectW, rectH);
+    		AnimatedRectangularSurface rectTexture = new StretchedAnimatedRectangularSurface(posterMaterial.texture, rectW, rectH);
     		v0.subtract(v3);
     		Rectangle3D textureBounds = new Rectangle3D(v3, v1, v0, rectW, rectH); 
     		polygon.setTexture(rectTexture, textureBounds);

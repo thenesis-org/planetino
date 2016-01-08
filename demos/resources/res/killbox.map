@@ -1,47 +1,14 @@
 # Player start location
-#v 5500.0 200.0 -5600.0
-#player -1 2.5
-
 v 5500.0 200.0 -5600.0
-player -1 3.14
+player -1 2.5
 
 ###############
 # Rooms
 ###############
 
-ambientLightIntensity 0.9
-room bridge
-mtllib quake.mtl
-usemtl texture_F
-floor 200.0
-ceil 0.0
-wall 5330.0 -5770.0 0.0 200.0
-wall 5330.0 6370.0 0.0 200.0
-wall 5670.0 6370.0 0.0 200.0
-wall 5670.0 -5770.0 0.0 200.0
-
-ambientLightIntensity 0.9
-room corner_box_1
-usemtl texture_F
-floor 900.0
-ceil 560.0
-wall 6790.0 -5760.0 560.0 900.0
-wall 6790.0 -5420.0 560.0 900.0
-wall 7150.0 -5420.0 560.0 900.0
-wall 7150.0 -5760.0 560.0 900.0
-
-ambientLightIntensity 0.9
-room corner_box_2
-usemtl texture_F
-floor 900.0
-ceil 560.0
-wall 6800.0 5960.0 560.0 900.0
-wall 6800.0 6300.0 560.0 900.0
-wall 7140.0 6300.0 560.0 900.0
-wall 7140.0 5960.0 560.0 900.0
-
 ambientLightIntensity 0.7
 room big_box
+mtllib quake.mtl
 usemtl wall2
 floor -6000.0
 mtllib Droid.mtl
@@ -53,19 +20,6 @@ wall -6370.0 -5770.0 -6000.0 6000.0
 wall -6370.0 6370.0 -6000.0 6000.0
 wall 7170.0 6370.0 -6000.0 6000.0
 wall 7170.0 -5770.0 -6000.0 6000.0
-
-ambientLightIntensity 0.9
-room floating_box
-mtllib quake.mtl
-usemtl texture_F
-floor 1000.0
-ceil 660.0
-wall 0.0 1660.0 660.0 1000.0
-wall 0.0 2000.0 660.0 1000.0
-wall 340.0 2000.0 660.0 1000.0
-wall 340.0 1660.0 660.0 1000.0
-
-
 
 ###############
 # Objects
@@ -101,6 +55,26 @@ v -700.0 -1000.0 6320.0
 poster poster1 wall -2 -1 1400.0 10.0
 
 # box <boxes_name> <BoxDef_name> <location_index> <scale>
+
+BoxModel box_model_floating
+usemtl texture_F
+face up animate repeat 0
+face down animate repeat 0
+face north animate repeat 0
+face south animate repeat 0
+face east animate repeat 0
+face west animate repeat 0
+BoxModel box_model_floating end
+
+v 170 830.0 1830.0
+box box_center box_model_floating -1 170
+
+v 7000 730.0 -5590.0
+box box_corner1 box_model_floating -1 170
+
+v 7000 730.0 6200.0
+box box_corner2 box_model_floating -1 170
+
 BoxModel box_model1
 usemtl rainbow
 face up animate stretch 10
@@ -116,11 +90,14 @@ BoxModel box_model1 end
 v 5500.0 400.0 -5400.0
 box box1 box_model1 -1 20
 v 5500.0 268.0 -5200.0
-box box1 box_model1 -1 50
+box box2 box_model1 -1 50
 v 5800.0 100.0 -5200.0
-box box1 box_model1 -1 100
+box box3 box_model1 -1 100
 v -3000.0 -3000.0 -3200.0
-box box1 box_model1 -1 1000
+box box4 box_model1 -1 1000
+
+v 5500 50 -5770
+boxBlock block_bridge box_model_floating -1 170 1 1 37
 
 ###############
 # Lights

@@ -73,6 +73,8 @@ import org.thenesis.planetino2.graphics.Color;
 import org.thenesis.planetino2.graphics.Graphics;
 import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.input.InputManager;
+import org.thenesis.planetino2.math3D.BoxBlockPolygonGroup;
+import org.thenesis.planetino2.math3D.BoxBlockPolygonGroup.Element;
 import org.thenesis.planetino2.math3D.BoxPolygonGroup;
 import org.thenesis.planetino2.math3D.MovingTransform3D;
 import org.thenesis.planetino2.math3D.ObjectLoader;
@@ -288,6 +290,13 @@ public class DemoEngine extends GameCore3D {
 				gameObjectManager.add(new Poster(group));
 			} else if (BoxPolygonGroup.BOX_FILENAME.equals(filename)) {
 				gameObjectManager.add(new Box(group));
+			} else if (BoxBlockPolygonGroup.BOX_BLOCK_FILENAME.equals(filename)) {
+				BoxBlockPolygonGroup block = (BoxBlockPolygonGroup)group;
+				Vector elements = block.getElements();
+				int size = elements.size();
+				for (int j = 0; j < size; j++) {
+					gameObjectManager.add(new Box((PolygonGroup)elements.elementAt(j)));
+				}
 			} else {
 				// static object
 				gameObjectManager.add(new GameObject(group));
