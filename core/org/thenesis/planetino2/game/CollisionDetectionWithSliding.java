@@ -195,6 +195,11 @@ public class CollisionDetectionWithSliding extends CollisionDetection {
 			Vector3D oldLocation) {
 		objectA.notifyObjectCollision(objectB);
 
+		// if objectB has no polygons, it's a trigger area
+        if (objectB.getPolygonGroup().isEmpty()) {
+            return false;
+        }
+		
 		if (objectA.isFlying()) {
 			return true;
 		}

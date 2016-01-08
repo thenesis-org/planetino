@@ -2,7 +2,9 @@ package org.thenesis.planetino2.demo;
 
 import org.thenesis.planetino2.ai.Projectile;
 import org.thenesis.planetino2.game.GameObject;
+import org.thenesis.planetino2.game.Physics;
 import org.thenesis.planetino2.game.Player;
+import org.thenesis.planetino2.game.Trigger;
 import org.thenesis.planetino2.math3D.PolygonGroup;
 import org.thenesis.planetino2.math3D.Vector3D;
 import org.thenesis.planetino2.sound.Music;
@@ -20,6 +22,7 @@ public class ShooterPlayer extends Player {
 	private int lifeCount = 3;
 	private int kills = 0;
 	public boolean goNextLevel = false;
+	private boolean isInElevator = false;
 
 	private Music itemCatchSound;
 	private Music weaponChangeSound;
@@ -134,6 +137,7 @@ public class ShooterPlayer extends Player {
 
 	@Override
 	public void notifyObjectCollision(GameObject obj) {
+		super.notifyObjectCollision(obj);
 		if (obj.getPolygonGroup().getName().equalsIgnoreCase("healthPack")) {
 			if (!itemCatchSound.isPlaying()) {
 				itemCatchSound.rewind();
@@ -156,7 +160,28 @@ public class ShooterPlayer extends Player {
 			weaponChangeSound.play(false);
 			ammo = DEFAULT_MAX_AMMO;
 			setState(obj, STATE_DESTROYED);
+		}
+	}
+	
+	protected void notifyObjectTouch(GameObject otherObject) {
+		if ((otherObject instanceof Trigger) && (otherObject.getName().equalsIgnoreCase("trigger_elevator"))) {
+			isInElevator = true;
+			setJumping(true);
 		} 
+	 }
+
+	 protected void notifyObjectRelease(GameObject otherObject) {
+		 if ((otherObject instanceof Trigger) && (otherObject.getName().equalsIgnoreCase("trigger_elevator"))) {
+			isInElevator = false;
+		} 
+	 }
+	
+	@Override
+	public void update(GameObject player, long elapsedTime) {
+		super.update(player, elapsedTime);
+		if(isInElevator) {
+			Physics.getInstance().scootUp(this, elapsedTime);
+		}
 	}
 
 	@Override

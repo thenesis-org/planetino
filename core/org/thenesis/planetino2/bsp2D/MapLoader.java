@@ -49,7 +49,7 @@ import java.util.Hashtable;
 import java.util.NoSuchElementException;
 import java.util.Vector;
 
-import org.thenesis.planetino2.game.Box;
+import org.thenesis.planetino2.game.Trigger;
 import org.thenesis.planetino2.math3D.BoxBlockPolygonGroup;
 import org.thenesis.planetino2.math3D.BoxModel;
 import org.thenesis.planetino2.math3D.BoxPolygonGroup;
@@ -58,6 +58,7 @@ import org.thenesis.planetino2.math3D.PointLight3D;
 import org.thenesis.planetino2.math3D.PolygonGroup;
 import org.thenesis.planetino2.math3D.PosterPolygonGroup;
 import org.thenesis.planetino2.math3D.Transform3D;
+import org.thenesis.planetino2.math3D.TriggerPolygonGroup;
 import org.thenesis.planetino2.math3D.Vector3D;
 import org.thenesis.planetino2.util.StringTokenizer;
 
@@ -319,6 +320,14 @@ public class MapLoader extends ObjectLoader {
                     playerStart.setAngleY(
                         Float.parseFloat(tokenizer.nextToken()));
                 }
+            }
+            else if (command.equals("trigger")) {
+                String uniqueName = tokenizer.nextToken();
+                Vector3D location = getVector(tokenizer.nextToken());
+                float radius = Float.parseFloat(tokenizer.nextToken());
+                float height = Float.parseFloat(tokenizer.nextToken());
+                TriggerPolygonGroup trigger = new TriggerPolygonGroup(uniqueName, location, radius, height);
+                mapObjects.add(trigger);
             }
             else if (command.equals("obj")) {
                 // create a new obj from an object file

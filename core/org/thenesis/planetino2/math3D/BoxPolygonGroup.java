@@ -74,6 +74,11 @@ public class BoxPolygonGroup extends PolygonGroup {
 		}
 	}
 	
+	@Override
+	public String toString() {
+		return "Box " + getName();
+	}
+	
 	public class Face extends FaceModel {
 		
 		private float framesPerSecond;

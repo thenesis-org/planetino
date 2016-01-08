@@ -69,12 +69,12 @@ import org.thenesis.planetino2.game.GameObjectRenderer;
 import org.thenesis.planetino2.game.MessageQueue;
 import org.thenesis.planetino2.game.Player;
 import org.thenesis.planetino2.game.Poster;
+import org.thenesis.planetino2.game.Trigger;
 import org.thenesis.planetino2.graphics.Color;
 import org.thenesis.planetino2.graphics.Graphics;
 import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.input.InputManager;
 import org.thenesis.planetino2.math3D.BoxBlockPolygonGroup;
-import org.thenesis.planetino2.math3D.BoxBlockPolygonGroup.Element;
 import org.thenesis.planetino2.math3D.BoxPolygonGroup;
 import org.thenesis.planetino2.math3D.MovingTransform3D;
 import org.thenesis.planetino2.math3D.ObjectLoader;
@@ -82,6 +82,7 @@ import org.thenesis.planetino2.math3D.PointLight3D;
 import org.thenesis.planetino2.math3D.PolygonGroup;
 import org.thenesis.planetino2.math3D.PosterPolygonGroup;
 import org.thenesis.planetino2.math3D.Transform3D;
+import org.thenesis.planetino2.math3D.TriggerPolygonGroup;
 import org.thenesis.planetino2.math3D.Vector3D;
 import org.thenesis.planetino2.math3D.ViewWindow;
 import org.thenesis.planetino2.path.AStarSearchWithBSP;
@@ -286,17 +287,20 @@ public class DemoEngine extends GameCore3D {
 				mainTransform.rotateAngleY(50f);
 				mainTransform.rotateAngleX(50f);
 				gameObjectManager.add(new GameObject(group));
-			} else if (PosterPolygonGroup.POSTER_FILENAME.equals(filename)) {
+			} else if (group instanceof PosterPolygonGroup) {
 				gameObjectManager.add(new Poster(group));
-			} else if (BoxPolygonGroup.BOX_FILENAME.equals(filename)) {
+			} else if (group instanceof BoxPolygonGroup) {
 				gameObjectManager.add(new Box(group));
-			} else if (BoxBlockPolygonGroup.BOX_BLOCK_FILENAME.equals(filename)) {
-				BoxBlockPolygonGroup block = (BoxBlockPolygonGroup)group;
+			} else if (group instanceof BoxBlockPolygonGroup) {
+				BoxBlockPolygonGroup block = (BoxBlockPolygonGroup) group;
 				Vector elements = block.getElements();
 				int size = elements.size();
 				for (int j = 0; j < size; j++) {
-					gameObjectManager.add(new Box((PolygonGroup)elements.elementAt(j)));
+					gameObjectManager.add(new Box((PolygonGroup) elements.elementAt(j)));
 				}
+			} else if (group instanceof TriggerPolygonGroup) {
+				TriggerPolygonGroup triggerGroup = (TriggerPolygonGroup) group;
+				gameObjectManager.add(new Trigger(triggerGroup));
 			} else {
 				// static object
 				gameObjectManager.add(new GameObject(group));

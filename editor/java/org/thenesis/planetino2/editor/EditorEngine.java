@@ -182,8 +182,8 @@ public class EditorEngine extends GameCore3D {
 		while (i.hasMoreElements()) {
 			PolygonGroup group = (PolygonGroup) i.nextElement();
 			String filename = group.getFilename();
-				// static object
-				gameObjectManager.add(new GameObject(group));
+			// static object
+			gameObjectManager.add(new GameObject(group));
 		}
 	}
 

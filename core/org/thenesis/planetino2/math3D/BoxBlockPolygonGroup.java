@@ -64,5 +64,10 @@ public class BoxBlockPolygonGroup extends PolygonGroup {
 		
 	}
 	
+	@Override
+	public String toString() {
+		return "BoxBlock " + getName();
+	}
+	
 
 }

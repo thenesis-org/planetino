@@ -193,6 +193,13 @@ public class PolygonGroup implements Transformable {
 	public boolean hasNext() {
 		return (iteratorIndex < objects.size());
 	}
+	
+	/**
+     * Returns true if there are no polygons in this group.
+	 */
+	public boolean isEmpty() {
+		return objects.isEmpty();
+	}
 
 	/**
 	 Gets the next polygon in the current iteration.
