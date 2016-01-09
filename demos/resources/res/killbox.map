@@ -1,4 +1,6 @@
 # Player start location
+#v 500.0 -6000.0 1000.0
+#v 7130.0 900.0 -5700.0
 v 5500.0 200.0 -5600.0
 player -1 2.5
 
@@ -28,34 +30,60 @@ wall 7170.0 -5770.0 -6000.0 6000.0
 v 5500.0 268.0 -5000.0
 obj GrindCable GrindCable.obj -1
 
-v 5500.0 200.0 -4000.0
-obj scaredybot1 DemonicEye2.obj -1
+v -500.0 -6000.0 -500
+obj null DemonicEye2.obj -1
+v 500.0 -6000.0 -500
+obj null DemonicEye2.obj -1
+v -500.0 -6000.0 500.0
+obj null DemonicEye2.obj -1
+v 500.0 -6000.0 500.0
+obj null DemonicEye2.obj -1
+v -2000.0 -6000.0 -2000.0
+obj null drfreak.obj -1
+v 2000.0 -6000.0 -2000.0
+obj null drfreak.obj -1
+v -2000.0 -6000.0 2000.0
+obj null drfreak.obj -1
+v 2000.0 -6000.0 2000.0
+obj null drfreak.obj -1
+
+v 800 1330 1830.0
+obj healthPack_center_box health_pack.obj3d -1 1.60
+
+#v 5000.0 -6000.0 2000.0
+v 5500 300 2000.0
+obj ammo_pack ammo_pack.obj -1 1.60
+
+#usemtl circle_texels
+#v 7170.0 6000.0 -5770.0
+#v -6370.0 6000.0 -5770.0
+#poster poster2 ceil -2 -1 12140.0 10.0
 
 usemtl circle_texels
-v 7170.0 6000.0 -5770.0
-v -6370.0 6000.0 -5770.0
-poster poster2 ceil -2 -1 12140.0 10.0
-
 v -6370.0 -6000.0 6370.0
 v -6370.0 -6000.0 -5770.0
 poster circle1 wall -2 -1 12000.0 10.0
 
-usemtl triangle_tunnel
-v 6000.0 -6000.0 -5770.0
-v 5000.0 -6000.0 -5770.0
-poster elevator1 floor -2 -1 1500.0 10.0
+usemtl color_changing_tron_disk
+v 5400.0 -6000.0 1500.0
+v 4600.0 -6000.0 1500.0
+poster elevator_bridge floor -2 -1 800.0 10.0
 
-v 5470.0 -6000.0 -4770.0
-trigger trigger_elevator -1 1000 3000 
+v 5000.0 -6000.0 2000.0
+trigger trigger_elevator -1 400 2000
 
-v 340.0 -6000.0 1660.0
-v 0.0 -6000.0 1660.0
-poster elevator2 floor -2 -1 340.0 10.0
+usemtl color_changing_tron_disk
+v 200 -6000.0 1500.0
+v -600 -6000.0 1500.0
+poster elevator_center floor -2 -1 800.0 10.0
 
-usemtl black_hole
-v 700.0 -1000.0 6320.0
-v -700.0 -1000.0 6320.0
-poster poster1 wall -2 -1 1400.0 10.0
+v -200.0 -6000.0 2000.0
+trigger trigger_elevator -1 400 2400
+
+#usemtl black_hole
+#v 700.0 -1000.0 6320.0
+#v -700.0 -1000.0 6320.0
+#poster poster1 wall -2 -1 1400.0 10.0
 
 # box <boxes_name> <BoxDef_name> <location_index> <scale>
 
@@ -69,8 +97,18 @@ face east animate repeat 0
 face west animate repeat 0
 BoxModel box_model_floating end
 
-v 170 830.0 1830.0
-box box_center box_model_floating -1 170
+BoxModel box_model_tron
+usemtl tron_loop
+face up animate repeat 1
+face down animate repeat 0
+face north animate stretch 8
+face south animate stretch 4
+face east animate repeat 10
+face west animate repeat 10
+BoxModel box_model_tron end
+
+v 800 830.0 1830.0
+box box_center box_model_tron -1 400
 
 v 7000 730.0 -5590.0
 box box_corner1 box_model_floating -1 170
@@ -78,26 +116,14 @@ box box_corner1 box_model_floating -1 170
 v 7000 730.0 6200.0
 box box_corner2 box_model_floating -1 170
 
-BoxModel box_model1
-usemtl rainbow
-face up animate stretch 10
-face down animate repeat 10
-usemtl triangle_tunnel
-face north animate stretch 5
-face south animate repeat 20
-usemtl black_hole
-face east animate stretch 5
-face west animate repeat 20
-BoxModel box_model1 end
-
-v 5500.0 400.0 -5400.0
-box box1 box_model1 -1 20
-v 5500.0 268.0 -5200.0
-box box2 box_model1 -1 50
+#v 5500.0 400.0 -5400.0
+#box box1 box_model_tron -1 20
+#v 5500.0 268.0 -5200.0
+#box box2 box_model_tron -1 50
 v 5800.0 100.0 -5200.0
-box box3 box_model1 -1 100
-v -3000.0 -3000.0 -3200.0
-box box4 box_model1 -1 1000
+box box3 box_model_floating -1 100
+#v -3000.0 -3000.0 -3200.0
+#box box4 box_model_tron -1 1000
 
 v 5500 50 -5770
 boxBlock block_bridge box_model_floating -1 170 1 1 37

@@ -82,4 +82,10 @@ map_Kd rainbow-animated.png
 newmtl texel_water
 map_Kd texel_water-animated.png
 
+newmtl tron_loop
+map_Kd tron_loop-animated.png
+
+newmtl color_changing_tron_disk
+map_Kd color_changing_tron_disk-animated.png
+
 
