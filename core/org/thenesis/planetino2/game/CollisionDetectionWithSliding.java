@@ -204,7 +204,13 @@ public class CollisionDetectionWithSliding extends CollisionDetection {
 			return true;
 		}
 
-		float stepSize = objectA.getBounds().getTopHeight() / 6;
+		/* TODO: stepSize should depend of the velocity and the last objectA location.
+		   Currently if the velocity is too high, objectA could overlap objectB with a distance greater than topHeiht/6.
+		   This causes failure of "step up on top" test and sliding occurs.
+		   Before fixing it, just set stepSize to topHeiht/2 (found after some experimentations on the killbox map) */
+		
+		//float stepSize = objectA.getBounds().getTopHeight() / 6;
+		float stepSize = objectA.getBounds().getTopHeight() / 2;
 		Vector3D velocity = objectA.getTransform().getVelocity();
 
 		// step up on top of object if possible
