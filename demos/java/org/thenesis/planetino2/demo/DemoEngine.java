@@ -98,6 +98,11 @@ public class DemoEngine extends GameCore3D {
 	private static final float ANGLE_DEFAULT = (float) Math.toRadians(75);
 	private static final float ANGLE_ZOOM = (float) Math.toRadians(25);
 	
+	public static final String OBJECT_FILENAME_HEALTH_PACK = "health_pack.obj3d";
+	public static final String OBJECT_FILENAME_ADRENALINE = "adrenaline.obj";
+	public static final String OBJECT_FILENAME_AMMO_PACK = "ammo_pack.obj";
+	public static final String OBJECT_FILENAME_WEAPON = "GrindCable.obj";
+	
 	protected SoundManager soundManager;
 
 	protected ShooterObjectManager gameObjectManager;

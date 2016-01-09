@@ -138,25 +138,26 @@ public class ShooterPlayer extends Player {
 	@Override
 	public void notifyObjectCollision(GameObject obj) {
 		super.notifyObjectCollision(obj);
-		if (obj.getPolygonGroup().getName().equalsIgnoreCase("healthPack")) {
+		String filename = obj.getPolygonGroup().getFilename();
+		if (filename.equalsIgnoreCase(DemoEngine.OBJECT_FILENAME_HEALTH_PACK)) {
 			if (!itemCatchSound.isPlaying()) {
 				itemCatchSound.rewind();
 			}
 			itemCatchSound.play(false);
 			capHealthAdd(50.0F);
 			setState(obj, STATE_DESTROYED);
-		} else if (obj.getPolygonGroup().getName().equalsIgnoreCase("adrenaline")) {
+		} else if (filename.equalsIgnoreCase(DemoEngine.OBJECT_FILENAME_ADRENALINE)) {
 			itemCatchSound.play(false);
 			capAdrenalineAdd(50.0F);
 			setState(obj, STATE_DESTROYED);
-		} else if (obj.getPolygonGroup().getName().equalsIgnoreCase("ammo_pack")) {
+		} else if (filename.equalsIgnoreCase(DemoEngine.OBJECT_FILENAME_AMMO_PACK)) {
 			if (!ammoCatchSound.isPlaying()) {
 				ammoCatchSound.rewind();
 			}
 			ammoCatchSound.play(false);
 			this.ammo += 50;
 			setState(obj, STATE_DESTROYED);
-		} else if (obj.getPolygonGroup().getName().equalsIgnoreCase("GrindCable")) { // weapon
+		} else if (filename.equalsIgnoreCase(DemoEngine.OBJECT_FILENAME_WEAPON)) {
 			weaponChangeSound.play(false);
 			ammo = DEFAULT_MAX_AMMO;
 			setState(obj, STATE_DESTROYED);
