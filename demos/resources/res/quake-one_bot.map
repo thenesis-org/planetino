@@ -82,11 +82,6 @@ wall 512 0
 v 390 68 190
 obj GrindCable GrindCable.obj -1
 
-usemtl triangle_tunnel
-v 400 50 800
-v 100 50 800
-poster poster1 wall -2 -1 256 25
-
 #v 400 68 150
 #obj rectangle rectangle.obj -1 3.14
 
