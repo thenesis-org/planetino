@@ -30,6 +30,7 @@ public class ShooterPlayer extends Player {
 	private Sound fireSound;
 	private Sound jumpSound;
 	private Sound painSound;
+	private Music elevatorSound;
 
 	public ShooterPlayer(SoundManager soundManager) {
 		super();
@@ -41,6 +42,7 @@ public class ShooterPlayer extends Player {
 		weaponChangeSound = soundManager.getMusic("weaponpickup.wav");
 		fireSound = soundManager.getSound("hook_fire.wav");
 		painSound = soundManager.getSound("pain25_2.wav");
+		elevatorSound = soundManager.getMusic("antigravity_elevator.wav");
 	}
 
 	public int getAmmo() {
@@ -168,6 +170,8 @@ public class ShooterPlayer extends Player {
 		if ((otherObject instanceof Trigger) && (otherObject.getName().equalsIgnoreCase("trigger_elevator"))) {
 			isInElevator = true;
 			setJumping(true);
+			elevatorSound.rewind();
+			elevatorSound.play(false);
 		} 
 	 }
 
