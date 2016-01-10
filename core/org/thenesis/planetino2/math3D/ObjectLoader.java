@@ -474,7 +474,9 @@ public class ObjectLoader {
 					
 					/* Works but no shading yet */
 					Vector3D[] texels = new Vector3D[currTextureCoordinates.size()];
-					currTextureCoordinates.copyInto(texels);
+					for (int i = 0; i < texels.length; i++) {
+						texels[i] = new Vector3D((Vector3D)currTextureCoordinates.elementAt(i));
+					}
 					SmallShadedSurface.createSurface(texturedPolygon, currentMaterial.texture, texels);
 					
 					
