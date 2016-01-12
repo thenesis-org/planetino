@@ -108,6 +108,12 @@ public class ObjectLoader {
 			this.name = name;
 		}
 		
+		public Material(String library, String name, String textureFileName, ShadedTexture texture) {
+			this(name);
+			this.library = library;
+			this.textureFileName = textureFileName;
+			this.texture = texture;
+		}
 		
 		public Material() {
 			this.name = "null";

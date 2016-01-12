@@ -44,12 +44,14 @@
 package org.thenesis.planetino2.bsp2D;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.NoSuchElementException;
 import java.util.Vector;
 
-import org.thenesis.planetino2.game.Trigger;
+import org.thenesis.planetino2.loader.QBLoader;
+import org.thenesis.planetino2.loader.QBMatrix;
 import org.thenesis.planetino2.math3D.BoxBlockPolygonGroup;
 import org.thenesis.planetino2.math3D.BoxModel;
 import org.thenesis.planetino2.math3D.BoxPolygonGroup;
@@ -60,6 +62,7 @@ import org.thenesis.planetino2.math3D.PosterPolygonGroup;
 import org.thenesis.planetino2.math3D.Transform3D;
 import org.thenesis.planetino2.math3D.TriggerPolygonGroup;
 import org.thenesis.planetino2.math3D.Vector3D;
+import org.thenesis.planetino2.math3D.VoxelMatrixPolygonGroup;
 import org.thenesis.planetino2.util.StringTokenizer;
 
 
@@ -498,6 +501,26 @@ public class MapLoader extends ObjectLoader {
             		block.setName(uniqueName);
                 }
             	Vector elements = block.getElements();
+				int size = elements.size();
+				for (int j = 0; j < size; j++) {
+					mapObjects.addElement((PolygonGroup)elements.elementAt(j));
+				}
+            } else if (command.equals("voxelMatrix")) {
+            	//box <boxes_name> <BoxDef_name> <location_index> <scale> [<rotate_x> <rotate_y> <rotate_z>]
+            	String uniqueName = tokenizer.nextToken();
+            	String matrixFileName = tokenizer.nextToken();
+            	Vector3D location = getVector(tokenizer.nextToken());
+            	float scale = Float.parseFloat(tokenizer.nextToken());
+            	//BoxModel boxDef = (BoxModel) boxDefs.get(boxDefName);
+            	InputStream is = MapLoader.class.getResourceAsStream("/res/" + matrixFileName);
+            	QBLoader qbLoader = new QBLoader();
+            	qbLoader.load(is);
+            	QBMatrix[] matrices = qbLoader.getMatrices();
+            	VoxelMatrixPolygonGroup voxelMatrix = new VoxelMatrixPolygonGroup(matrices[1], location, scale);
+            	if (!uniqueName.equals("null")) {
+            		voxelMatrix.setName(uniqueName);
+                }
+            	Vector elements = voxelMatrix.getElements();
 				int size = elements.size();
 				for (int j = 0; j < size; j++) {
 					mapObjects.addElement((PolygonGroup)elements.elementAt(j));

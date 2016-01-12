@@ -18,7 +18,7 @@ import java.io.InputStream;
  */
 public class QBLoader {
 
-	private static final boolean DEBUG = true;
+	private static final boolean DEBUG = false;
 
 	public static final int ORIENTATION_LEFT_HANDED = 0;
 	public static final int ORIENTATION_RIGHT_HANDED = 1;
@@ -30,6 +30,14 @@ public class QBLoader {
 	public static final int VISIBILITY_SIDE = 1;
 	public static final int CODEFLAG = 2;
 	public static final int NEXTSLICEFLAG = 6;
+	
+	public static final int SIDE_MASK_INVISIBLE = 0;
+	public static final int SIDE_MASK_LEFT_SIDE_VISIBLE = 2;
+	public static final int SIDE_MASK_RIGHT_SIDE_VISIBLE = 4;
+	public static final int SIDE_MASK_TOP_SIDE_VISIBLE = 8;
+	public static final int SIDE_MASK_BOTTOM_SIDE_VISIBLE = 16;
+	public static final int SIDE_MASK_FRONT_SIDE_VISIBLE = 32;
+	public static final int SIDE_MASK_BACK_SIDE_VISIBLE = 64;
 
 	private long version; // uint32
 	private long colorFormat; // uint32
@@ -117,7 +125,7 @@ public class QBLoader {
 				for (int z = 0; z < sizeZ; z++) {
 					for (int y = 0; y < sizeY; y++) {
 						for (int x = 0; x < sizeX; x++) {
-							int color = (int) readLittleEndianUnsignedInt(dis);
+							int color = readColor(dis);
 							matrixData[x + y * sizeX + z * sizeX * sizeY] = color;
 							if (DEBUG) {
 								if (color != 0) {
@@ -140,7 +148,7 @@ public class QBLoader {
 							break;
 						} else if (data == CODEFLAG) {
 							int count = (int) readLittleEndianUnsignedInt(dis);
-							data = (int) readLittleEndianUnsignedInt(dis);
+							data = readColor(dis);
 							for (int j = 0; j < count; j++) {
 								x = (index % sizeX) + 1; // mod = modulo e.g. 12 mod 8 = 4
 								y = (index / sizeX) + 1; // div = integer division e.g. 12 div 8 = 1
@@ -151,13 +159,13 @@ public class QBLoader {
 							x = (index % sizeX) + 1;
 							y = (index / sizeX) + 1;
 							index++;
-							matrixData[x + y * sizeX + z * sizeX * sizeY] = data;
+							matrixData[x + y * sizeX + z * sizeX * sizeY] = swapEndianness(data);
 						}
 					}
 				}
 			}
 			
-			QBMatrix matrix = new QBMatrix(name, sizeX, sizeY, sizeZ, posX, posY, posZ, matrixData);
+			QBMatrix matrix = new QBMatrix(name, sizeX, sizeY, sizeZ, posX, posY, posZ, matrixData, colorFormat, zAxisOrientation, visibilityMaskEncoded);
 			matrices[i] = matrix;
 		}
 
@@ -169,6 +177,10 @@ public class QBLoader {
 
 	public long getVisibilityMask() {
 		return visibilityMaskEncoded;
+	}
+	
+	public long getZAxisOrientation() {
+		return zAxisOrientation;
 	}
 
 	public int getNumMatrices() {
@@ -197,6 +209,24 @@ public class QBLoader {
 		return signedInt;
 	}
 	
+	private int readColor(InputStream dis) throws IOException {
+		int firstByte = dis.read() & 0xFF;
+		int secondByte = dis.read() & 0xFF;
+		int thirdByte = dis.read() & 0xFF;
+		int fourthByte = dis.read() & 0xFF;
+		int signedInt = (firstByte << 24) | (secondByte << 16) | (thirdByte << 8) | fourthByte;
+		return signedInt;
+	}
+	
+	private int swapEndianness(int v) {
+		int firstByte = v & 0xFF;
+		int secondByte = (v >> 8) & 0xFF;
+		int thirdByte = (v >> 16) & 0xFF;
+		int fourthByte = (v >> 24) & 0xFF;
+		int swapValue = (firstByte << 24) | (secondByte << 16) | (thirdByte << 8) | fourthByte;
+		return swapValue;
+	}
+	
 	private void debug(String comment, int value) {
 		System.out.println(comment + " : " + value);
 	}
@@ -210,7 +240,7 @@ public class QBLoader {
 	}
 
 	public static void main(String[] args) {
-		InputStream is = QBLoader.class.getResourceAsStream("/res/" + "test.qb");
+		InputStream is = QBLoader.class.getResourceAsStream("/res/" + "castle.qb");
 		QBLoader loader = new QBLoader();
 		try {
 			loader.load(is);
