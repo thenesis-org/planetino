@@ -3,7 +3,6 @@ package org.thenesis.planetino2.loader;
 public class QBMatrix {
 
 	private String name;
-	// read matrix size 
 	private int sizeX;
 	private int sizeY;
 	private int sizeZ;
@@ -73,6 +72,10 @@ public class QBMatrix {
 		return zAxisOrientation;
 	}
 	
+	public int getNumberOfVoxels() {
+		return sizeX * sizeY * sizeZ;
+	}
+	
 	public int getRGBColor(int color) {
 		int rbgColor;
 		if (getColorFormat() == QBLoader.COLOR_FORMAT_RGBA) {
@@ -96,6 +99,97 @@ public class QBMatrix {
 			visible = ((alpha | QBLoader.SIDE_MASK_INVISIBLE) ==  QBLoader.SIDE_MASK_INVISIBLE) ? false : true;
 		}
 		return visible;
+	}
+	
+	public boolean isVoxelVisible(int x, int y, int z) {
+		int color = getVoxelColor(x, y, z);
+		return isVoxelVisible(color);
+	}
+	
+	public int getNumberOfVisibleVoxels() {
+		int	visibleCount = 0;
+		for (int z = 0; z < sizeZ; z++) {
+			for (int y = 0; y < sizeY; y++) {
+				for (int x = 0; x < sizeX; x++) {
+					boolean visible = isVoxelVisible(x, y, z); 
+					if (visible) {
+						visibleCount++;
+					}
+				}
+			}
+		}
+		return visibleCount;
+	}
+	
+	public int removeHiddenVoxels() {
+		
+		int hiddenCount = 0;
+		
+		for (int z = 0; z < sizeZ; z++) {
+			for (int y = 0; y < sizeY; y++) {
+				for (int x = 0; x < sizeX; x++) {
+					// Obvious case: if the voxel is not visible, it's hidden.
+					int color = getVoxelColor(x, y, z);
+					if (!isVoxelVisible(color)) {
+						continue;
+					}
+					
+					boolean hidden = isHidden(x, y, z); 
+					if (hidden) {
+						hiddenCount++;
+						setVoxelColor(x, y, z, 0);
+//						if (QBLoader.DEBUG) {
+//							QBLoader.debug("(" + x + ", " + y + ", " + z + ")", " is hidden");
+//						}
+					}
+				}
+			}
+		}
+		
+		if (QBLoader.DEBUG) {
+			QBLoader.debug("hiddenCount", hiddenCount);
+		}
+		
+		return hiddenCount;
+	}
+	
+	private void setVoxelColor(int x, int y, int z, int color) {
+		data[x + y * sizeX + z * sizeX * sizeY] = color;
+	}
+
+	public int getVoxelColor(int x, int y, int z) {
+		return data[x + y * sizeX + z * sizeX * sizeY];
+	}
+	
+	/**
+	 * Check if the voxel is hidden by its neighbors
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @return
+	 */
+	public boolean isHidden(int x, int y, int z) {
+		
+		// Voxels on the borders can't be hidden
+		if ((x <= 0) || (x >= sizeX - 1) ) {
+			return false;
+		}
+		if ((y <= 0) || (y >= sizeY - 1) ) {
+			return false;
+		}
+		if ((z <= 0) || (z >= sizeZ - 1) ) {
+			return false;
+		}
+		
+		boolean isHidden = true;
+		isHidden &= isVoxelVisible(x - 1, y, z);
+		isHidden &= isVoxelVisible(x + 1, y, z);
+		isHidden &= isVoxelVisible(x, y - 1, z);
+		isHidden &= isVoxelVisible(x, y + 1, z);
+		isHidden &= isVoxelVisible(x, y, z - 1);
+		isHidden &= isVoxelVisible(x, y, z + 1);
+		
+		return isHidden;
 	}
 
 }

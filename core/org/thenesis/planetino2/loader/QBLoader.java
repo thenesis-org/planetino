@@ -18,7 +18,7 @@ import java.io.InputStream;
  */
 public class QBLoader {
 
-	private static final boolean DEBUG = false;
+	static final boolean DEBUG = false;
 
 	public static final int ORIENTATION_LEFT_HANDED = 0;
 	public static final int ORIENTATION_RIGHT_HANDED = 1;
@@ -128,9 +128,7 @@ public class QBLoader {
 							int color = readColor(dis);
 							matrixData[x + y * sizeX + z * sizeX * sizeY] = color;
 							if (DEBUG) {
-								if (color != 0) {
-									debug("(" + x + ", " + y + ", " + z + ")", Integer.toHexString(color));
-								}
+								debug("(" + x + ", " + y + ", " + z + ")", Integer.toHexString(color));
 							}
 						}
 					}
@@ -227,23 +225,31 @@ public class QBLoader {
 		return swapValue;
 	}
 	
-	private void debug(String comment, int value) {
+	static void debug(String comment, int value) {
 		System.out.println(comment + " : " + value);
 	}
 
-	private void log(String comment, long value) {
+	static void debug(String comment, long value) {
 		System.out.println(comment + " : " + value);
 	}
 
-	private void debug(String comment, String value) {
+	static void debug(String comment, String value) {
 		System.out.println(comment + " : " + value);
 	}
 
 	public static void main(String[] args) {
-		InputStream is = QBLoader.class.getResourceAsStream("/res/" + "castle.qb");
+		InputStream is = QBLoader.class.getResourceAsStream("/res/" + "monu9.qb"); // cube_3_3_red.qb monu9.qb
 		QBLoader loader = new QBLoader();
 		try {
 			loader.load(is);
+			QBMatrix[] matrices = loader.getMatrices();
+			int numberOfVoxels = matrices[1].getNumberOfVoxels();
+			int visibleCount = matrices[1].getNumberOfVisibleVoxels();
+			int hiddenCount = matrices[1].removeHiddenVoxels();
+			System.out.println("Visible voxels : " + visibleCount + " / " + numberOfVoxels);
+			System.out.println("Hidden voxels : " + hiddenCount + " / " + numberOfVoxels);
+			int reduction = (hiddenCount * 100 / visibleCount);
+			System.out.println("Size reduction : " + reduction + "%");
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
