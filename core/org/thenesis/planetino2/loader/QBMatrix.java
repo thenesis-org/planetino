@@ -91,7 +91,7 @@ public class QBMatrix {
 	}
 	
 	public boolean isVoxelVisible(int color) {
-		int alpha = (color >> 24) & 0xFF;
+		int alpha = color & 0xFF;
 		boolean visible;
 		if (visibilityMaskEncoded == QBLoader.VISIBILITY_VOXEL) {
 			visible = (alpha == 0) ? false : true;
@@ -147,7 +147,7 @@ public class QBMatrix {
 		}
 		
 		if (QBLoader.DEBUG) {
-			QBLoader.debug("hiddenCount", hiddenCount);
+			QBLoader.debug("hidden/visible", hiddenCount + "/" + getNumberOfVisibleVoxels());
 		}
 		
 		return hiddenCount;

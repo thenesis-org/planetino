@@ -32,11 +32,14 @@ wall 7170.0 -5770.0 -6000.0 6000.0
 v -4000.0 -6000.0 4000
 obj null DemonicEye2.obj -1
 
-v 500.0 -6000.0 -4000.0
-voxelMatrix monu9 monu9.qb -1 1
+v 500.0 -5950.0 -4000.0
+voxelMatrix droid teapot.qb -1 50
+#voxelMatrix droid Droid-voxel.qb -1 1
+#voxelMatrix monu9 monu9.qb -1 50
 #voxelMatrix shelf shelf.qb -1 50
-#voxelMatrix cube cube_3_3_red.qb -1 50
+#voxelMatrix cube cube_3_3_blue.qb -1 50
 #obj monu9 monu9.obj -1 0
+#obj teapot teapot.obj -1 0
 
 ###############
 # Lights

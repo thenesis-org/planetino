@@ -127,9 +127,9 @@ public class QBLoader {
 						for (int x = 0; x < sizeX; x++) {
 							int color = readColor(dis);
 							matrixData[x + y * sizeX + z * sizeX * sizeY] = color;
-							if (DEBUG) {
-								debug("(" + x + ", " + y + ", " + z + ")", Integer.toHexString(color));
-							}
+//							if (DEBUG) {
+//								debug("(" + x + ", " + y + ", " + z + ")", Integer.toHexString(color));
+//							}
 						}
 					}
 				}

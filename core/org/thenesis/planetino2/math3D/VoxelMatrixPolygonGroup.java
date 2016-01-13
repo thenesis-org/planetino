@@ -22,6 +22,7 @@ public class VoxelMatrixPolygonGroup extends PolygonGroup {
 		boxModelMap = new Hashtable();
 		elements = new Vector();
 		setFilename(BOX_BLOCK_FILENAME);
+		matrix.removeHiddenVoxels();
 		rebuild();
 	}
 
@@ -41,7 +42,7 @@ public class VoxelMatrixPolygonGroup extends PolygonGroup {
 				elementLocation.y = location.y + y * edgeSize;
 				for (int x = 0; x < sizeX; x++) {
 					elementLocation.x = location.x + x * edgeSize;
-					int nativeColor = voxelMatrixData[x + y * sizeX + z * sizeX * sizeY];
+					int nativeColor = matrix.getVoxelColor(x, y, z);
 					boolean voxelVisible = matrix.isVoxelVisible(nativeColor);
 					if (voxelVisible) {
 						int argbColor = matrix.getRGBColor(nativeColor);
