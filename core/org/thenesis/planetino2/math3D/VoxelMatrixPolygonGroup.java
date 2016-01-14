@@ -79,6 +79,17 @@ public class VoxelMatrixPolygonGroup extends PolygonGroup {
 		}
 
 	}
+	
+	public class StaticElement extends StaticBoxPolygonGroup {
+
+		VoxelMatrixPolygonGroup boxBlock;
+
+		public StaticElement(BoxModel boxModel, Vector3D location, float scale) {
+			super(boxModel, location, scale);
+			this.boxBlock = VoxelMatrixPolygonGroup.this;
+		}
+
+	}
 
 	@Override
 	public String toString() {

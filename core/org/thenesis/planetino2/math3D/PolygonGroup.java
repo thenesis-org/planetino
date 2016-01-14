@@ -58,7 +58,7 @@ public class PolygonGroup implements Transformable {
 	private String filename;
 	private Vector objects;
 	private MovingTransform3D transform;
-	private int iteratorIndex;
+	protected int iteratorIndex;
 
 	/**
 	 Creates a new, empty PolygonGroup.
