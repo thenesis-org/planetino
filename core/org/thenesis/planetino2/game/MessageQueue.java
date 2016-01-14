@@ -44,13 +44,13 @@
 package org.thenesis.planetino2.game;
 
 import java.util.Enumeration;
-import java.util.Vector;
 
 import org.thenesis.planetino2.graphics.Color;
 import org.thenesis.planetino2.graphics.Graphics;
-import org.thenesis.planetino2.graphics.Toolkit;
 import org.thenesis.planetino2.graphics3D.Overlay;
 import org.thenesis.planetino2.math3D.ViewWindow;
+import org.thenesis.planetino2.util.Iterator;
+import org.thenesis.planetino2.util.Vector;
 
 public class MessageQueue implements Overlay {
 
@@ -105,12 +105,12 @@ public class MessageQueue implements Overlay {
 	}
 
 	public void update(long elapsedTime) {
-		Enumeration i = messages.elements();
-		while (i.hasMoreElements()) {
-			Message message = (Message) i.nextElement();
+		Iterator i = messages.iterator();
+		while (i.hasNext()) {
+			Message message = (Message) i.next();
 			message.remainingTime -= elapsedTime;
 			if (message.remainingTime < 0) {
-				messages.removeElement(message);
+				i.remove();
 			}
 		}
 	}

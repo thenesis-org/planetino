@@ -43,9 +43,6 @@
  */
 package org.thenesis.planetino2.graphics3D;
 
-import java.util.Enumeration;
-import java.util.Vector;
-
 import org.thenesis.planetino2.graphics.Graphics;
 import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.graphics3D.texture.ShadedSurface;
@@ -53,6 +50,8 @@ import org.thenesis.planetino2.graphics3D.texture.Texture;
 import org.thenesis.planetino2.math3D.TexturedPolygon3D;
 import org.thenesis.planetino2.math3D.Transform3D;
 import org.thenesis.planetino2.math3D.ViewWindow;
+import org.thenesis.planetino2.util.Iterator;
+import org.thenesis.planetino2.util.Vector;
 
 /**
  The ShadedSurfacePolygonRenderer is a PolygonRenderer that
@@ -77,12 +76,12 @@ public class ShadedSurfacePolygonRenderer extends FastTexturedPolygonRenderer {
 		super.endFrame(screen);
 
 		// clear all built surfaces that weren't used this frame.
-		Enumeration i = builtSurfaces.elements();
-		while (i.hasMoreElements()) {
-			ShadedSurface surface = (ShadedSurface) i.nextElement();
+		Iterator i = builtSurfaces.iterator();
+		while (i.hasNext()) {
+			ShadedSurface surface = (ShadedSurface) i.next();
 			if (surface.isDirty()) {
 				surface.clearSurface();
-				builtSurfaces.removeElement(surface);
+				i.remove();
 			} else {
 				surface.setDirty(true);
 			}

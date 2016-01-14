@@ -1,6 +1,6 @@
 package org.thenesis.planetino2.demo;
 
-import java.util.Vector;
+import org.thenesis.planetino2.util.Vector;
 
 import org.thenesis.planetino2.game.CollisionDetection;
 import org.thenesis.planetino2.game.GameObject;
@@ -18,12 +18,12 @@ public class ShooterObjectManager extends GridGameObjectManager {
 	}
 	
 	public void addRespawnableItem(RespawnableItem item) {
-		gameItems.add(item);
+		gameItems.addElement(item);
 		super.add(item);
 	}
 	
 	public void addEnnemy(GameObject gameObject) {
-		enemies.add(gameObject);
+		enemies.addElement(gameObject);
 		super.add(gameObject);
 	}
 	
@@ -53,12 +53,12 @@ public class ShooterObjectManager extends GridGameObjectManager {
 		for (int i = 0; i < size; i++) {
 			GameObject ennemy = (GameObject)enemies.elementAt(i);
 			if(ennemy.isDestroyed()) {
-				destroyedEnnemies.add(ennemy);
+				destroyedEnnemies.addElement(ennemy);
 			}
 		}
 		size = destroyedEnnemies.size();
 		for (int i = 0; i < size; i++) {
-			enemies.remove(destroyedEnnemies.elementAt(i));
+			enemies.removeElement(destroyedEnnemies.elementAt(i));
 		}
 	}
 	

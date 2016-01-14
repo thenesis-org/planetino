@@ -4,7 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Vector;
+import org.thenesis.planetino2.util.Vector;
 
 import org.thenesis.planetino2.bsp2D.MapLoader;
 import org.thenesis.planetino2.bsp2D.RoomDef;

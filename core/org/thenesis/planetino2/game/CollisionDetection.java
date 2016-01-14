@@ -43,7 +43,7 @@
  */
 package org.thenesis.planetino2.game;
 
-import java.util.Vector;
+import org.thenesis.planetino2.util.Vector;
 
 import org.thenesis.planetino2.bsp2D.BSPLine;
 import org.thenesis.planetino2.bsp2D.BSPPolygon;

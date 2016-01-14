@@ -43,7 +43,7 @@
  */
 package org.thenesis.planetino2.bsp2D;
 
-import java.util.Vector;
+import org.thenesis.planetino2.util.Vector;
 
 import org.thenesis.planetino2.graphics3D.texture.ShadedSurface;
 import org.thenesis.planetino2.graphics3D.texture.ShadedTexture;

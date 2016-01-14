@@ -45,7 +45,7 @@ package org.thenesis.planetino2.test;
 
 import java.io.IOException;
 import java.util.Enumeration;
-import java.util.Vector;
+import org.thenesis.planetino2.util.Vector;
 
 import org.thenesis.planetino2.ai.AIBot;
 import org.thenesis.planetino2.ai.Brain;

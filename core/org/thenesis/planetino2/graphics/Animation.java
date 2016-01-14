@@ -43,7 +43,7 @@
  */
 package org.thenesis.planetino2.graphics;
 
-import java.util.Vector;
+import org.thenesis.planetino2.util.Vector;
 
 /**
  The Animation class manages a series of images (frames) and

@@ -43,7 +43,7 @@
  */
 package org.thenesis.planetino2.path;
 
-import java.util.Vector;
+import org.thenesis.planetino2.util.Vector;
 
 import org.thenesis.planetino2.util.Comparable;
 

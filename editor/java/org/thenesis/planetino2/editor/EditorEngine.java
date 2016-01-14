@@ -45,7 +45,7 @@ package org.thenesis.planetino2.editor;
 
 import java.io.IOException;
 import java.util.Enumeration;
-import java.util.Vector;
+import org.thenesis.planetino2.util.Vector;
 
 import org.thenesis.planetino2.bsp2D.BSPRenderer;
 import org.thenesis.planetino2.bsp2D.BSPTree;

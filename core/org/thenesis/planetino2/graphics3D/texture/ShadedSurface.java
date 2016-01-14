@@ -44,7 +44,7 @@
 package org.thenesis.planetino2.graphics3D.texture;
 
 //import java.lang.ref.SoftReference;
-import java.util.Vector;
+import org.thenesis.planetino2.util.Vector;
 
 import org.thenesis.planetino2.math3D.PointLight3D;
 import org.thenesis.planetino2.math3D.Rectangle3D;

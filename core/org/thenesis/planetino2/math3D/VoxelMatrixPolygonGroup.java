@@ -1,7 +1,7 @@
 package org.thenesis.planetino2.math3D;
 
 import java.util.Hashtable;
-import java.util.Vector;
+import org.thenesis.planetino2.util.Vector;
 
 import org.thenesis.planetino2.loader.QBMatrix;
 
@@ -54,7 +54,7 @@ public class VoxelMatrixPolygonGroup extends PolygonGroup {
 						}
 						Element element = new Element(boxModel, elementLocation, elementScale);
 						addPolygonGroup(element);
-						elements.add(element);
+						elements.addElement(element);
 					}
 				}
 			}

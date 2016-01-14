@@ -45,7 +45,7 @@ package org.thenesis.planetino2.test;
 
 import java.io.IOException;
 import java.util.Random;
-import java.util.Vector;
+import org.thenesis.planetino2.util.Vector;
 
 import org.thenesis.planetino2.engine.GameCore3D;
 import org.thenesis.planetino2.engine.shooter3D.Blast;

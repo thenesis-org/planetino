@@ -43,7 +43,7 @@
  */
 package org.thenesis.planetino2.engine;
 
-import java.util.Vector;
+import org.thenesis.planetino2.util.Vector;
 
 import org.thenesis.planetino2.graphics.Color;
 import org.thenesis.planetino2.graphics.Font;

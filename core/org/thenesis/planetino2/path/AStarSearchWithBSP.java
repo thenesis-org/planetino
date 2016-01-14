@@ -44,7 +44,7 @@
 package org.thenesis.planetino2.path;
 
 import java.util.Enumeration;
-import java.util.Vector;
+import org.thenesis.planetino2.util.Vector;
 
 import org.thenesis.planetino2.bsp2D.BSPTree;
 import org.thenesis.planetino2.bsp2D.Portal;

@@ -24,7 +24,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Vector;
+import org.thenesis.planetino2.util.Vector;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -963,7 +963,7 @@ class MapInspector extends JPanel implements ActionListener {
 				EditorEngine engine = editor.getEngine();
 				MapLoader mapLoader = engine.getLoader();
 				Vector rooms = mapLoader.getRooms();
-				rooms.remove(room);
+				rooms.removeElement(room);
 				treePanel.removeCurrentNode();
 				editor.notifyMapChanged();
 			} else if (selectedObject instanceof RoomDef.Vertex) {

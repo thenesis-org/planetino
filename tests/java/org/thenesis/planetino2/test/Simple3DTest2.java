@@ -44,7 +44,7 @@
 package org.thenesis.planetino2.test;
 
 import java.awt.Canvas;
-import java.util.Vector;
+import org.thenesis.planetino2.util.Vector;
 
 import org.thenesis.planetino2.engine.GameCore;
 import org.thenesis.planetino2.engine.GameCore3D;

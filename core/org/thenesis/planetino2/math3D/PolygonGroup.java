@@ -43,7 +43,7 @@
  */
 package org.thenesis.planetino2.math3D;
 
-import java.util.Vector;
+import org.thenesis.planetino2.util.Vector;
 
 /**
  The PolygonGroup is a group of polygons with a

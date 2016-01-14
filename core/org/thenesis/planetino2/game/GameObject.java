@@ -43,8 +43,8 @@
  */
 package org.thenesis.planetino2.game;
 
-import java.util.Iterator;
-import java.util.Vector;
+import org.thenesis.planetino2.util.Iterator;
+import org.thenesis.planetino2.util.Vector;
 
 import org.thenesis.planetino2.math3D.MovingTransform3D;
 import org.thenesis.planetino2.math3D.PolygonGroup;
@@ -286,7 +286,7 @@ public class GameObject {
 	 with the specified object.  Does nothing by default.
 	 */
 	public void notifyObjectCollision(GameObject otherObject) {
-		touchingThisFrame.add(otherObject);
+		touchingThisFrame.addElement(otherObject);
 	}
 	
 	 protected void notifyObjectTouch(GameObject otherObject) {
@@ -342,7 +342,7 @@ public class GameObject {
 			GameObject obj = (GameObject) i.next();
 			if (!touching.contains(obj)) {
 				notifyObjectTouch(obj);
-				touching.add(obj);
+				touching.addElement(obj);
 			}
 		}
 

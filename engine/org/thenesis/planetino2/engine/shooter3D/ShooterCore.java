@@ -44,7 +44,7 @@
 package org.thenesis.planetino2.engine.shooter3D;
 
 import java.io.IOException;
-import java.util.Vector;
+import org.thenesis.planetino2.util.Vector;
 
 import org.thenesis.planetino2.bsp2D.BSPRenderer;
 import org.thenesis.planetino2.engine.GameCore3D;

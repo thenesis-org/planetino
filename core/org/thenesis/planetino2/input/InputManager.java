@@ -43,7 +43,7 @@
  */
 package org.thenesis.planetino2.input;
 
-import java.util.Vector;
+import org.thenesis.planetino2.util.Vector;
 
 import org.thenesis.planetino2.math3D.Point;
 

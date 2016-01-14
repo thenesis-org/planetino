@@ -1,30 +1,30 @@
 /**************************************************************************
- * Copyright (c) 2001 by Punch Telematix. All rights reserved.             *
- *                                                                         *
- * Redistribution and use in source and binary forms, with or without      *
- * modification, are permitted provided that the following conditions      *
- * are met:                                                                *
- * 1. Redistributions of source code must retain the above copyright       *
- *    notice, this list of conditions and the following disclaimer.        *
- * 2. Redistributions in binary form must reproduce the above copyright    *
- *    notice, this list of conditions and the following disclaimer in the  *
- *    documentation and/or other materials provided with the distribution. *
- * 3. Neither the name of Punch Telematix nor the names of                 *
- *    other contributors may be used to endorse or promote products        *
- *    derived from this software without specific prior written permission.*
- *                                                                         *
- * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED          *
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF    *
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.    *
- * IN NO EVENT SHALL PUNCH TELEMATIX OR OTHER CONTRIBUTORS BE LIABLE       *
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR            *
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF    *
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR         *
- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,   *
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE    *
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN  *
- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                           *
- **************************************************************************/
+* Copyright (c) 2001 by Punch Telematix. All rights reserved.             *
+*                                                                         *
+* Redistribution and use in source and binary forms, with or without      *
+* modification, are permitted provided that the following conditions      *
+* are met:                                                                *
+* 1. Redistributions of source code must retain the above copyright       *
+*    notice, this list of conditions and the following disclaimer.        *
+* 2. Redistributions in binary form must reproduce the above copyright    *
+*    notice, this list of conditions and the following disclaimer in the  *
+*    documentation and/or other materials provided with the distribution. *
+* 3. Neither the name of Punch Telematix nor the names of                 *
+*    other contributors may be used to endorse or promote products        *
+*    derived from this software without specific prior written permission.*
+*                                                                         *
+* THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED          *
+* WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF    *
+* MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.    *
+* IN NO EVENT SHALL PUNCH TELEMATIX OR OTHER CONTRIBUTORS BE LIABLE       *
+* FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR            *
+* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF    *
+* SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR         *
+* BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,   *
+* WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE    *
+* OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN  *
+* IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                           *
+**************************************************************************/
 
 /*
 ** $Id: Vector.java,v 1.2 2006/04/18 11:35:28 cvs Exp $
@@ -34,27 +34,50 @@ package org.thenesis.planetino2.util;
 
 import java.util.Enumeration;
 
-public class ArrayList {
+public class Vector {
 
-	protected transient int modCount = 0;
 	protected Object[] elementData;
 	protected int elementCount;
 	protected int capacityIncrement;
 
+	/**
+	 * A counter for changes to the list.
+	 */
+	protected transient int modCount;
+
 	private transient int initialCapacity;
 
-	public ArrayList(int initCap, int capIncr) {
+	// This could probably be done with an anonymous class, but for now:
+
+	private class VectorEnum implements Enumeration {
+		private int _i = 0;
+
+		public boolean hasMoreElements() {
+			return (_i < elementCount);
+		}
+
+		public Object nextElement() throws NoSuchElementException {
+			synchronized (Vector.this) {
+				if (_i >= elementCount) {
+					throw new NoSuchElementException();
+				}
+				return elementData[_i++];
+			}
+		}
+	}
+
+	public Vector(int initCap, int capIncr) {
 		initialCapacity = initCap;
 		elementData = new Object[initCap];
 		capacityIncrement = capIncr;
 	}
 
-	public ArrayList(int initCap) {
+	public Vector(int initCap) {
 		initialCapacity = initCap;
 		elementData = new Object[initCap];
 	}
 
-	public ArrayList() {
+	public Vector() {
 		initialCapacity = 10;
 		elementData = new Object[10];
 	}
@@ -68,26 +91,26 @@ public class ArrayList {
 	//    }
 	//  }
 
-	/**
-	 * calls addAll from AbstractList
-	 * 
-	 */
-	//  public  boolean addAll(Collection c) {
+	///**
+	//* calls addAll from AbstractList
+	//*
+	//*/
+	//  public synchronized boolean addAll(Collection c) {
 	//  	super.addAll(c);
 	//  	return (c.size()>0);
 	//  }
 	//
 	//
-	//  public  boolean addAll(int idx, Collection c) {
+	//  public synchronized boolean addAll(int idx, Collection c) {
 	//  	super.addAll(idx,c);
 	//  	return (c.size()>0);
 	//  }
 
-	//  public  Object[] toArray() {
+	//  public synchronized Object[] toArray() {
 	//  	return toArray(new Object[elementCount]);
 	//  }
-	//
-	//  public  Object[] toArray(Object [] arr) {
+
+	//  public synchronized Object[] toArray(Object [] arr) {
 	//        Object [] array = arr;
 	//        if ( array.length < elementCount ) array = (Object[])Array.newInstance(arr.getClass().getComponentType(),elementCount);
 	//        if ( array.length > elementCount ) array[elementCount] = null ;
@@ -96,7 +119,7 @@ public class ArrayList {
 	//
 	//  }
 
-	public String toString() {
+	public synchronized String toString() {
 		StringBuffer buffer = new StringBuffer("[");
 
 		for (int i = 0; i < elementCount; i++) {
@@ -112,48 +135,50 @@ public class ArrayList {
 		return buffer.toString();
 	}
 
-	//  public  Object clone() {
-	//    Vector nieuw = null;
-	//    try {
-	//    	nieuw = (Vector) super.clone();
-	//    }
-	//    catch(CloneNotSupportedException cnse) {}
-	//    nieuw.elementData = new Object[elementData.length];
-	//    System.arraycopy(this.elementData, 0, nieuw.elementData, 0, this.elementCount); 	
-	//    return nieuw;
-	//  }
+	public synchronized Object clone() {
+		Vector nieuw = null;
+		try {
+			nieuw = (Vector) super.clone();
+		} catch (CloneNotSupportedException cnse) {
+		}
+		nieuw.elementData = new Object[elementData.length];
+		System.arraycopy(this.elementData, 0, nieuw.elementData, 0, this.elementCount);
+		return nieuw;
+	}
 
-	public Object elementAt(int index) {
+	public synchronized Object elementAt(int index) {
 		if (index < elementCount) {
 			return elementData[index];
 		}
 		throw new ArrayIndexOutOfBoundsException();
 	}
 
-	public void setElementAt(Object obj, int index) throws ArrayIndexOutOfBoundsException {
+	public synchronized void setElementAt(Object obj, int index) throws ArrayIndexOutOfBoundsException {
 		// throw exception if  0 > index  or index >= elementCount
 		if (index < 0 || index >= elementCount)
 			throw new ArrayIndexOutOfBoundsException();
 		elementData[index] = obj;
 	}
 
-	//  public Object firstElement() throws NoSuchElementException {
-	//    (this) {
-	//      if(elementCount==0) throw new NoSuchElementException();
-	//
-	//      return elementData[0];
-	//    }
-	//  }
-	//  
-	//  public Object lastElement() throws NoSuchElementException {
-	//    (this) {
-	//      if (elementCount==0) throw new NoSuchElementException();
-	//
-	//      return elementData[elementCount - 1];
-	//    }
-	//  }
+	public Object firstElement() throws NoSuchElementException {
+		synchronized (this) {
+			if (elementCount == 0)
+				throw new NoSuchElementException();
 
-	public void addElement(Object obj) {
+			return elementData[0];
+		}
+	}
+
+	public Object lastElement() throws NoSuchElementException {
+		synchronized (this) {
+			if (elementCount == 0)
+				throw new NoSuchElementException();
+
+			return elementData[elementCount - 1];
+		}
+	}
+
+	public synchronized void addElement(Object obj) {
 		if (elementCount == elementData.length) {
 			ensureCapacity(elementCount + 1);
 		}
@@ -161,7 +186,7 @@ public class ArrayList {
 		modCount++;
 	}
 
-	public void insertElementAt(Object obj, int index) throws ArrayIndexOutOfBoundsException {
+	public synchronized void insertElementAt(Object obj, int index) throws ArrayIndexOutOfBoundsException {
 		int elementCount = this.elementCount;
 		Object[] elementData = this.elementData;
 
@@ -181,7 +206,7 @@ public class ArrayList {
 		modCount++;
 	}
 
-	public boolean removeElement(Object obj) {
+	public synchronized boolean removeElement(Object obj) {
 		int i;
 
 		i = indexOf(obj, 0);
@@ -190,14 +215,14 @@ public class ArrayList {
 
 			return false;
 
-		removeElement(i);
+		removeElementAt(i);
 		return true;
 	}
 
 	// When removing an element we dont automatically trim the array:
 	// chances are another element will be added soon.
 
-	public void removeElementAt(int index) throws ArrayIndexOutOfBoundsException {
+	public synchronized void removeElementAt(int index) throws ArrayIndexOutOfBoundsException {
 		if (index < 0 || index >= elementCount)
 			throw new ArrayIndexOutOfBoundsException();
 
@@ -208,6 +233,25 @@ public class ArrayList {
 		elementData[--elementCount] = null;
 	}
 
+	// OTOH if all elements are removed we revert to the original capacity
+
+	public synchronized void removeAllElements() {
+		if (elementCount > 0)
+			modCount++;
+		while (elementCount > 0)
+			elementData[--elementCount] = null;
+		//    trimToSize();
+	}
+
+	public synchronized void clear() {
+		for (int i = 0; i < elementCount; i++) {
+			elementData[i] = null;
+		}
+		if (elementCount > 0)
+			modCount++;
+		elementCount = 0;
+	}
+
 	public boolean isEmpty() {
 		return elementCount == 0;
 	}
@@ -216,7 +260,7 @@ public class ArrayList {
 		return elementCount;
 	}
 
-	public void setSize(int newSize) throws ArrayIndexOutOfBoundsException {
+	public synchronized void setSize(int newSize) throws ArrayIndexOutOfBoundsException {
 		if (newSize < 0)
 			throw new ArrayIndexOutOfBoundsException();
 		ensureCapacity(newSize);
@@ -235,7 +279,7 @@ public class ArrayList {
 		return elementData.length;
 	}
 
-	public void ensureCapacity(int minCapacity) {
+	public synchronized void ensureCapacity(int minCapacity) {
 		if (elementData.length < minCapacity) {
 			int newCapacity;
 
@@ -255,7 +299,7 @@ public class ArrayList {
 		}
 	}
 
-	public void trimToSize() {
+	public synchronized void trimToSize() {
 		int newCapacity;
 
 		if (elementData.length > elementCount) {
@@ -272,19 +316,19 @@ public class ArrayList {
 		}
 	}
 
-	public void copyInto(Object anArray[]) throws ArrayIndexOutOfBoundsException {
+	public synchronized void copyInto(Object anArray[]) throws ArrayIndexOutOfBoundsException {
 		System.arraycopy(elementData, 0, anArray, 0, elementCount);
 	}
 
-	//  public Iterator iterator() {
-	//    return new VectorEnum();
-	//  }
+	public Enumeration elements() {
+		return new VectorEnum();
+	}
 
-	public boolean contains(Object elem) {
+	public synchronized boolean contains(Object elem) {
 		return indexOf(elem, 0) >= 0;
 	}
 
-	public int indexOf(Object elem) {
+	public synchronized int indexOf(Object elem) {
 		int i;
 
 		if (elem != null) {
@@ -304,7 +348,7 @@ public class ArrayList {
 
 	}
 
-	public int indexOf(Object elem, int index) throws ArrayIndexOutOfBoundsException {
+	public synchronized int indexOf(Object elem, int index) throws ArrayIndexOutOfBoundsException {
 		int i;
 		if (elem != null) {
 			for (i = index; i < elementCount; ++i) {
@@ -323,7 +367,7 @@ public class ArrayList {
 
 	}
 
-	public int lastIndexOf(Object elem) {
+	public synchronized int lastIndexOf(Object elem) {
 		int i;
 		if (elem != null) {
 			for (i = elementCount - 1; i >= 0; --i) {
@@ -342,7 +386,7 @@ public class ArrayList {
 
 	}
 
-	public int lastIndexOf(Object elem, int index) throws ArrayIndexOutOfBoundsException {
+	public synchronized int lastIndexOf(Object elem, int index) throws ArrayIndexOutOfBoundsException {
 		int i;
 
 		if (elem != null) {
@@ -360,6 +404,33 @@ public class ArrayList {
 
 		return -1;
 
+	}
+
+	public synchronized boolean add(Object o) {
+		if (elementCount == elementData.length) {
+			ensureCapacity(elementCount + 1);
+		}
+		elementData[elementCount++] = o;
+		modCount++; //This is used by the iterator to throw a ConcurrentModificationException
+		return true;
+	}
+
+	public synchronized void add(int index, Object o) {
+		insertElementAt(o, index);
+	}
+
+	public synchronized boolean remove(Object o) {
+		return removeElement(o);
+	}
+
+	public synchronized Object remove(int index) {
+		Object returnObject = elementAt(index);
+		removeElementAt(index);
+		return returnObject;
+	}
+
+	public synchronized Object get(int index) {
+		return elementAt(index);
 	}
 
 	/**
@@ -368,10 +439,6 @@ public class ArrayList {
 	*/
 	public Iterator iterator() {
 		return new VectorIterator();
-	}
-
-	public Enumeration elements() {
-		return new VectorEnum();
 	}
 
 	protected void removeRange(int fromIndex, int toIndex) {
@@ -409,7 +476,7 @@ public class ArrayList {
 	//
 	//  }
 	//
-	//  public  boolean containsAll(Collection c) {
+	//  public synchronized boolean containsAll(Collection c) {
 	//    Iterator it=c.iterator();
 	//    while (it.hasNext()) {
 	//      if ( !contains(it.next()) )
@@ -417,11 +484,11 @@ public class ArrayList {
 	//    }
 	//    return true;
 	//  }
-	//
-	///*
-	//* is supported ...
-	//*/
-	//  public  boolean removeAll(Collection c) throws UnsupportedOperationException {
+
+	/*
+	* is supported ...
+	*/
+	//  public synchronized boolean removeAll(Collection c) throws UnsupportedOperationException {
 	////    throw new UnsupportedOperationException("removeAll in Class Vector is not supported");
 	//      if ( c.isEmpty() ) return false; // nothing to remove
 	//      Object [] newElements = new Object[elementData.length];
@@ -439,10 +506,10 @@ public class ArrayList {
 	//	
 	//
 	//  }
-	///*
-	//* is supported ...
-	//*/
-	//  public  boolean retainAll(Collection c) throws UnsupportedOperationException {
+	/*
+	* is supported ...
+	*/
+	//  public synchronized boolean retainAll(Collection c) throws UnsupportedOperationException {
 	////    throw new UnsupportedOperationException("retainAll in Class Vector is not supported");
 	//
 	//      if ( c.isEmpty() ) {
@@ -465,20 +532,21 @@ public class ArrayList {
 	//
 	//  }
 
-	public void clear() {
-		for (int i = 0; i < elementCount; i++) {
-			elementData[i] = null;
-		}
-		if (elementCount > 0)
-			modCount++;
-		elementCount = 0;
-	}
+	//  public synchronized void clear() {
+	//  	for (int i=0 ; i < elementCount ; i++) {
+	//  	 	elementData[i] = null;
+	//  	}
+	//        if(elementCount>0) modCount++;
+	//        elementCount=0;
+	//  }
 
 	/**
-	 * Object.hashCode is overwritten see Algorithm p 965 of the Java Class
-	 * Library second edition, volume 1 supplement for the java 2 Platform v1.2
-	 */
-	public int hashCode() {
+	* Object.hashCode is overwritten
+	* see Algorithm p 965 of the Java Class Library
+	* second edition, volume 1
+	* supplement for the java 2 Platform v1.2
+	*/
+	public synchronized int hashCode() {
 		int hashcode = 1;
 		int count = elementCount;
 		Object data[] = elementData;
@@ -489,37 +557,20 @@ public class ArrayList {
 	}
 
 	/**
-	 * equals overwrites Object.equals
-	 * 
-	 */
-	public boolean equals(Object o) {
-		if (!(o instanceof ArrayList))
+	* equals overwrites Object.equals
+	*
+	*/
+	public synchronized boolean equals(Object o) {
+		if (!(o instanceof Vector))
 			return false;
-		ArrayList list = (ArrayList) o;
+		Vector list = (Vector) o;
 		if (list.size() != elementCount)
 			return false;
 		for (int i = 0; i < elementCount; i++) {
-			if (!(elementData[i] == null ? list.elementAt(i) == null : elementData[i].equals(list.elementAt(i))))
+			if (!(elementData[i] == null ? list.get(i) == null : elementData[i].equals(list.get(i))))
 				return false;
 		}
 		return true;
-	}
-
-	// This could probably be done with an anonymous class, but for now:
-
-	private class VectorEnum implements Enumeration {
-		private int _i = 0;
-
-		public boolean hasMoreElements() {
-			return (_i < elementCount);
-		}
-
-		public Object nextElement() throws NoSuchElementException {
-			if (_i >= elementCount) {
-				throw new NoSuchElementException();
-			}
-			return elementData[_i++];
-		}
 	}
 
 	private class VectorIterator implements Iterator {
@@ -546,7 +597,7 @@ public class ArrayList {
 				throw new ConcurrentModificationException("in the Iterator from Vector method remove");
 			if (Status != 1)
 				throw new IllegalStateException("remove() must be called after next()");
-			ArrayList.this.removeElement(--i);
+			removeElementAt(--i);
 			Status = 0;
 			localModCount++;
 

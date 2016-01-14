@@ -44,7 +44,7 @@
 package org.thenesis.planetino2.test;
 
 import java.util.Enumeration;
-import java.util.Vector;
+import org.thenesis.planetino2.util.Vector;
 
 import org.thenesis.planetino2.ai.EvolutionBot;
 import org.thenesis.planetino2.ai.EvolutionGenePool;

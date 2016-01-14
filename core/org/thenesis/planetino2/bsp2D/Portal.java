@@ -44,7 +44,7 @@
 package org.thenesis.planetino2.bsp2D;
 
 import java.util.Enumeration;
-import java.util.Vector;
+import org.thenesis.planetino2.util.Vector;
 
 import org.thenesis.planetino2.math3D.Vector3D;
 import org.thenesis.planetino2.path.AStarNode;

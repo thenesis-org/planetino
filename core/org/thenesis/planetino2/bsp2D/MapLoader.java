@@ -48,7 +48,7 @@ import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.NoSuchElementException;
-import java.util.Vector;
+import org.thenesis.planetino2.util.Vector;
 
 import org.thenesis.planetino2.loader.QBLoader;
 import org.thenesis.planetino2.loader.QBMatrix;
@@ -330,7 +330,7 @@ public class MapLoader extends ObjectLoader {
                 float radius = Float.parseFloat(tokenizer.nextToken());
                 float height = Float.parseFloat(tokenizer.nextToken());
                 TriggerPolygonGroup trigger = new TriggerPolygonGroup(uniqueName, location, radius, height);
-                mapObjects.add(trigger);
+                mapObjects.addElement(trigger);
             }
             else if (command.equals("obj")) {
                 // create a new obj from an object file

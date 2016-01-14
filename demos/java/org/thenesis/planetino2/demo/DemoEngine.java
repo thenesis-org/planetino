@@ -45,7 +45,7 @@ package org.thenesis.planetino2.demo;
 
 import java.io.IOException;
 import java.util.Enumeration;
-import java.util.Vector;
+import org.thenesis.planetino2.util.Vector;
 
 import org.thenesis.planetino2.ai.AIBot;
 import org.thenesis.planetino2.ai.Brain;
@@ -195,8 +195,8 @@ public class DemoEngine extends GameCore3D {
 
 		try {
 			//bspTree = loader.loadMap("/res/", "cacao_demo.map");
-			//bspTree = loader.loadMap("/res/", "quake.map"); //quake-one_bot.map, killbox.map
-			bspTree = loader.loadMap("/res/", "killbox.map");
+			//bspTree = loader.loadMap("/res/", "quake.map"); //quake-one_bot.map, killbox.map, NearCraft.map
+			bspTree = loader.loadMap("/res/", "NearCraft.map");
 			//bspTree = loader.loadMap("/res/", "linuxtag.map");
 		} catch (IOException ex) {
 			ex.printStackTrace();

@@ -52,7 +52,7 @@
  */
 package org.thenesis.planetino2.util;
 
-import java.util.Vector;
+import org.thenesis.planetino2.util.Vector;
 
 /**
  * A quick sort demonstration algorithm

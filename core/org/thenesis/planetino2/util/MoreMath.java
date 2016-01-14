@@ -44,7 +44,7 @@
 package org.thenesis.planetino2.util;
 
 import java.util.Random;
-import java.util.Vector;
+import org.thenesis.planetino2.util.Vector;
 
 /**
  The MoreMath class provides functions not contained in the

@@ -1,6 +1,6 @@
 package org.thenesis.planetino2.math3D;
 
-import java.util.Vector;
+import org.thenesis.planetino2.util.Vector;
 
 public class BoxBlockPolygonGroup extends PolygonGroup {
 	
@@ -43,7 +43,7 @@ public class BoxBlockPolygonGroup extends PolygonGroup {
 					elementLocation.x = location.x + x * edgeSize;
 					Element element = new Element(boxDef, elementLocation, elementScale);
 					addPolygonGroup(element);
-					elements.add(element);
+					elements.addElement(element);
 				}
 			}
 		}
