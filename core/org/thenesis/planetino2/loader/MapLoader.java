@@ -41,21 +41,21 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.thenesis.planetino2.bsp2D;
+package org.thenesis.planetino2.loader;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.NoSuchElementException;
-import org.thenesis.planetino2.util.Vector;
 
-import org.thenesis.planetino2.loader.QBLoader;
-import org.thenesis.planetino2.loader.QBMatrix;
+import org.thenesis.planetino2.util.Vector;
+import org.thenesis.planetino2.bsp2D.BSPTree;
+import org.thenesis.planetino2.bsp2D.BSPTreeBuilder;
+import org.thenesis.planetino2.bsp2D.RoomDef;
 import org.thenesis.planetino2.math3D.BoxBlockPolygonGroup;
 import org.thenesis.planetino2.math3D.BoxModel;
 import org.thenesis.planetino2.math3D.BoxPolygonGroup;
-import org.thenesis.planetino2.math3D.ObjectLoader;
 import org.thenesis.planetino2.math3D.PointLight3D;
 import org.thenesis.planetino2.math3D.PolygonGroup;
 import org.thenesis.planetino2.math3D.PosterPolygonGroup;

@@ -41,18 +41,21 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.thenesis.planetino2.math3D;
+package org.thenesis.planetino2.loader;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Hashtable;
 import java.util.NoSuchElementException;
-import org.thenesis.planetino2.util.Vector;
 
+import org.thenesis.planetino2.util.Vector;
 import org.thenesis.planetino2.graphics3D.texture.ShadedSurface;
 import org.thenesis.planetino2.graphics3D.texture.ShadedTexture;
 import org.thenesis.planetino2.graphics3D.texture.SmallShadedSurface;
 import org.thenesis.planetino2.graphics3D.texture.Texture;
+import org.thenesis.planetino2.math3D.PolygonGroup;
+import org.thenesis.planetino2.math3D.TexturedPolygon3D;
+import org.thenesis.planetino2.math3D.Vector3D;
 import org.thenesis.planetino2.util.BufferedReader;
 import org.thenesis.planetino2.util.StringTokenizer;
 

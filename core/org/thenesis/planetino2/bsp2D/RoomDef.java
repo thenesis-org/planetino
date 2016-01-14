@@ -44,10 +44,10 @@
 package org.thenesis.planetino2.bsp2D;
 
 import java.util.Enumeration;
-import org.thenesis.planetino2.util.Vector;
 
+import org.thenesis.planetino2.util.Vector;
 import org.thenesis.planetino2.graphics3D.texture.Texture;
-import org.thenesis.planetino2.math3D.ObjectLoader.Material;
+import org.thenesis.planetino2.loader.ObjectLoader.Material;
 import org.thenesis.planetino2.math3D.Rectangle3D;
 import org.thenesis.planetino2.math3D.Vector3D;
 

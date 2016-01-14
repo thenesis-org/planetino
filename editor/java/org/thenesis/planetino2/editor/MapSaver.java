@@ -4,14 +4,14 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import org.thenesis.planetino2.util.Vector;
 
-import org.thenesis.planetino2.bsp2D.MapLoader;
+import org.thenesis.planetino2.util.Vector;
 import org.thenesis.planetino2.bsp2D.RoomDef;
 import org.thenesis.planetino2.bsp2D.RoomDef.Ceil;
 import org.thenesis.planetino2.bsp2D.RoomDef.Floor;
 import org.thenesis.planetino2.bsp2D.RoomDef.Vertex;
-import org.thenesis.planetino2.math3D.ObjectLoader.Material;
+import org.thenesis.planetino2.loader.MapLoader;
+import org.thenesis.planetino2.loader.ObjectLoader.Material;
 import org.thenesis.planetino2.math3D.PointLight3D;
 import org.thenesis.planetino2.math3D.PolygonGroup;
 import org.thenesis.planetino2.math3D.PosterPolygonGroup;

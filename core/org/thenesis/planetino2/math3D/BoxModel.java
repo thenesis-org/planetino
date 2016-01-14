@@ -1,7 +1,7 @@
 package org.thenesis.planetino2.math3D;
 
 import org.thenesis.planetino2.graphics3D.texture.ShadedTexture;
-import org.thenesis.planetino2.math3D.ObjectLoader.Material;
+import org.thenesis.planetino2.loader.ObjectLoader.Material;
 
 public class BoxModel {
 	

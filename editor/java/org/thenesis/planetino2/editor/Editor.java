@@ -24,6 +24,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Hashtable;
+
 import org.thenesis.planetino2.util.Vector;
 
 import javax.imageio.ImageIO;
@@ -64,7 +65,6 @@ import javax.swing.tree.TreeSelectionModel;
 import org.thenesis.planetino2.backend.awt.AWTGraphics;
 import org.thenesis.planetino2.backend.awt.AWTToolkit;
 import org.thenesis.planetino2.bsp2D.BSPPolygon;
-import org.thenesis.planetino2.bsp2D.MapLoader;
 import org.thenesis.planetino2.bsp2D.RoomDef;
 import org.thenesis.planetino2.bsp2D.RoomDef.Ceil;
 import org.thenesis.planetino2.bsp2D.RoomDef.Floor;
@@ -74,8 +74,9 @@ import org.thenesis.planetino2.game.Player;
 import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.graphics.Toolkit;
 import org.thenesis.planetino2.input.InputManager;
-import org.thenesis.planetino2.math3D.ObjectLoader;
-import org.thenesis.planetino2.math3D.ObjectLoader.Material;
+import org.thenesis.planetino2.loader.MapLoader;
+import org.thenesis.planetino2.loader.ObjectLoader;
+import org.thenesis.planetino2.loader.ObjectLoader.Material;
 import org.thenesis.planetino2.math3D.PointLight3D;
 import org.thenesis.planetino2.math3D.PolygonGroup;
 import org.thenesis.planetino2.math3D.Transform3D;
