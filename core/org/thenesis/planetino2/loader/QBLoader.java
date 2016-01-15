@@ -188,6 +188,16 @@ public class QBLoader {
 	public QBMatrix[] getMatrices() {
 		return matrices;
 	}
+	
+	public QBMatrix getMatrix(String name) {
+		for (int i = 0; i < matrices.length; i++) {
+			System.out.println(matrices[i].getName() + " | " + name);
+			if (matrices[i].getName().equalsIgnoreCase(name)) {
+				return matrices[i];
+			}
+		}
+		return null;
+	}
 
 	private long readLittleEndianUnsignedInt(InputStream dis) throws IOException {
 		int fourthByte = dis.read() & 0xFF;

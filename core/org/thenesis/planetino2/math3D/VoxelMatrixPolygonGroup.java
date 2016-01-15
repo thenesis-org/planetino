@@ -1,8 +1,9 @@
 package org.thenesis.planetino2.math3D;
 
 import java.util.Hashtable;
-import org.thenesis.planetino2.util.Vector;
 
+import org.thenesis.planetino2.util.Vector;
+import org.thenesis.planetino2.graphics.Color;
 import org.thenesis.planetino2.loader.QBMatrix;
 
 public class VoxelMatrixPolygonGroup extends PolygonGroup {
@@ -21,7 +22,6 @@ public class VoxelMatrixPolygonGroup extends PolygonGroup {
 		this.elementScale = scale;
 		boxModelMap = new Hashtable();
 		elements = new Vector();
-		setFilename(BOX_BLOCK_FILENAME);
 		matrix.removeHiddenVoxels();
 		rebuild();
 	}

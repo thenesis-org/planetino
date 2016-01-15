@@ -48,7 +48,7 @@ public class AnimatedRectangularSurface extends Texture {
 	@Override
 	public int getColor(int x, int y) {
 		int offsetY = imageIndex * imageHeight; 
-		return texture.getColor(x, offsetY + y, ShadedTexture.MAX_LEVEL);
+		return texture.getColor(x, offsetY + y, ShadedTexture.MAX_LEVEL * 7 / 10);
 	}
 
 }

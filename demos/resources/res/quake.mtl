@@ -88,4 +88,8 @@ map_Kd tron_loop-animated.png
 newmtl color_changing_tron_disk
 map_Kd color_changing_tron_disk-animated.png
 
+newmtl characters_list
+map_Kd characters_list.png
+
+
 
