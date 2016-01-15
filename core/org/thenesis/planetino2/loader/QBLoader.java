@@ -191,7 +191,6 @@ public class QBLoader {
 	
 	public QBMatrix getMatrix(String name) {
 		for (int i = 0; i < matrices.length; i++) {
-			System.out.println(matrices[i].getName() + " | " + name);
 			if (matrices[i].getName().equalsIgnoreCase(name)) {
 				return matrices[i];
 			}
