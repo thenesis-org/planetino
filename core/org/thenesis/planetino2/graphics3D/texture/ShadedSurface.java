@@ -133,8 +133,7 @@ public abstract class ShadedSurface extends Texture {
 		// Create the shaded surface texture 
 		// If surface is too big, disable lightning for now (FIXME)
  		ShadedSurface surface = null;
- 		int surfaceSize = width * height;
-		if (surfaceSize > (1024 * 1024)) {
+		if ((width > 1024) && (height > 1024)) {
 			surface = new DisabledShadingSurface(width, height, ambientLightIntensity);
 		} else {
 			surface = new PreShadedSurface(width, height);
