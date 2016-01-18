@@ -12,10 +12,9 @@ public class StretchedAnimatedRectangularSurface extends AnimatedRectangularSurf
 		float ratioX = ((float)x) / width;
 		float ratioY = ((float)y) / height;
 		x = (int) (ratioX * imageWidth);
-		int offsetY = imageIndex * imageHeight; 
 		y = (int) (ratioY * imageHeight) + offsetY;
 	
-		return texture.getColor(x, y, ShadedTexture.MAX_LEVEL);
+		return texture.getColor(x, y, shadeLevel);
 	}
 
 }

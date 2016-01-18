@@ -2,12 +2,16 @@ package org.thenesis.planetino2.graphics3D.texture;
 
 public class AnimatedRectangularSurface extends Texture {
 	
+	protected static final int DEFAULT_SHADE_LEVEL = ShadedTexture.MAX_LEVEL * 7 / 10;
 	protected ShadedTexture texture;
 	protected int imageWidth;
 	protected int imageHeight;
 	private int imageSize;
 	private int imageCount;
 	protected int imageIndex;
+	protected int shadeLevel;
+	
+	protected int offsetY;
 
 	/**
 	 * An animated Texture
@@ -28,6 +32,9 @@ public class AnimatedRectangularSurface extends Texture {
 			this.imageCount = 1;
 		}	
 		
+		setImageIndex(0);
+		setShadeLevel(DEFAULT_SHADE_LEVEL);
+		
 		//System.out.println("rectangleWidth=" + rectangleWidth + " rectangleHeight=" + rectangleHeight);
 		//System.out.println("imageWidth=" + imageWidth + " texture.getHeight()=" + texture.getHeight() + " image count=" + imageCount);
 		
@@ -43,12 +50,16 @@ public class AnimatedRectangularSurface extends Texture {
 	
 	public void setImageIndex(int index) {
 		this.imageIndex = index;
+		offsetY = imageIndex * imageHeight;
 	}
 
 	@Override
 	public int getColor(int x, int y) {
-		int offsetY = imageIndex * imageHeight; 
-		return texture.getColor(x, offsetY + y, ShadedTexture.MAX_LEVEL * 7 / 10);
+		return texture.getColor(x, offsetY + y, shadeLevel);
+	}
+	
+	public void setShadeLevel(int shadeLevel) {
+		this.shadeLevel = shadeLevel;
 	}
 
 }

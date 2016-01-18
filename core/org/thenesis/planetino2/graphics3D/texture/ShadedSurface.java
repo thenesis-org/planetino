@@ -335,7 +335,7 @@ public abstract class ShadedSurface extends Texture {
 	        shadows from other polygons are computed. The value
 	        returned is from 0 to ShadedTexture.MAX_LEVEL.
 	    */
-	protected byte calcShade(Vector3D normal, Vector3D point, Vector pointLights, float ambientLightIntensity) {
+	public static byte calcShade(Vector3D normal, Vector3D point, Vector pointLights, float ambientLightIntensity) {
 		float intensity = 0;
 		Vector3D directionToLight = new Vector3D();
 
