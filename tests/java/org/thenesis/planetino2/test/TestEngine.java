@@ -45,7 +45,6 @@ package org.thenesis.planetino2.test;
 
 import java.io.IOException;
 import java.util.Enumeration;
-import org.thenesis.planetino2.util.Vector;
 
 import org.thenesis.planetino2.ai.AIBot;
 import org.thenesis.planetino2.ai.Brain;
@@ -58,7 +57,6 @@ import org.thenesis.planetino2.ai.pattern.RunAwayPattern;
 import org.thenesis.planetino2.bsp2D.BSPRenderer;
 import org.thenesis.planetino2.bsp2D.BSPTree;
 import org.thenesis.planetino2.bsp2D.BSPTreeBuilderWithPortals;
-import org.thenesis.planetino2.bsp2D.MapLoader;
 import org.thenesis.planetino2.engine.shooter3D.Bot;
 import org.thenesis.planetino2.engine.shooter3D.HeadsUpDisplay;
 import org.thenesis.planetino2.engine.shooter3D.ShooterCore;
@@ -73,11 +71,13 @@ import org.thenesis.planetino2.graphics.Color;
 import org.thenesis.planetino2.graphics.Graphics;
 import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.input.InputManager;
+import org.thenesis.planetino2.loader.MapLoader;
 import org.thenesis.planetino2.math3D.MovingTransform3D;
 import org.thenesis.planetino2.math3D.PointLight3D;
 import org.thenesis.planetino2.math3D.PolygonGroup;
 import org.thenesis.planetino2.math3D.Transform3D;
 import org.thenesis.planetino2.path.AStarSearchWithBSP;
+import org.thenesis.planetino2.util.Vector;
 
 public class TestEngine extends ShooterCore {
 

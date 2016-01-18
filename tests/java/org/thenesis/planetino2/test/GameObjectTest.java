@@ -45,7 +45,6 @@ package org.thenesis.planetino2.test;
 
 import java.io.IOException;
 import java.util.Random;
-import org.thenesis.planetino2.util.Vector;
 
 import org.thenesis.planetino2.engine.GameCore3D;
 import org.thenesis.planetino2.engine.shooter3D.Blast;
@@ -61,8 +60,8 @@ import org.thenesis.planetino2.graphics3D.texture.ShadedTexture;
 import org.thenesis.planetino2.graphics3D.texture.Texture;
 import org.thenesis.planetino2.input.GameAction;
 import org.thenesis.planetino2.input.InputManager;
+import org.thenesis.planetino2.loader.ObjectLoader;
 import org.thenesis.planetino2.math3D.MovingTransform3D;
-import org.thenesis.planetino2.math3D.ObjectLoader;
 import org.thenesis.planetino2.math3D.PointLight3D;
 import org.thenesis.planetino2.math3D.PolygonGroup;
 import org.thenesis.planetino2.math3D.Rectangle3D;
@@ -70,6 +69,7 @@ import org.thenesis.planetino2.math3D.TexturedPolygon3D;
 import org.thenesis.planetino2.math3D.Transform3D;
 import org.thenesis.planetino2.math3D.Vector3D;
 import org.thenesis.planetino2.math3D.ViewWindow;
+import org.thenesis.planetino2.util.Vector;
 
 /*
  * (23:37:53) Guillaume: Pour faire des collines y'a un algo simple ?
