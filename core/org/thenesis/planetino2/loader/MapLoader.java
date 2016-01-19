@@ -480,8 +480,7 @@ public class MapLoader extends ObjectLoader {
             	Vector3D location = getVector(tokenizer.nextToken());
             	float scale = Float.parseFloat(tokenizer.nextToken());
             	BoxModel boxDef = (BoxModel) boxDefs.get(boxDefName);
-            	BoxPolygonGroup box = new BoxPolygonGroup(boxDef, location, scale);
-            	box.applyLights(lights, ambientLightIntensity);
+            	BoxPolygonGroup box = new BoxPolygonGroup(boxDef, location, scale, ambientLightIntensity);
             	//box.getTransform().getLocation().setTo(location);
             	if (!uniqueName.equals("null")) {
             		box.setName(uniqueName);
@@ -497,11 +496,10 @@ public class MapLoader extends ObjectLoader {
             	int countY = Integer.parseInt(tokenizer.nextToken());
             	int countZ = Integer.parseInt(tokenizer.nextToken());
             	BoxModel boxDef = (BoxModel) boxDefs.get(boxDefName);
-            	BoxBlockPolygonGroup block = new BoxBlockPolygonGroup(boxDef, location, scale, countX, countY, countZ);
+            	BoxBlockPolygonGroup block = new BoxBlockPolygonGroup(boxDef, location, scale, countX, countY, countZ, ambientLightIntensity);
             	if (!uniqueName.equals("null")) {
             		block.setName(uniqueName);
                 }
-            	block.applyLights(lights, ambientLightIntensity);
             	Vector elements = block.getElements();
 				int size = elements.size();
 				for (int j = 0; j < size; j++) {
@@ -520,8 +518,7 @@ public class MapLoader extends ObjectLoader {
             	qbLoader.load(is);
             	QBMatrix matrix = qbLoader.getMatrix(matrixName);
             	if (matrix != null) {
-					VoxelMatrixPolygonGroup voxelMatrix = new VoxelMatrixPolygonGroup(matrix, location, scale);
-					voxelMatrix.applyLights(lights, ambientLightIntensity);
+					VoxelMatrixPolygonGroup voxelMatrix = new VoxelMatrixPolygonGroup(matrix, location, scale, ambientLightIntensity);
 					if (!uniqueName.equals("null")) {
 						voxelMatrix.setName(uniqueName);
 					}

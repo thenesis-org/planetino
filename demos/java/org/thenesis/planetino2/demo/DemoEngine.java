@@ -46,7 +46,6 @@ package org.thenesis.planetino2.demo;
 import java.io.IOException;
 import java.util.Enumeration;
 
-import org.thenesis.planetino2.util.Vector;
 import org.thenesis.planetino2.ai.AIBot;
 import org.thenesis.planetino2.ai.Brain;
 import org.thenesis.planetino2.ai.NoisyAIBot;
@@ -77,6 +76,7 @@ import org.thenesis.planetino2.loader.MapLoader;
 import org.thenesis.planetino2.loader.ObjectLoader;
 import org.thenesis.planetino2.math3D.BoxBlockPolygonGroup;
 import org.thenesis.planetino2.math3D.BoxPolygonGroup;
+import org.thenesis.planetino2.math3D.Lightable;
 import org.thenesis.planetino2.math3D.MovingTransform3D;
 import org.thenesis.planetino2.math3D.PointLight3D;
 import org.thenesis.planetino2.math3D.PolygonGroup;
@@ -88,6 +88,7 @@ import org.thenesis.planetino2.math3D.ViewWindow;
 import org.thenesis.planetino2.path.AStarSearchWithBSP;
 import org.thenesis.planetino2.sound.Music;
 import org.thenesis.planetino2.sound.SoundManager;
+import org.thenesis.planetino2.util.Vector;
 
 public class DemoEngine extends GameCore3D {
 	
@@ -211,6 +212,10 @@ public class DemoEngine extends GameCore3D {
 		createGameObjects(loader.getObjectsInMap());
 		Transform3D start = loader.getPlayerStartTransform();
 		gameObjectManager.getPlayer().getTransform().setTo(start);
+		
+		// Apply lights in last position
+		applyLights(loader.getObjectsInMap(), loader.getLights());
+		
 
 		//		CollisionDetection collisionDetection = new CollisionDetectionWithSliding(bspTree);
 		//		gameObjectManager = new GridGameObjectManager(bspTree.calcBounds(), collisionDetection);
@@ -226,6 +231,18 @@ public class DemoEngine extends GameCore3D {
 		//		createGameObjects(loader.getObjectsInMap());
 		//		Transform3D start = loader.getPlayerStartLocation();
 		//		gameObjectManager.getPlayer().getTransform().setTo(start);
+	}
+	
+	private void applyLights(Vector mapObjects, Vector lights) {
+		Enumeration i = mapObjects.elements();
+		while (i.hasMoreElements()) {
+			PolygonGroup group = (PolygonGroup) i.nextElement();
+			if (group instanceof Lightable) {
+				Lightable lightable = ((Lightable)group);
+				float ambientLightIntensity = lightable.getAmbientLightIntensity();
+				((Lightable)group).applyLights(lights, ambientLightIntensity);
+			}
+		}
 	}
 
 	private void createGameObjects(Vector mapObjects) {

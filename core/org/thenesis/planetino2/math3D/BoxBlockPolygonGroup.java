@@ -2,7 +2,7 @@ package org.thenesis.planetino2.math3D;
 
 import org.thenesis.planetino2.util.Vector;
 
-public class BoxBlockPolygonGroup extends PolygonGroup {
+public class BoxBlockPolygonGroup extends PolygonGroup implements Lightable {
 	
 	public static final String BOX_BLOCK_FILENAME = "boxBlock_internal.obj";
 	
@@ -13,14 +13,16 @@ public class BoxBlockPolygonGroup extends PolygonGroup {
 	private int sizeX;
 	private int sizeY;
 	private int sizeZ;
+	private float ambientLightIntensity;
 	
-	public BoxBlockPolygonGroup(BoxModel boxDef, Vector3D location, float scale, int sizeX, int sizeY, int sizeZ) {
+	public BoxBlockPolygonGroup(BoxModel boxDef, Vector3D location, float scale, int sizeX, int sizeY, int sizeZ, float ambientLightIntensity) {
 		this.boxDef = boxDef;
 		this.location = location;
 		this.elementScale = scale;
 		elements = new Vector();
 		setFilename(BOX_BLOCK_FILENAME);
 		setSize(sizeX, sizeY, sizeZ);
+		this.ambientLightIntensity = ambientLightIntensity;
 		rebuild();
 	}
 	
@@ -57,6 +59,10 @@ public class BoxBlockPolygonGroup extends PolygonGroup {
 		}
 	}
 	
+	public float getAmbientLightIntensity() {
+		return ambientLightIntensity;
+	}
+	
 	public Vector getElements() {
 		return elements;
 	}
@@ -66,7 +72,7 @@ public class BoxBlockPolygonGroup extends PolygonGroup {
 		BoxBlockPolygonGroup boxBlock;
 
 		public Element(BoxModel boxDef, Vector3D location, float scale) {
-			super(boxDef, location, scale);
+			super(boxDef, location, scale, ambientLightIntensity);
 			this.boxBlock = BoxBlockPolygonGroup.this;
 		}
 		

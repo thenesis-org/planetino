@@ -6,18 +6,20 @@ import org.thenesis.planetino2.graphics3D.texture.StretchedAnimatedRectangularSu
 import org.thenesis.planetino2.math3D.BoxModel.FaceModel;
 import org.thenesis.planetino2.util.Vector;
 
-public class BoxPolygonGroup extends PolygonGroup {
+public class BoxPolygonGroup extends PolygonGroup implements Lightable {
 
 	public static final String BOX_FILENAME = "box_internal.obj";
 	
 	private BoxModel boxDef;
 	private float scale;
+	private float ambientLightIntensity;
 	
 	private Face[] faces;
 	private static Polygon3D cachedTransformedPolygonForLightning = new Polygon3D();
 	
-	public BoxPolygonGroup(BoxModel boxDef, Vector3D location, float scale) {
+	public BoxPolygonGroup(BoxModel boxDef, Vector3D location, float scale, float ambientLightIntensity) {
 		this.boxDef = boxDef;
+		this.ambientLightIntensity = ambientLightIntensity;
 		faces = new Face[BoxModel.FACES];
 		setFilename(BOX_FILENAME);
 		
@@ -98,6 +100,10 @@ public class BoxPolygonGroup extends PolygonGroup {
 				surface.setShadeLevel(shadeLevel);
 			}
 		}
+	}
+	
+	public float getAmbientLightIntensity() {
+		return ambientLightIntensity;
 	}
 	
 	@Override

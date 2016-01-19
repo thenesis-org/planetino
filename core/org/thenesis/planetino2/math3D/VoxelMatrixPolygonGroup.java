@@ -5,7 +5,7 @@ import java.util.Hashtable;
 import org.thenesis.planetino2.loader.QBMatrix;
 import org.thenesis.planetino2.util.Vector;
 
-public class VoxelMatrixPolygonGroup extends PolygonGroup {
+public class VoxelMatrixPolygonGroup extends PolygonGroup implements Lightable {
 
 	public static final String BOX_BLOCK_FILENAME = "voxelMatrix_internal.obj";
 
@@ -14,11 +14,13 @@ public class VoxelMatrixPolygonGroup extends PolygonGroup {
 	private QBMatrix matrix;
 	private Vector3D location;
 	private float elementScale;
+	private float ambientLightIntensity;
 
-	public VoxelMatrixPolygonGroup(QBMatrix matrix, Vector3D location, float scale) {
+	public VoxelMatrixPolygonGroup(QBMatrix matrix, Vector3D location, float scale, float ambientLightIntensity) {
 		this.matrix = matrix;
 		this.location = location;
 		this.elementScale = scale;
+		this.ambientLightIntensity = ambientLightIntensity;
 		boxModelMap = new Hashtable();
 		elements = new Vector();
 		matrix.removeHiddenVoxels();
@@ -67,6 +69,10 @@ public class VoxelMatrixPolygonGroup extends PolygonGroup {
 			e.applyLights(pointLights, ambientLightIntensity);
 		}
 	}
+	
+	public float getAmbientLightIntensity() {
+		return ambientLightIntensity;
+	}
 
 	public static String getVoxelColorName(int color) {
 		return Integer.toHexString(color);
@@ -81,7 +87,7 @@ public class VoxelMatrixPolygonGroup extends PolygonGroup {
 		VoxelMatrixPolygonGroup boxBlock;
 
 		public Element(BoxModel boxModel, Vector3D location, float scale) {
-			super(boxModel, location, scale);
+			super(boxModel, location, scale, ambientLightIntensity);
 			this.boxBlock = VoxelMatrixPolygonGroup.this;
 		}
 
@@ -92,7 +98,7 @@ public class VoxelMatrixPolygonGroup extends PolygonGroup {
 		VoxelMatrixPolygonGroup boxBlock;
 
 		public StaticElement(BoxModel boxModel, Vector3D location, float scale) {
-			super(boxModel, location, scale);
+			super(boxModel, location, scale, ambientLightIntensity);
 			this.boxBlock = VoxelMatrixPolygonGroup.this;
 		}
 

@@ -338,8 +338,8 @@ public abstract class ShadedSurface extends Texture {
 	public static byte calcShade(Vector3D normal, Vector3D point, Vector pointLights, float ambientLightIntensity) {
 		float intensity = 0;
 		
-		int size = pointLights.size();
-		if (size > 0) {
+		int size = 0;
+		if ((pointLights != null) && ((size = pointLights.size()) > 0)) {
 			Vector3D directionToLight = new Vector3D();
 			for (int i = 0; i < size; i++) {
 				PointLight3D light = (PointLight3D) pointLights.elementAt(i);

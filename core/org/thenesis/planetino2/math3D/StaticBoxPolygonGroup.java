@@ -1,13 +1,15 @@
 package org.thenesis.planetino2.math3D;
 
+import javafx.scene.AmbientLight;
+
 import org.thenesis.planetino2.util.Vector;
 
 public class StaticBoxPolygonGroup extends BoxPolygonGroup {
 	
 	protected Vector transformedPolygonCache;
 
-	public StaticBoxPolygonGroup(BoxModel boxDef, Vector3D location, float scale) {
-		super(boxDef, location, scale);
+	public StaticBoxPolygonGroup(BoxModel boxDef, Vector3D location, float scale, float ambientLightIntensity) {
+		super(boxDef, location, scale, ambientLightIntensity);
 		cacheTransformedPolygons();
 	}
 	
