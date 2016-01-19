@@ -337,26 +337,28 @@ public abstract class ShadedSurface extends Texture {
 	    */
 	public static byte calcShade(Vector3D normal, Vector3D point, Vector pointLights, float ambientLightIntensity) {
 		float intensity = 0;
-		Vector3D directionToLight = new Vector3D();
+		
+		int size = pointLights.size();
+		if (size > 0) {
+			Vector3D directionToLight = new Vector3D();
+			for (int i = 0; i < size; i++) {
+				PointLight3D light = (PointLight3D) pointLights.elementAt(i);
+				directionToLight.setTo(light);
+				directionToLight.subtract(point);
 
-		for (int i = 0; i < pointLights.size(); i++) {
-			PointLight3D light = (PointLight3D) pointLights.elementAt(i);
-			directionToLight.setTo(light);
-			directionToLight.subtract(point);
+				float distance = directionToLight.length();
+				directionToLight.normalize();
+				float lightIntensity = light.getIntensity(distance) * directionToLight.getDotProduct(normal);
+				lightIntensity = Math.min(lightIntensity, 1);
+				lightIntensity = Math.max(lightIntensity, 0);
+				intensity += lightIntensity;
+			}
 
-			float distance = directionToLight.length();
-			directionToLight.normalize();
-			float lightIntensity = light.getIntensity(distance) * directionToLight.getDotProduct(normal);
-			lightIntensity = Math.min(lightIntensity, 1);
-			lightIntensity = Math.max(lightIntensity, 0);
-			intensity += lightIntensity;
+			intensity = Math.min(intensity, 1);
+			intensity = Math.max(intensity, 0);
 		}
 
-		intensity = Math.min(intensity, 1);
-		intensity = Math.max(intensity, 0);
-
 		intensity += ambientLightIntensity;
-
 		intensity = Math.min(intensity, 1);
 		intensity = Math.max(intensity, 0);
 		//int level = Math.round(intensity*ShadedTexture.MAX_LEVEL);
