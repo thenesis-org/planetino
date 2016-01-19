@@ -2,9 +2,8 @@ package org.thenesis.planetino2.math3D;
 
 import java.util.Hashtable;
 
-import org.thenesis.planetino2.util.Vector;
-import org.thenesis.planetino2.graphics.Color;
 import org.thenesis.planetino2.loader.QBMatrix;
+import org.thenesis.planetino2.util.Vector;
 
 public class VoxelMatrixPolygonGroup extends PolygonGroup {
 
@@ -58,6 +57,14 @@ public class VoxelMatrixPolygonGroup extends PolygonGroup {
 					}
 				}
 			}
+		}
+	}
+	
+	public void applyLights(Vector pointLights, float ambientLightIntensity) {
+		int size = elements.size();
+		for (int i = 0; i < size; i++) {
+			Element e = (Element)elements.elementAt(i);
+			e.applyLights(pointLights, ambientLightIntensity);
 		}
 	}
 

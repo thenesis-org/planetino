@@ -1,8 +1,10 @@
 package org.thenesis.planetino2.math3D;
 
 import org.thenesis.planetino2.graphics3D.texture.AnimatedRectangularSurface;
+import org.thenesis.planetino2.graphics3D.texture.ShadedSurface;
 import org.thenesis.planetino2.graphics3D.texture.StretchedAnimatedRectangularSurface;
 import org.thenesis.planetino2.math3D.BoxModel.FaceModel;
+import org.thenesis.planetino2.util.Vector;
 
 public class BoxPolygonGroup extends PolygonGroup {
 
@@ -12,6 +14,7 @@ public class BoxPolygonGroup extends PolygonGroup {
 	private float scale;
 	
 	private Face[] faces;
+	private static Polygon3D cachedTransformedPolygonForLightning = new Polygon3D();
 	
 	public BoxPolygonGroup(BoxModel boxDef, Vector3D location, float scale) {
 		this.boxDef = boxDef;
@@ -70,6 +73,29 @@ public class BoxPolygonGroup extends PolygonGroup {
 			Face face = faces[i];
 			if(face != null) {
 				face.updateImage(elapsedTime);
+			}
+		}
+	}
+	
+	/**
+	 * Basic implementation: only one light intensity is processed for each face of the box
+	 * @param pointLights
+	 * @param ambientLightIntensity
+	 */
+	public void applyLights(Vector pointLights, float ambientLightIntensity) {
+		Polygon3D transformedPolygon = cachedTransformedPolygonForLightning;
+		for (int i = 0; i < BoxModel.FACES; i++) {
+			Face face = faces[i];
+			if(face != null) {
+				transformedPolygon.setTo(face);
+				transformedPolygon.add(getTransform());
+				Vector3D normal = transformedPolygon.calcNormal();
+				Vector3D point = new Vector3D(transformedPolygon.getVertex(0));
+//				System.out.println("point=" + point + " normal=" + normal);
+				byte shadeLevel = ShadedSurface.calcShade(normal, point, pointLights, ambientLightIntensity);
+//				System.out.println("face " + i + " shadelevel: " + shadeLevel);
+				AnimatedRectangularSurface surface = (AnimatedRectangularSurface) face.getTexture();
+				surface.setShadeLevel(shadeLevel);
 			}
 		}
 	}

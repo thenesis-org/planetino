@@ -49,6 +49,14 @@ public class BoxBlockPolygonGroup extends PolygonGroup {
 		}
 	}
 	
+	public void applyLights(Vector pointLights, float ambientLightIntensity) {
+		int size = elements.size();
+		for (int i = 0; i < size; i++) {
+			Element e = (Element)elements.elementAt(i);
+			e.applyLights(pointLights, ambientLightIntensity);
+		}
+	}
+	
 	public Vector getElements() {
 		return elements;
 	}
