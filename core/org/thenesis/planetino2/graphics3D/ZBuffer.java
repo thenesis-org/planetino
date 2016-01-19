@@ -53,7 +53,7 @@ package org.thenesis.planetino2.graphics3D;
  */
 public class ZBuffer {
 
-	private short[] depthBuffer;
+	private float[] depthBuffer;
 	private int width;
 	private int height;
 
@@ -61,7 +61,7 @@ public class ZBuffer {
 	 Creates a new z-buffer with the specified width and height.
 	 */
 	public ZBuffer(int width, int height) {
-		depthBuffer = new short[width * height];
+		depthBuffer = new float[width * height];
 		this.width = width;
 		this.height = height;
 		clear();
@@ -84,7 +84,7 @@ public class ZBuffer {
 	/**
 	 Gets the array used for the depth buffer
 	 */
-	public short[] getArray() {
+	public float[] getArray() {
 		return depthBuffer;
 	}
 
@@ -112,7 +112,7 @@ public class ZBuffer {
 	 set and this method returns true. Otherwise, no action
 	 occurs and this method returns false.
 	 */
-	public boolean checkDepth(int offset, short depth) {
+	public boolean checkDepth(int offset, float depth) {
 		if (depth >= depthBuffer[offset]) {
 			depthBuffer[offset] = depth;
 			return true;

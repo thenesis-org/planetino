@@ -624,8 +624,8 @@ public class ZBufferedRenderer extends ShadedSurfacePolygonRenderer implements G
 			float dz = INTERP_SIZE * c.x;
 			int nextTx = (int) (u / z);
 			int nextTy = (int) (v / z);
-			int depth = (int) (w * z);
-			int dDepth = (int) (w * c.x);
+			float depth = (w * z);
+			float dDepth = (w * c.x);
 			int x = left;
 			while (x <= right) {
 				int tx = nextTx;
@@ -641,7 +641,7 @@ public class ZBufferedRenderer extends ShadedSurfacePolygonRenderer implements G
 					int dty = (nextTy - ty) >> INTERP_SIZE_BITS;
 					int endOffset = offset + INTERP_SIZE;
 					while (offset < endOffset) {
-						if (zBuffer.checkDepth(offset, (short) (depth >> SCALE_BITS))) {
+						if (zBuffer.checkDepth(offset, depth / SCALE)) {
 //							doubleBufferData[offset] = buffer[((tx >> SCALE_BITS) & widthMask)
 //									+ (((ty >> SCALE_BITS) & heightMask) << widthBits)];
 							doubleBufferData[offset] = texture.getColor(tx >> SCALE_BITS, ty >> SCALE_BITS);
@@ -674,7 +674,7 @@ public class ZBufferedRenderer extends ShadedSurfacePolygonRenderer implements G
 					int dty = (nextTy - ty) / interpSize;
 					int endOffset = offset + interpSize;
 					while (offset < endOffset) {
-						if (zBuffer.checkDepth(offset, (short) (depth >> SCALE_BITS))) {
+						if (zBuffer.checkDepth(offset, depth / SCALE)) {
 //							doubleBufferData[offset] = buffer[((tx >> SCALE_BITS) & widthMask)
 //									+ (((ty >> SCALE_BITS) & heightMask) << widthBits)];
 							doubleBufferData[offset] = texture.getColor(tx >> SCALE_BITS, ty >> SCALE_BITS);

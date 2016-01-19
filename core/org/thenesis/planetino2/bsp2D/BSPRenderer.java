@@ -254,7 +254,7 @@ public class BSPRenderer extends ZBufferedRenderer
         float dz = c.x;
         int depth = (int)(w*z);
         int dDepth = (int)(w*dz);
-        short[] depthBuffer = zBuffer.getArray();
+        float[] depthBuffer = zBuffer.getArray();
         int endOffset = offset + width;
 
         // depth will be constant for many floors and ceilings
