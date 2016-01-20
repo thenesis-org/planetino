@@ -59,7 +59,6 @@ import org.thenesis.planetino2.bsp2D.BSPTree;
 import org.thenesis.planetino2.bsp2D.BSPTreeBuilderWithPortals;
 import org.thenesis.planetino2.engine.shooter3D.Bot;
 import org.thenesis.planetino2.engine.shooter3D.HeadsUpDisplay;
-import org.thenesis.planetino2.engine.shooter3D.ShooterCore;
 import org.thenesis.planetino2.game.CollisionDetection;
 import org.thenesis.planetino2.game.CollisionDetectionWithSliding;
 import org.thenesis.planetino2.game.GameObject;
@@ -72,6 +71,7 @@ import org.thenesis.planetino2.graphics.Graphics;
 import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.input.InputManager;
 import org.thenesis.planetino2.loader.MapLoader;
+import org.thenesis.planetino2.loader.ResourceLoader;
 import org.thenesis.planetino2.math3D.MovingTransform3D;
 import org.thenesis.planetino2.math3D.PointLight3D;
 import org.thenesis.planetino2.math3D.PolygonGroup;
@@ -89,8 +89,8 @@ public class TestEngine extends ShooterCore {
 	protected String mapFile;
 	protected CollisionDetection collisionDetection;
 
-	public TestEngine(Screen screen, InputManager inputManager) {
-		super(screen, inputManager);
+	public TestEngine(Screen screen, InputManager inputManager, ResourceLoader resourceLoader) {
+		super(screen, inputManager, resourceLoader);
 		this.inputManager = inputManager;
 	}
 
@@ -108,13 +108,13 @@ public class TestEngine extends ShooterCore {
 		lights.addElement(new PointLight3D(-100, 100, 100, .3f, -1));
 		lights.addElement(new PointLight3D(100, 100, 0, .3f, -1));
 
-		MapLoader loader = new MapLoader(new BSPTreeBuilderWithPortals());
+		MapLoader loader = new MapLoader(resourceLoader, new BSPTreeBuilderWithPortals());
 		loader.setObjectLights(lights, ambientLightIntensity);
 		//MapLoader loader = new MapLoader();
 		//loader.setObjectLights(lights, ambientLightIntensity);
 
 		try {
-			bspTree = loader.loadMap("/res/", "cacao_demo.map");
+			bspTree = loader.loadMap("cacao_demo.map");
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}

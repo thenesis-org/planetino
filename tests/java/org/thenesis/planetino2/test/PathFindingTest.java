@@ -49,7 +49,6 @@ import java.util.Enumeration;
 import org.thenesis.planetino2.bsp2D.BSPRenderer;
 import org.thenesis.planetino2.bsp2D.BSPTree;
 import org.thenesis.planetino2.bsp2D.BSPTreeBuilderWithPortals;
-import org.thenesis.planetino2.engine.shooter3D.ShooterCore;
 import org.thenesis.planetino2.game.CollisionDetection;
 import org.thenesis.planetino2.game.CollisionDetectionWithSliding;
 import org.thenesis.planetino2.game.GameObject;
@@ -61,6 +60,7 @@ import org.thenesis.planetino2.graphics.Graphics;
 import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.input.InputManager;
 import org.thenesis.planetino2.loader.MapLoader;
+import org.thenesis.planetino2.loader.ResourceLoader;
 import org.thenesis.planetino2.math3D.PointLight3D;
 import org.thenesis.planetino2.math3D.PolygonGroup;
 import org.thenesis.planetino2.math3D.Transform3D;
@@ -91,13 +91,12 @@ public class PathFindingTest extends ShooterCore {
 	//        }
 	//    }
 
-	public PathFindingTest(Screen screen, InputManager inputManager) {
-		super(screen, inputManager);
-		this.inputManager = inputManager;
+	public PathFindingTest(Screen screen, InputManager inputManager, ResourceLoader resourceLoader) {
+		super(screen, inputManager, resourceLoader);
 	}
 
-	public PathFindingTest(Screen screen, InputManager inputManager, String defaultMap) {
-		this(screen, inputManager);
+	public PathFindingTest(Screen screen, InputManager inputManager, ResourceLoader resourceLoader, String defaultMap) {
+		this(screen, inputManager, resourceLoader);
 		this.defaultMap = defaultMap;
 	}
 
@@ -115,13 +114,13 @@ public class PathFindingTest extends ShooterCore {
 		lights.addElement(new PointLight3D(-100, 100, 100, .3f, -1));
 		lights.addElement(new PointLight3D(100, 100, 0, .3f, -1));
 
-		MapLoader loader = new MapLoader(new BSPTreeBuilderWithPortals());
+		MapLoader loader = new MapLoader(resourceLoader, new BSPTreeBuilderWithPortals());
 		loader.setObjectLights(lights, ambientLightIntensity);
 
 		try {
 			if (defaultMap == null)
 				defaultMap = "sample2.map";
-			bspTree = loader.loadMap("/res/", defaultMap);
+			bspTree = loader.loadMap(defaultMap);
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}

@@ -16,6 +16,7 @@ import org.thenesis.planetino2.graphics.Image;
 import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.graphics.Toolkit;
 import org.thenesis.planetino2.input.InputManager;
+import org.thenesis.planetino2.loader.ResourceLoader;
 import org.thenesis.planetino2.sound.SoundPlayer;
 
 public class AWTToolkit extends Toolkit {
@@ -24,10 +25,10 @@ public class AWTToolkit extends Toolkit {
 	private InputManager inputManager;
 	private AWTScreen awtScreen;
 	private SoundPlayerSE soundPlayer;
+	private ResourceLoader resourceLoader;
 	
 	@Override
-	public Image createImage(String path) throws IOException {
-		InputStream is = getClass().getResourceAsStream(path);
+	public Image createImage(InputStream is) throws IOException {
 		java.awt.Image nativeImage =  ImageIO.read(is);
 		return new AWTImage(nativeImage);
 	}
@@ -122,6 +123,14 @@ public class AWTToolkit extends Toolkit {
 			soundPlayer = new SoundPlayerSE();
 		}
 		return soundPlayer;
+	}
+
+	@Override
+	public ResourceLoader getResourceLoader() {
+		if (resourceLoader == null) {
+			resourceLoader = new ResourceLoaderSE();
+		}
+		return resourceLoader;
 	}
 
 }

@@ -44,8 +44,8 @@
 package org.thenesis.planetino2.test;
 
 import java.util.Enumeration;
-import org.thenesis.planetino2.util.Vector;
 
+import org.thenesis.planetino2.util.Vector;
 import org.thenesis.planetino2.ai.EvolutionBot;
 import org.thenesis.planetino2.ai.EvolutionGenePool;
 import org.thenesis.planetino2.engine.shooter3D.HeadsUpDisplay;
@@ -54,6 +54,7 @@ import org.thenesis.planetino2.game.MessageQueue;
 import org.thenesis.planetino2.game.Player;
 import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.input.InputManager;
+import org.thenesis.planetino2.loader.ResourceLoader;
 import org.thenesis.planetino2.math3D.PolygonGroup;
 
 public class EvolutionTest extends PathFindingTest {
@@ -68,9 +69,8 @@ public class EvolutionTest extends PathFindingTest {
 	//        super(args, defaultMap);
 	//    }
 
-	public EvolutionTest(Screen screen, InputManager inputManager) {
-		super(screen, inputManager, "sample3.map");
-		this.inputManager = inputManager;
+	public EvolutionTest(Screen screen, InputManager inputManager, ResourceLoader resourceLoader) {
+		super(screen, inputManager, resourceLoader, "sample3.map");
 	}
 
 	public void stop() {

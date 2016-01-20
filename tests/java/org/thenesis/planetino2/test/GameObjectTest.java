@@ -44,8 +44,13 @@
 package org.thenesis.planetino2.test;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Random;
 
+import javax.imageio.ImageIO;
+
+import org.thenesis.planetino2.backend.awt.AWTImage;
+import org.thenesis.planetino2.backend.awt.AWTToolkit;
 import org.thenesis.planetino2.engine.GameCore3D;
 import org.thenesis.planetino2.engine.shooter3D.Blast;
 import org.thenesis.planetino2.engine.shooter3D.Bot;
@@ -54,13 +59,16 @@ import org.thenesis.planetino2.game.GameObjectManager;
 import org.thenesis.planetino2.game.GameObjectRenderer;
 import org.thenesis.planetino2.game.SimpleGameObjectManager;
 import org.thenesis.planetino2.graphics.Graphics;
+import org.thenesis.planetino2.graphics.Image;
 import org.thenesis.planetino2.graphics.Screen;
+import org.thenesis.planetino2.graphics.Toolkit;
 import org.thenesis.planetino2.graphics3D.ZBufferedRenderer;
 import org.thenesis.planetino2.graphics3D.texture.ShadedTexture;
 import org.thenesis.planetino2.graphics3D.texture.Texture;
 import org.thenesis.planetino2.input.GameAction;
 import org.thenesis.planetino2.input.InputManager;
 import org.thenesis.planetino2.loader.ObjectLoader;
+import org.thenesis.planetino2.loader.ResourceLoader;
 import org.thenesis.planetino2.math3D.MovingTransform3D;
 import org.thenesis.planetino2.math3D.PointLight3D;
 import org.thenesis.planetino2.math3D.PolygonGroup;
@@ -113,10 +121,11 @@ public class GameObjectTest extends GameCore3D {
 	private PolygonGroup blastModel;
 	private GameObjectManager gameObjectManager;
 	private TexturedPolygon3D floor;
+	private ResourceLoader resourceLoader;
 
-	public GameObjectTest(Screen screen, InputManager inputManager) {
+	public GameObjectTest(Screen screen, InputManager inputManager, ResourceLoader resourceLoader) {
 		super(screen, inputManager);
-		this.inputManager = inputManager;
+		this.resourceLoader = resourceLoader;
 	}
 
 	public void init() {
@@ -126,7 +135,13 @@ public class GameObjectTest extends GameCore3D {
 	public void createPolygons() {
 
 		// create floor
-		Texture floorTexture = Texture.createTexture("/res/", "roof1.png", true);
+		Image image = null;
+		try {
+			image = resourceLoader.loadImage("roof1.png");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		Texture floorTexture = Texture.createTexture(image, true);
 		((ShadedTexture) floorTexture).setDefaultShadeLevel(ShadedTexture.MAX_LEVEL * 3 / 4);
 		Rectangle3D floorTextureBounds = new Rectangle3D(new Vector3D(0, 0, 0), new Vector3D(1, 0, 0), new Vector3D(0,
 				0, 1), floorTexture.getWidth(), floorTexture.getHeight());
@@ -142,12 +157,12 @@ public class GameObjectTest extends GameCore3D {
 		lights.addElement(new PointLight3D(100, 100, 0, .5f, -1));
 
 		// load the object models
-		ObjectLoader loader = new ObjectLoader();
+		ObjectLoader loader = new ObjectLoader(resourceLoader);
 		loader.setLights(lights, ambientLightIntensity);
 		try {
-			robotModel = loader.loadObject("/res/", "robot.obj3d");
-			powerUpModel = loader.loadObject("/res/", "cube.obj3d");
-			blastModel = loader.loadObject("/res/", "blast.obj3d");
+			robotModel = loader.loadObject("robot.obj3d");
+			powerUpModel = loader.loadObject("cube.obj3d");
+			blastModel = loader.loadObject("blast.obj3d");
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}

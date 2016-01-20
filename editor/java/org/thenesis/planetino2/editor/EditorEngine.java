@@ -63,6 +63,7 @@ import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.input.InputManager;
 import org.thenesis.planetino2.loader.MapLoader;
 import org.thenesis.planetino2.loader.ObjectLoader;
+import org.thenesis.planetino2.loader.ResourceLoader;
 import org.thenesis.planetino2.math3D.MovingTransform3D;
 import org.thenesis.planetino2.math3D.PointLight3D;
 import org.thenesis.planetino2.math3D.PolygonGroup;
@@ -80,6 +81,7 @@ public class EditorEngine extends GameCore3D {
 	private static final float ANGLE_DEFAULT = (float) Math.toRadians(75);
 	private static final float ANGLE_ZOOM = (float) Math.toRadians(25);
 	
+	private ResourceLoader resourceLoader;
 	protected GameObjectManager gameObjectManager;
 	
 	MapLoader loader;
@@ -87,9 +89,10 @@ public class EditorEngine extends GameCore3D {
 	protected String mapFile;
 	protected CollisionDetection collisionDetection;
 
-	public EditorEngine(Screen screen, InputManager inputManager) {
+	public EditorEngine(Screen screen, InputManager inputManager, ResourceLoader resourceLoader) {
 		super(screen, inputManager);
 		this.inputManager = inputManager;
+		this.resourceLoader = resourceLoader;
 	}
 	
 	public void loadMap(String filename) {
@@ -98,12 +101,12 @@ public class EditorEngine extends GameCore3D {
 		Vector lights = new Vector();
 		lights.addElement(new PointLight3D(-100, 100, 100, .3f, -1));
 		lights.addElement(new PointLight3D(100, 100, 0, .3f, -1));
-		loader = new MapLoader(new BSPTreeBuilderWithPortals());
+		loader = new MapLoader(resourceLoader, new BSPTreeBuilderWithPortals());
 		loader.setObjectLights(lights, ambientLightIntensity);
 		try {
 			//bspTree = loader.loadMap("/res/", "cacao_demo.map");
 			//bspTree = loader.loadMap("/res/", "quake.map"); //quake-one_bot.map
-			bspTree = loader.loadMap("/res/", filename);
+			bspTree = loader.loadMap(filename);
 			//bspTree = loader.loadMap("/res/", "linuxtag.map");
 		} catch (IOException ex) {
 			ex.printStackTrace();

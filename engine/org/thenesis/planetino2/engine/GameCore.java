@@ -144,9 +144,9 @@ public abstract class GameCore implements Runnable {
     }
 
 
-    public Image loadImage(String fileName) throws IOException {
-        return Toolkit.getInstance().createImage(fileName);
-    }
+//    public Image loadImage(String fileName) throws IOException {
+//        return Toolkit.getInstance().createImage(fileName);
+//    }
 
 
     /**

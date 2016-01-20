@@ -88,45 +88,45 @@ public abstract class Texture {
 	 */
 	public abstract int getColor(int x, int y);
 
-	/**
-	 Creates an unshaded Texture from the specified image file.
-	 * @throws IOException 
-	 */
-	public static Texture createTexture(String path, String filename) {
-		return createTexture(path, filename, false);
-	}
+//	/**
+//	 Creates an unshaded Texture from the specified image file.
+//	 * @throws IOException 
+//	 */
+//	public static Texture createTexture(String filename) {
+//		return createTexture(filename, false);
+//	}
 
-	/**
-	 Creates an Texture from the specified image file. If
-	 shaded is true, then a ShadedTexture is returned.
-	 * @throws IOException 
-	 */
-	public static Texture createTexture(String path, String filename, boolean shaded) {
-
-		try {
-			Image image = Toolkit.getInstance().createImage(path + filename);
-
-			return createTexture(image, shaded);
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		//System.out.println("[DEBUG] Texture.createTexture(): not implemented yet");
-
-		//System.out.println("AAA:" + path + filename);
-
-		//        try {
-		//            return createTexture(ImageIO.read(Texture.class.getResourceAsStream(path + filename)),
-		//                shaded);
-		//        }
-		//        catch (IOException ex) {
-		//            ex.printStackTrace();
-		//            return null;
-		//        }
-
-		return null;
-	}
+//	/**
+//	 Creates an Texture from the specified image file. If
+//	 shaded is true, then a ShadedTexture is returned.
+//	 * @throws IOException 
+//	 */
+//	public static Texture createTexture(String filename, boolean shaded) {
+//
+//		try {
+//			Image image = Toolkit.getInstance().createImage("/res/" + filename);
+//
+//			return createTexture(image, shaded);
+//
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//
+//		//System.out.println("[DEBUG] Texture.createTexture(): not implemented yet");
+//
+//		//System.out.println("AAA:" + path + filename);
+//
+//		//        try {
+//		//            return createTexture(ImageIO.read(Texture.class.getResourceAsStream(path + filename)),
+//		//                shaded);
+//		//        }
+//		//        catch (IOException ex) {
+//		//            ex.printStackTrace();
+//		//            return null;
+//		//        }
+//
+//		return null;
+//	}
 
 	/**
 	 Creates an unshaded Texture from the specified image.

@@ -94,7 +94,7 @@ public class DemoAWT  {
 		/* Do all tasks in the Swing EDT to avoid thread issues */
 		//Thread engineThread = new Thread(engine);
 		//engineThread.start();
-		DemoEngine engine = new DemoEngine(screen, inputManager);
+		DemoEngine engine = new DemoEngine(screen, inputManager, Toolkit.getInstance().getResourceLoader());
 		engine.init();
 		Worker worker = new Worker(engine);
 		try {

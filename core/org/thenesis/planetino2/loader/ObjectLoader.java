@@ -49,6 +49,8 @@ import java.util.Hashtable;
 import java.util.NoSuchElementException;
 
 import org.thenesis.planetino2.util.Vector;
+import org.thenesis.planetino2.graphics.Image;
+import org.thenesis.planetino2.graphics.Toolkit;
 import org.thenesis.planetino2.graphics3D.texture.ShadedSurface;
 import org.thenesis.planetino2.graphics3D.texture.ShadedTexture;
 import org.thenesis.planetino2.graphics3D.texture.SmallShadedSurface;
@@ -132,7 +134,8 @@ public class ObjectLoader {
 		public void parseLine(String line) throws IOException, NumberFormatException, NoSuchElementException;
 	}
 
-	protected String path;
+	protected ResourceLoader resourceLoader;
+	//protected String path;
 	protected Vector vertices;
 	protected Vector textureCoordinates;
 	protected String currentMaterialLib;
@@ -147,7 +150,8 @@ public class ObjectLoader {
 	/**
 	 Creates a new ObjectLoader.
 	 */
-	public ObjectLoader() {
+	public ObjectLoader(ResourceLoader resourceLoader) {
+		this.resourceLoader = resourceLoader;
 		materials = new Hashtable();
 		vertices = new Vector();
 		textureCoordinates = new Vector();
@@ -171,9 +175,7 @@ public class ObjectLoader {
 	/**
 	 Loads an OBJ file as a PolygonGroup.
 	 */
-	public PolygonGroup loadObject(String path, String filename) throws IOException {		
-
-		this.path = path;
+	public PolygonGroup loadObject(String filename) throws IOException {		
 
 		object = new PolygonGroup();
 		object.setFilename(filename);
@@ -256,9 +258,8 @@ public class ObjectLoader {
 	protected void parseFile(String filename) throws IOException {
 		// get the file relative to the source path
 		//File file = new File(path, filename);
-		System.out.println("path: " + path + " filename: " + filename);
-		BufferedReader reader = new BufferedReader(new InputStreamReader(getClass()
-				.getResourceAsStream(path + filename)));
+		System.out.println("filename: " + filename);
+		BufferedReader reader = new BufferedReader(new InputStreamReader(resourceLoader.getInputStream(filename)));
 
 		//        File file = new File(path, filename);
 		//        System.out.println("PATH: " + file);
@@ -565,7 +566,13 @@ public class ObjectLoader {
 				String name = tokenizer.nextToken();
 				if (!name.equals(currentMaterial.textureFileName)) {
 					currentMaterial.textureFileName = name;
-					currentMaterial.texture = (ShadedTexture) Texture.createTexture(path, name, true);
+					Image image = null;
+					try {
+						image = resourceLoader.loadImage(name);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					currentMaterial.texture = (ShadedTexture) Texture.createTexture(image, true);
 				}
 				//				File file = new File(path, name);
 				//				if (!file.equals(currentMaterial.sourceFile)) {

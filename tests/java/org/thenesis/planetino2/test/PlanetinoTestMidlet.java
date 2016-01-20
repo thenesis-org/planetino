@@ -47,7 +47,6 @@ import java.awt.event.KeyEvent;
 
 import org.thenesis.planetino2.backend.awt.AWTToolkit;
 import org.thenesis.planetino2.engine.GameCore3D;
-import org.thenesis.planetino2.engine.shooter3D.ShooterCore;
 import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.graphics.Toolkit;
 import org.thenesis.planetino2.input.InputManager;
@@ -91,7 +90,7 @@ public class PlanetinoTestMidlet  {
 				//CollisionTestWithSliding engine = new CollisionTestWithSliding(screen, inputManager);
 				//PathFindingTest engine = new PathFindingTest(screen, inputManager);
 				//EvolutionTest engine = new EvolutionTest(screen, inputManager);
-				AIBotTest engine = new AIBotTest(screen, inputManager);
+				AIBotTest engine = new AIBotTest(screen, inputManager, Toolkit.getInstance().getResourceLoader());
 		
 		Thread engineThread = new Thread(engine);
 		engineThread.start();

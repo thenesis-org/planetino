@@ -41,11 +41,11 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.thenesis.planetino2.engine.shooter3D;
+package org.thenesis.planetino2.test;
 
 import java.io.IOException;
+import java.io.InputStream;
 
-import org.thenesis.planetino2.util.Vector;
 import org.thenesis.planetino2.bsp2D.BSPRenderer;
 import org.thenesis.planetino2.engine.GameCore3D;
 import org.thenesis.planetino2.game.GameObjectManager;
@@ -54,12 +54,14 @@ import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.input.GameAction;
 import org.thenesis.planetino2.input.InputManager;
 import org.thenesis.planetino2.loader.ObjectLoader;
+import org.thenesis.planetino2.loader.ResourceLoader;
 import org.thenesis.planetino2.math3D.MovingTransform3D;
 import org.thenesis.planetino2.math3D.PointLight3D;
 import org.thenesis.planetino2.math3D.PolygonGroup;
 import org.thenesis.planetino2.math3D.Transform3D;
 import org.thenesis.planetino2.math3D.Vector3D;
 import org.thenesis.planetino2.math3D.ViewWindow;
+import org.thenesis.planetino2.util.Vector;
 
 
 public abstract class ShooterCore extends GameCore3D {
@@ -75,10 +77,12 @@ public abstract class ShooterCore extends GameCore3D {
 	protected GameObjectManager gameObjectManager;
 	protected PolygonGroup blastModel;
 	protected PolygonGroup botProjectileModel;
+	protected ResourceLoader resourceLoader;
 
-	public ShooterCore(Screen screen, InputManager inputManager) {
+	public ShooterCore(Screen screen, InputManager inputManager, ResourceLoader resourceLoader) {
 		super(screen, inputManager);
 		this.inputManager = inputManager;
+		this.resourceLoader = resourceLoader;
 	}
 
 	//    public ShooterCore(String[] args) {
@@ -101,14 +105,14 @@ public abstract class ShooterCore extends GameCore3D {
 		float ambientLightIntensity = .8f;
 		Vector lights = new Vector();
 		lights.addElement(new PointLight3D(-100, 100, 100, .5f, -1));
-		lights.addElement(new PointLight3D(100, 100, 0, .5f, -1));
+		lights.addElement(new PointLight3D(100, 100, 0, .5f, -1)); 
 
 		// load the object model
-		ObjectLoader loader = new ObjectLoader();
+		ObjectLoader loader = new ObjectLoader(resourceLoader);
 		loader.setLights(lights, ambientLightIntensity);
 		try {
-			blastModel = loader.loadObject("/res/", "blast.obj3d");
-			botProjectileModel = loader.loadObject("/res/", "botprojectile.obj3d");
+			blastModel = loader.loadObject("blast.obj3d");
+			botProjectileModel = loader.loadObject("botprojectile.obj3d");
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}

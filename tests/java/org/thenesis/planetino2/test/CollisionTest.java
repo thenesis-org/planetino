@@ -49,7 +49,6 @@ import java.util.Enumeration;
 import org.thenesis.planetino2.bsp2D.BSPRenderer;
 import org.thenesis.planetino2.bsp2D.BSPTree;
 import org.thenesis.planetino2.engine.shooter3D.Bot;
-import org.thenesis.planetino2.engine.shooter3D.ShooterCore;
 import org.thenesis.planetino2.game.CollisionDetection;
 import org.thenesis.planetino2.game.GameObject;
 import org.thenesis.planetino2.game.GameObjectRenderer;
@@ -60,6 +59,7 @@ import org.thenesis.planetino2.graphics.Graphics;
 import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.input.InputManager;
 import org.thenesis.planetino2.loader.MapLoader;
+import org.thenesis.planetino2.loader.ResourceLoader;
 import org.thenesis.planetino2.math3D.PointLight3D;
 import org.thenesis.planetino2.math3D.PolygonGroup;
 import org.thenesis.planetino2.math3D.PolygonGroupBounds;
@@ -87,8 +87,8 @@ public class CollisionTest extends ShooterCore {
 	//        }
 	//    }
 
-	public CollisionTest(Screen screen, InputManager inputManager) {
-		super(screen, inputManager);
+	public CollisionTest(Screen screen, InputManager inputManager, ResourceLoader resourceLoader) {
+		super(screen, inputManager, resourceLoader);
 		this.inputManager = inputManager;
 	}
 
@@ -105,11 +105,11 @@ public class CollisionTest extends ShooterCore {
 		lights.addElement(new PointLight3D(-100, 100, 100, .3f, -1));
 		lights.addElement(new PointLight3D(100, 100, 0, .3f, -1));
 
-		MapLoader loader = new MapLoader();
+		MapLoader loader = new MapLoader(resourceLoader);
 		loader.setObjectLights(lights, ambientLightIntensity);
 
 		try {
-			bspTree = loader.loadMap("/res/", "test.map");
+			bspTree = loader.loadMap("test.map");
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}

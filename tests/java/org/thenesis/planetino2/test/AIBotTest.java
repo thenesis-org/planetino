@@ -44,8 +44,8 @@
 package org.thenesis.planetino2.test;
 
 import java.util.Enumeration;
-import org.thenesis.planetino2.util.Vector;
 
+import org.thenesis.planetino2.util.Vector;
 import org.thenesis.planetino2.ai.AIBot;
 import org.thenesis.planetino2.ai.Brain;
 import org.thenesis.planetino2.ai.pattern.AimPattern;
@@ -61,6 +61,7 @@ import org.thenesis.planetino2.game.MessageQueue;
 import org.thenesis.planetino2.game.Player;
 import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.input.InputManager;
+import org.thenesis.planetino2.loader.ResourceLoader;
 import org.thenesis.planetino2.math3D.PolygonGroup;
 import org.thenesis.planetino2.path.AStarSearchWithBSP;
 
@@ -78,8 +79,8 @@ public class AIBotTest extends PathFindingTest {
 	//        super(args, defaultMap);
 	//    }
 
-	public AIBotTest(Screen screen, InputManager inputManager) {
-		super(screen, inputManager, "sample3.map");
+	public AIBotTest(Screen screen, InputManager inputManager, ResourceLoader resourceLoader) {
+		super(screen, inputManager, resourceLoader, "sample3.map");
 		this.inputManager = inputManager;
 	}
 

@@ -43,11 +43,16 @@
  */
 package org.thenesis.planetino2.test;
 
+import java.io.IOException;
+
 import org.thenesis.planetino2.engine.GameCore3D;
+import org.thenesis.planetino2.graphics.Image;
 import org.thenesis.planetino2.graphics.Screen;
+import org.thenesis.planetino2.graphics.Toolkit;
 import org.thenesis.planetino2.graphics3D.FastTexturedPolygonRenderer;
 import org.thenesis.planetino2.graphics3D.texture.Texture;
 import org.thenesis.planetino2.input.InputManager;
+import org.thenesis.planetino2.loader.ResourceLoader;
 import org.thenesis.planetino2.math3D.Rectangle3D;
 import org.thenesis.planetino2.math3D.TexturedPolygon3D;
 import org.thenesis.planetino2.math3D.Transform3D;
@@ -132,7 +137,14 @@ public class TextureMapTest2 extends GameCore3D {
 	}
 
 	public Texture loadTexture(String path, String imageName) {
-		return Texture.createTexture(path, imageName);
+		ResourceLoader loader = Toolkit.getInstance().getResourceLoader();
+		Image image = null;
+		try {
+			image = loader.loadImage(imageName);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return Texture.createTexture(image, false);
 	}
 
 	public void createPolygonRenderer() {

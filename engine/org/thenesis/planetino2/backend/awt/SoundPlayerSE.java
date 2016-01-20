@@ -24,7 +24,8 @@ public class SoundPlayerSE implements SoundPlayer {
 		private kuusisto.tinysound.Sound nativeSound;
 
 		public SoundSE(String soundName) {
-			SoundSE.this.nativeSound = TinySound.loadSound("/res/" + soundName);
+			String dir = ResourceLoaderSE.getResourceDirectory();
+			SoundSE.this.nativeSound = TinySound.loadSound(dir + soundName);
 		}
 		
 		public void play() {
@@ -42,7 +43,8 @@ public class SoundPlayerSE implements SoundPlayer {
 		private Music nativeMusic;
 
 		public MusicSE(String soundName) {
-			MusicSE.this.nativeMusic = TinySound.loadMusic("/res/" + soundName);
+			String dir = ResourceLoaderSE.getResourceDirectory();
+			MusicSE.this.nativeMusic = TinySound.loadMusic(dir + soundName);
 		}
 		
 		public void play(boolean loop) {

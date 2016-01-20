@@ -74,6 +74,7 @@ import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.input.InputManager;
 import org.thenesis.planetino2.loader.MapLoader;
 import org.thenesis.planetino2.loader.ObjectLoader;
+import org.thenesis.planetino2.loader.ResourceLoader;
 import org.thenesis.planetino2.math3D.BoxBlockPolygonGroup;
 import org.thenesis.planetino2.math3D.BoxPolygonGroup;
 import org.thenesis.planetino2.math3D.Lightable;
@@ -104,6 +105,7 @@ public class DemoEngine extends GameCore3D {
 	public static final String OBJECT_FILENAME_AMMO_PACK = "ammo_pack.obj";
 	public static final String OBJECT_FILENAME_WEAPON = "GrindCable.obj";
 	
+	protected ResourceLoader resourceLoader;
 	protected SoundManager soundManager;
 
 	protected ShooterObjectManager gameObjectManager;
@@ -120,9 +122,9 @@ public class DemoEngine extends GameCore3D {
 	
 	private ShooterOverlay shooterOverlay;
 
-	public DemoEngine(Screen screen, InputManager inputManager) {
+	public DemoEngine(Screen screen, InputManager inputManager, ResourceLoader resourceLoader) {
 		super(screen, inputManager);
-		this.inputManager = inputManager;
+		this.resourceLoader = resourceLoader;
 	}
 	
 	@Override
@@ -135,11 +137,11 @@ public class DemoEngine extends GameCore3D {
 		lights.addElement(new PointLight3D(100, 100, 0, .5f, -1));
 
 		// load the object model
-		ObjectLoader loader = new ObjectLoader();
+		ObjectLoader loader = new ObjectLoader(resourceLoader);
 		loader.setLights(lights, ambientLightIntensity);
 		try {
-			blastModel = loader.loadObject("/res/", "blast.obj3d");
-			botProjectileModel = loader.loadObject("/res/", "botprojectile.obj3d");
+			blastModel = loader.loadObject("blast.obj3d");
+			botProjectileModel = loader.loadObject("botprojectile.obj3d");
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
@@ -189,16 +191,13 @@ public class DemoEngine extends GameCore3D {
 		lights.addElement(new PointLight3D(-100, 100, 100, .3f, -1));
 		lights.addElement(new PointLight3D(100, 100, 0, .3f, -1));
 
-		MapLoader loader = new MapLoader(new BSPTreeBuilderWithPortals());
+		MapLoader loader = new MapLoader(resourceLoader, new BSPTreeBuilderWithPortals());
 		loader.setObjectLights(lights, ambientLightIntensity);
 		//MapLoader loader = new MapLoader();
 		//loader.setObjectLights(lights, ambientLightIntensity);
 
 		try {
-			//bspTree = loader.loadMap("/res/", "cacao_demo.map");
-			//bspTree = loader.loadMap("/res/", "quake.map"); //quake-one_bot.map, killbox.map, NearCraft.map
-			bspTree = loader.loadMap("/res/", "NearCraft.map");
-			//bspTree = loader.loadMap("/res/", "linuxtag.map");
+			bspTree = loader.loadMap("quake-one_bot.map"); //quake-one_bot.map, killbox.map, NearCraft.map
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}

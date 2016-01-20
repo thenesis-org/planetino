@@ -150,8 +150,8 @@ public class MapLoader extends ObjectLoader {
     /**
         Creates a new MapLoader using the default BSPTreeBuilder.
     */
-    public MapLoader() {
-        this(null);
+    public MapLoader(ResourceLoader resourceLoader) {
+        this(resourceLoader, null);
     }
 
 
@@ -160,7 +160,8 @@ public class MapLoader extends ObjectLoader {
         If the builder is null, a default BSPTreeBuilder
         is created.
     */
-    public MapLoader(BSPTreeBuilder builder) {
+    public MapLoader(ResourceLoader resourceLoader, BSPTreeBuilder builder) {
+    	super(resourceLoader);
         if (builder == null) {
             this.builder = new BSPTreeBuilder();
         }
@@ -168,7 +169,7 @@ public class MapLoader extends ObjectLoader {
             this.builder = builder;
         }
         parsers.put("map", new MapLineParser());
-        objectLoader = new ObjectLoader();
+        objectLoader = new ObjectLoader(resourceLoader);
         loadedObjects = new Hashtable();
         rooms = new Vector();
         mapObjects = new Vector();
@@ -181,9 +182,8 @@ public class MapLoader extends ObjectLoader {
         created can be retrieved from the getObjectsInMap()
         method.
     */
-    public BSPTree loadMap(String path, String filename) throws IOException {
+    public BSPTree loadMap(String filename) throws IOException {
         
-    	this.path = path;
     	currentRoom = null;
         rooms.removeAllElements();
         vertices.removeAllElements();
@@ -343,7 +343,7 @@ public class MapLoader extends ObjectLoader {
 //                    File file = new File(path, filename);
 //                    String filePath = file.getPath();
 //                    object = objectLoader.loadObject(path, filePath);
-                  object = objectLoader.loadObject(path, filename);
+                  object = objectLoader.loadObject(filename);
                     loadedObjects.put(filename, object);
                 }
                 Vector3D loc = getVector(tokenizer.nextToken());
@@ -513,7 +513,7 @@ public class MapLoader extends ObjectLoader {
             	Vector3D location = getVector(tokenizer.nextToken());
             	float scale = Float.parseFloat(tokenizer.nextToken());
             	//BoxModel boxDef = (BoxModel) boxDefs.get(boxDefName);
-            	InputStream is = MapLoader.class.getResourceAsStream("/res/" + matrixFileName);
+            	InputStream is = resourceLoader.getInputStream(matrixFileName);
             	QBLoader qbLoader = new QBLoader();
             	qbLoader.load(is);
             	QBMatrix matrix = qbLoader.getMatrix(matrixName);

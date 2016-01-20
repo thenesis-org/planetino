@@ -1,8 +1,10 @@
 package org.thenesis.planetino2.graphics;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.thenesis.planetino2.input.InputManager;
+import org.thenesis.planetino2.loader.ResourceLoader;
 import org.thenesis.planetino2.sound.SoundPlayer;
 
 public abstract class Toolkit {
@@ -17,7 +19,7 @@ public abstract class Toolkit {
 		return toolkit;
 	}
 
-	public abstract Image createImage(String string) throws IOException;
+	public abstract Image createImage(InputStream is) throws IOException;
 	
 	public abstract Screen getScreen(int widthHint, int heightHint);
 	
@@ -26,5 +28,7 @@ public abstract class Toolkit {
 	public abstract InputManager getInputManager();
 	
 	public abstract SoundPlayer getSoundPlayer();
+	
+	public abstract ResourceLoader getResourceLoader();
 
 }

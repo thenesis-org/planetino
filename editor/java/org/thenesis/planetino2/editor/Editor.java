@@ -64,6 +64,7 @@ import javax.swing.tree.TreeSelectionModel;
 
 import org.thenesis.planetino2.backend.awt.AWTGraphics;
 import org.thenesis.planetino2.backend.awt.AWTToolkit;
+import org.thenesis.planetino2.backend.awt.ResourceLoaderSE;
 import org.thenesis.planetino2.bsp2D.BSPPolygon;
 import org.thenesis.planetino2.bsp2D.RoomDef;
 import org.thenesis.planetino2.bsp2D.RoomDef.Ceil;
@@ -76,6 +77,7 @@ import org.thenesis.planetino2.graphics.Toolkit;
 import org.thenesis.planetino2.input.InputManager;
 import org.thenesis.planetino2.loader.MapLoader;
 import org.thenesis.planetino2.loader.ObjectLoader;
+import org.thenesis.planetino2.loader.ResourceLoader;
 import org.thenesis.planetino2.loader.ObjectLoader.Material;
 import org.thenesis.planetino2.math3D.PointLight3D;
 import org.thenesis.planetino2.math3D.PolygonGroup;
@@ -145,7 +147,7 @@ public class Editor implements KeyListener, MouseListener, MouseMotionListener {
 		inputManager.mapToKey(EditorEngine.jump, KeyEvent.VK_SPACE);
 		inputManager.mapToKey(EditorEngine.zoom, KeyEvent.VK_S);
 
-		engine = new EditorEngine(screen, inputManager);
+		engine = new EditorEngine(screen, inputManager, Toolkit.getInstance().getResourceLoader());
 		engine.loadMap("quake-one_bot.map");
 		engine.init();
 		engine.tick(DEFAULT_ELAPSED_TIME);
@@ -708,6 +710,7 @@ class EditorToolkit extends AWTToolkit {
 	private InputManager inputManager;
 	private EditorScreen awtScreen;
 	private Editor editor;
+	private ResourceLoader resourceLoader;
 
 	EditorToolkit(Editor editor) {
 		this.editor = editor;
@@ -727,6 +730,14 @@ class EditorToolkit extends AWTToolkit {
 			inputManager = new EditorInputManager();
 		}
 		return inputManager;
+	}
+	
+	@Override
+	public ResourceLoader getResourceLoader() {
+		if (resourceLoader == null) {
+			resourceLoader = new ResourceLoaderSE();
+		}
+		return resourceLoader;
 	}
 
 	class EditorInputManager extends InputManager {
@@ -2236,9 +2247,9 @@ class ResourceBrowser extends JTabbedPane {
 		}
 		
 		public void rebuildMaterialPanel(File materialFile) {
-			ObjectLoader loader = new ObjectLoader();
+			ObjectLoader loader = new ObjectLoader(Toolkit.getInstance().getResourceLoader());
 			try {
-				loader.loadObject("/res/", materialFile.getName());
+				loader.loadObject(materialFile.getName());
 			} catch (IOException e) {
 				e.printStackTrace();
 				return;
