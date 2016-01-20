@@ -1,7 +1,5 @@
 package org.thenesis.planetino2.math3D;
 
-import javafx.scene.AmbientLight;
-
 import org.thenesis.planetino2.util.Vector;
 
 public class StaticBoxPolygonGroup extends BoxPolygonGroup {
