@@ -46,7 +46,7 @@ public class SoundManager {
 	}
 
 
-	public void updateVolumeAndPan(Music music, Player player, GameObject noisyObject, double initialVolume) {
+	public void updateVolumeAndPan(Music music, Player player, GameObject noisyObject, double initialVolume, boolean loop) {
 		
 		float distSq = player.getLocation().getDistanceSq(noisyObject.getLocation());
 		float maxDist = player.getHearDistance() * player.getHearDistance();
@@ -56,7 +56,7 @@ public class SoundManager {
 		if (distSq < maxDist) {
 			
 			if (!music.isPlaying()) {
-				music.play(true);
+				music.play(loop);
 			}
 			
 			double volume = initialVolume * (1.0f - Math.sqrt(distSq / maxDist));
@@ -109,8 +109,6 @@ public class SoundManager {
 	public void close() {
 		player.close();
 	}
-
-	
 
 
 }

@@ -36,9 +36,9 @@ public class NoisyAIBot extends AIBot implements NoisyObject {
 		super.update(player, elapsedTime);
 		if (getAiState() == WOUNDED_STATE_DEAD) {
 			getSoundLoop().stop();
-			deathSound.play(false);
+			soundManager.updateVolumeAndPan(deathSound, (Player)player, this, 1.0, false);
 		} else {
-			soundManager.updateVolumeAndPan(getSoundLoop(), (Player)player, this, soundLevel);
+			soundManager.updateVolumeAndPan(getSoundLoop(), (Player)player, this, soundLevel, true);
 		}
 	}
 	
