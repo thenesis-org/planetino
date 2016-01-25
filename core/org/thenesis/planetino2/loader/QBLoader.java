@@ -38,6 +38,8 @@ public class QBLoader {
 	public static final int SIDE_MASK_BOTTOM_SIDE_VISIBLE = 16;
 	public static final int SIDE_MASK_FRONT_SIDE_VISIBLE = 32;
 	public static final int SIDE_MASK_BACK_SIDE_VISIBLE = 64;
+	public static final int SIDE_MASK_ALL_SIDES_VISIBLE = SIDE_MASK_LEFT_SIDE_VISIBLE | SIDE_MASK_RIGHT_SIDE_VISIBLE | SIDE_MASK_TOP_SIDE_VISIBLE
+			| SIDE_MASK_BOTTOM_SIDE_VISIBLE | SIDE_MASK_FRONT_SIDE_VISIBLE | SIDE_MASK_BACK_SIDE_VISIBLE;
 
 	private long version; // uint32
 	private long colorFormat; // uint32

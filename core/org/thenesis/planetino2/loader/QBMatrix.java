@@ -136,6 +136,17 @@ public class QBMatrix {
 		return rbgColor;
 	}
 	
+	public int getVisibityMask(int color) {
+		int alpha = color & 0xFF;
+		int mask;
+		if (visibilityMaskEncoded == QBLoader.VISIBILITY_VOXEL) {
+			mask = (alpha == 0) ? 0 : QBLoader.SIDE_MASK_ALL_SIDES_VISIBLE;
+		} else {  // QBLoader.VISIBILITY_SIDE
+			mask = alpha;
+		}
+		return mask;
+	}
+	
 	public boolean isVoxelVisible(int color) {
 		int alpha = color & 0xFF;
 		boolean visible;

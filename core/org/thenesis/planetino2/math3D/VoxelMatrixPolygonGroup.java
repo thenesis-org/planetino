@@ -2,7 +2,10 @@ package org.thenesis.planetino2.math3D;
 
 import java.util.Hashtable;
 
+import org.thenesis.planetino2.graphics3D.texture.ShadedTexture;
+import org.thenesis.planetino2.loader.QBLoader;
 import org.thenesis.planetino2.loader.QBMatrix;
+import org.thenesis.planetino2.loader.ObjectLoader.Material;
 import org.thenesis.planetino2.util.Vector;
 
 public class VoxelMatrixPolygonGroup extends PolygonGroup implements Lightable {
@@ -47,10 +50,11 @@ public class VoxelMatrixPolygonGroup extends PolygonGroup implements Lightable {
 					boolean voxelVisible = matrix.isVoxelVisible(nativeColor);
 					if (voxelVisible) {
 						int argbColor = matrix.getRGBColor(nativeColor);
-						String voxelColorName = getVoxelColorName(argbColor);
+						int mask = matrix.getVisibityMask(nativeColor);
+						String voxelColorName = getVoxelColorName(argbColor, mask);
 						BoxModel boxModel = (BoxModel) boxModelMap.get(voxelColorName);
 						if (boxModel == null) {
-							boxModel = BoxModel.createVoxelBoxModel(argbColor);
+							boxModel = createVoxelBoxModel(argbColor, mask);
 							boxModelMap.put(voxelColorName, boxModel);
 						}
 						Element element = new Element(boxModel, elementLocation, elementScale);
@@ -60,6 +64,51 @@ public class VoxelMatrixPolygonGroup extends PolygonGroup implements Lightable {
 				}
 			}
 		}
+	}
+	
+	private static BoxModel createVoxelBoxModel(int color) {
+		return createVoxelBoxModel(color, QBLoader.SIDE_MASK_ALL_SIDES_VISIBLE);
+	}
+	
+	private static BoxModel createVoxelBoxModel(int color, int mask) {
+		String colorName = Integer.toHexString(color);
+		BoxModel boxDef = BoxModel.createBoxDef(colorName);
+		
+		// Create material
+		int w = 2;
+		int h = 2;
+		int[] rgbData = new int[w * h];
+		for (int i = 0; i < rgbData.length; i++) {
+			rgbData[i] = color;
+		}
+		ShadedTexture texture = new ShadedTexture(rgbData, ShadedTexture.countbits(w - 1), ShadedTexture.countbits(h - 1));
+		String library = "internal";
+		String textureFileName = "internal";
+		Material material = new Material(library, colorName, textureFileName, texture);
+		
+		// Create faces
+		boolean animated = false;
+		boolean stretched = false;
+		int frameRate = 0;
+		if ((mask & QBLoader.SIDE_MASK_TOP_SIDE_VISIBLE) == QBLoader.SIDE_MASK_TOP_SIDE_VISIBLE) {
+			boxDef.setFaceModel(BoxModel.UP, material, animated, stretched, frameRate);
+		}
+		if ((mask & QBLoader.SIDE_MASK_BOTTOM_SIDE_VISIBLE) == QBLoader.SIDE_MASK_BOTTOM_SIDE_VISIBLE) {
+			boxDef.setFaceModel(BoxModel.DOWN, material, animated, stretched, frameRate);
+		}
+		if ((mask & QBLoader.SIDE_MASK_BACK_SIDE_VISIBLE) == QBLoader.SIDE_MASK_BACK_SIDE_VISIBLE) {
+			boxDef.setFaceModel(BoxModel.NORTH, material, animated, stretched, frameRate);
+		}
+		if ((mask & QBLoader.SIDE_MASK_FRONT_SIDE_VISIBLE) == QBLoader.SIDE_MASK_FRONT_SIDE_VISIBLE) {
+			boxDef.setFaceModel(BoxModel.SOUTH, material, animated, stretched, frameRate);
+		}
+		if ((mask & QBLoader.SIDE_MASK_LEFT_SIDE_VISIBLE) == QBLoader.SIDE_MASK_LEFT_SIDE_VISIBLE) {
+			boxDef.setFaceModel(BoxModel.EAST, material, animated, stretched, frameRate);
+		}
+		if ((mask & QBLoader.SIDE_MASK_RIGHT_SIDE_VISIBLE) == QBLoader.SIDE_MASK_RIGHT_SIDE_VISIBLE) {
+			boxDef.setFaceModel(BoxModel.WEST, material, animated, stretched, frameRate);
+		}
+		return boxDef;
 	}
 	
 	public void applyLights(Vector pointLights, float ambientLightIntensity) {
@@ -74,8 +123,8 @@ public class VoxelMatrixPolygonGroup extends PolygonGroup implements Lightable {
 		return ambientLightIntensity;
 	}
 
-	public static String getVoxelColorName(int color) {
-		return Integer.toHexString(color);
+	public static String getVoxelColorName(int color, int mask) {
+		return Integer.toHexString(color) + "_" + Integer.toHexString(mask);
 	}
 
 	public Vector getElements() {

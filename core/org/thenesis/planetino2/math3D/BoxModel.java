@@ -2,6 +2,7 @@ package org.thenesis.planetino2.math3D;
 
 import org.thenesis.planetino2.graphics3D.texture.ShadedTexture;
 import org.thenesis.planetino2.loader.ObjectLoader.Material;
+import org.thenesis.planetino2.loader.QBLoader;
 
 public class BoxModel {
 	
@@ -20,36 +21,6 @@ public class BoxModel {
 	
 	protected BoxModel() {
 		faceModels = new FaceModel[FACES];
-	}
-	
-	public static BoxModel createVoxelBoxModel(int color) {
-		String colorName = Integer.toHexString(color);
-		BoxModel boxDef = createBoxDef(colorName);
-		
-		// Create material
-		int w = 2;
-		int h = 2;
-		int[] rgbData = new int[w * h];
-		for (int i = 0; i < rgbData.length; i++) {
-			rgbData[i] = color;
-		}
-		ShadedTexture texture = new ShadedTexture(rgbData, ShadedTexture.countbits(w - 1), ShadedTexture.countbits(h - 1));
-		String library = "internal";
-		String textureFileName = "internal";
-		Material material = new Material(library, colorName, textureFileName, texture);
-		
-		// Create faces
-		boolean animated = false;
-		boolean stretched = false;
-		int frameRate = 0;
-		boxDef.setFaceModel(UP, material, animated, stretched, frameRate);
-		boxDef.setFaceModel(DOWN, material, animated, stretched, frameRate);
-		boxDef.setFaceModel(NORTH, material, animated, stretched, frameRate);
-		boxDef.setFaceModel(SOUTH, material, animated, stretched, frameRate);
-		boxDef.setFaceModel(EAST, material, animated, stretched, frameRate);
-		boxDef.setFaceModel(WEST, material, animated, stretched, frameRate);
-		
-		return boxDef;
 	}
 
 	public static BoxModel createBoxDef(String name) {
