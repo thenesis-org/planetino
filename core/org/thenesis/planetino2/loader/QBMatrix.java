@@ -76,6 +76,52 @@ public class QBMatrix {
 		return sizeX * sizeY * sizeZ;
 	}
 	
+	public int getNumberOfVisibleFaces() {
+		if (visibilityMaskEncoded == QBLoader.VISIBILITY_VOXEL) {
+			return getNumberOfVisibleVoxels() * 6;
+		} else {  // QBLoader.VISIBILITY_SIDE
+			int	visibleFaceCount = 0;
+			for (int z = 0; z < sizeZ; z++) {
+				for (int y = 0; y < sizeY; y++) {
+					for (int x = 0; x < sizeX; x++) {
+						int color = getVoxelColor(x, y, z);
+						int alpha = color & 0xFF;
+						if (alpha ==  QBLoader.SIDE_MASK_INVISIBLE) {
+							continue;
+						} 
+						if ((alpha & QBLoader.SIDE_MASK_BACK_SIDE_VISIBLE) == QBLoader.SIDE_MASK_BACK_SIDE_VISIBLE) {
+							visibleFaceCount++;
+						}
+						if ((alpha & QBLoader.SIDE_MASK_BOTTOM_SIDE_VISIBLE) == QBLoader.SIDE_MASK_BOTTOM_SIDE_VISIBLE) {
+							visibleFaceCount++;
+						}
+						if ((alpha & QBLoader.SIDE_MASK_FRONT_SIDE_VISIBLE) == QBLoader.SIDE_MASK_FRONT_SIDE_VISIBLE) {
+							visibleFaceCount++;
+						}
+						if ((alpha & QBLoader.SIDE_MASK_LEFT_SIDE_VISIBLE) == QBLoader.SIDE_MASK_LEFT_SIDE_VISIBLE) {
+							visibleFaceCount++;
+						}
+						if ((alpha & QBLoader.SIDE_MASK_RIGHT_SIDE_VISIBLE) == QBLoader.SIDE_MASK_RIGHT_SIDE_VISIBLE) {
+							visibleFaceCount++;
+						}
+						if ((alpha & QBLoader.SIDE_MASK_TOP_SIDE_VISIBLE) == QBLoader.SIDE_MASK_TOP_SIDE_VISIBLE) {
+							visibleFaceCount++;
+						}
+					}
+				}
+			}
+			return visibleFaceCount;
+		}
+	}
+	
+	public boolean isFaceVisible(int alpha, int mask) {
+		if ((alpha & mask) == mask) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	public int getRGBColor(int color) {
 		int rbgColor;
 		if (getColorFormat() == QBLoader.COLOR_FORMAT_RGBA) {
@@ -96,7 +142,7 @@ public class QBMatrix {
 		if (visibilityMaskEncoded == QBLoader.VISIBILITY_VOXEL) {
 			visible = (alpha == 0) ? false : true;
 		} else {  // QBLoader.VISIBILITY_SIDE
-			visible = ((alpha | QBLoader.SIDE_MASK_INVISIBLE) ==  QBLoader.SIDE_MASK_INVISIBLE) ? false : true;
+			visible = (alpha ==  QBLoader.SIDE_MASK_INVISIBLE) ? false : true;
 		}
 		return visible;
 	}

@@ -247,18 +247,24 @@ public class QBLoader {
 	}
 
 	public static void main(String[] args) {
-		InputStream is = QBLoader.class.getResourceAsStream("/res/" + "monu9.qb"); // cube_3_3_red.qb monu9.qb
+		InputStream is = QBLoader.class.getResourceAsStream("/res/" + "NearCraft.qb"); // cube_3_3_red.qb monu9.qb
 		QBLoader loader = new QBLoader();
 		try {
 			loader.load(is);
 			QBMatrix[] matrices = loader.getMatrices();
-			int numberOfVoxels = matrices[1].getNumberOfVoxels();
-			int visibleCount = matrices[1].getNumberOfVisibleVoxels();
+			QBMatrix matrix = matrices[0];
+			System.out.println("Matrix name: " + matrix.getName());
+			int numberOfVoxels = matrix.getNumberOfVoxels();
+			int visibleCount = matrix.getNumberOfVisibleVoxels();
+			System.out.println("Potentially visible voxels : " + visibleCount + " / " + numberOfVoxels);
+			int faceCount = matrix.getNumberOfVisibleFaces();
+			System.out.println("Visible faces : " + faceCount + " / " + (visibleCount * 6) + " : " + (faceCount * 100 / (6 * visibleCount)) + "%");
 			int hiddenCount = matrices[1].removeHiddenVoxels();
-			System.out.println("Visible voxels : " + visibleCount + " / " + numberOfVoxels);
 			System.out.println("Hidden voxels : " + hiddenCount + " / " + numberOfVoxels);
-			int reduction = (hiddenCount * 100 / visibleCount);
-			System.out.println("Size reduction : " + reduction + "%");
+			int voxelReduction =  hiddenCount * 100 / visibleCount;
+			System.out.println("Voxel reduction : " + voxelReduction + "%");
+			int faceReduction = 100 - (faceCount * 100 / (6 * visibleCount));
+			System.out.println("Face reduction : " + faceReduction + "%");
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
