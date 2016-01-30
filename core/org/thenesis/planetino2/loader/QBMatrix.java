@@ -89,29 +89,35 @@ public class QBMatrix {
 						if (alpha ==  QBLoader.SIDE_MASK_INVISIBLE) {
 							continue;
 						} 
-						if ((alpha & QBLoader.SIDE_MASK_BACK_SIDE_VISIBLE) == QBLoader.SIDE_MASK_BACK_SIDE_VISIBLE) {
-							visibleFaceCount++;
-						}
-						if ((alpha & QBLoader.SIDE_MASK_BOTTOM_SIDE_VISIBLE) == QBLoader.SIDE_MASK_BOTTOM_SIDE_VISIBLE) {
-							visibleFaceCount++;
-						}
-						if ((alpha & QBLoader.SIDE_MASK_FRONT_SIDE_VISIBLE) == QBLoader.SIDE_MASK_FRONT_SIDE_VISIBLE) {
-							visibleFaceCount++;
-						}
-						if ((alpha & QBLoader.SIDE_MASK_LEFT_SIDE_VISIBLE) == QBLoader.SIDE_MASK_LEFT_SIDE_VISIBLE) {
-							visibleFaceCount++;
-						}
-						if ((alpha & QBLoader.SIDE_MASK_RIGHT_SIDE_VISIBLE) == QBLoader.SIDE_MASK_RIGHT_SIDE_VISIBLE) {
-							visibleFaceCount++;
-						}
-						if ((alpha & QBLoader.SIDE_MASK_TOP_SIDE_VISIBLE) == QBLoader.SIDE_MASK_TOP_SIDE_VISIBLE) {
-							visibleFaceCount++;
-						}
+						visibleFaceCount += getNumberOfVisibleFaces(alpha);
 					}
 				}
 			}
 			return visibleFaceCount;
 		}
+	}
+	
+	public int getNumberOfVisibleFaces(int mask) {
+		int	visibleFaceCount = 0;
+		if ((mask & QBLoader.SIDE_MASK_BACK_SIDE_VISIBLE) == QBLoader.SIDE_MASK_BACK_SIDE_VISIBLE) {
+			visibleFaceCount++;
+		}
+		if ((mask & QBLoader.SIDE_MASK_BOTTOM_SIDE_VISIBLE) == QBLoader.SIDE_MASK_BOTTOM_SIDE_VISIBLE) {
+			visibleFaceCount++;
+		}
+		if ((mask & QBLoader.SIDE_MASK_FRONT_SIDE_VISIBLE) == QBLoader.SIDE_MASK_FRONT_SIDE_VISIBLE) {
+			visibleFaceCount++;
+		}
+		if ((mask & QBLoader.SIDE_MASK_LEFT_SIDE_VISIBLE) == QBLoader.SIDE_MASK_LEFT_SIDE_VISIBLE) {
+			visibleFaceCount++;
+		}
+		if ((mask & QBLoader.SIDE_MASK_RIGHT_SIDE_VISIBLE) == QBLoader.SIDE_MASK_RIGHT_SIDE_VISIBLE) {
+			visibleFaceCount++;
+		}
+		if ((mask & QBLoader.SIDE_MASK_TOP_SIDE_VISIBLE) == QBLoader.SIDE_MASK_TOP_SIDE_VISIBLE) {
+			visibleFaceCount++;
+		}
+		return visibleFaceCount;
 	}
 	
 	public boolean isFaceVisible(int alpha, int mask) {
@@ -153,7 +159,9 @@ public class QBMatrix {
 		if (visibilityMaskEncoded == QBLoader.VISIBILITY_VOXEL) {
 			visible = (alpha == 0) ? false : true;
 		} else {  // QBLoader.VISIBILITY_SIDE
-			visible = (alpha ==  QBLoader.SIDE_MASK_INVISIBLE) ? false : true;
+			//visible = (alpha ==  QBLoader.SIDE_MASK_INVISIBLE) ? false : true;
+			// Workaround to fix wrong visibility masks (got sometimes mask=1 for example)
+			visible = (getNumberOfVisibleFaces(alpha) > 0) ? true : false;
 		}
 		return visible;
 	}

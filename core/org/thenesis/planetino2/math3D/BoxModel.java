@@ -40,6 +40,16 @@ public class BoxModel {
 		return faceModels;
 	}
 	
+	public int getNumberOfFaces() {
+		int faceCount = 0;
+		for (int i = 0; i < faceModels.length; i++) {
+			if (faceModels[i] != null) {
+				faceCount++;
+			}
+		}
+		return faceCount;
+	}
+	
 	public String getName() {
 		return name;
 	}

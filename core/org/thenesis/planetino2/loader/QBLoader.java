@@ -261,7 +261,7 @@ public class QBLoader {
 			System.out.println("Potentially visible voxels : " + visibleCount + " / " + numberOfVoxels);
 			int faceCount = matrix.getNumberOfVisibleFaces();
 			System.out.println("Visible faces : " + faceCount + " / " + (visibleCount * 6) + " : " + (faceCount * 100 / (6 * visibleCount)) + "%");
-			int hiddenCount = matrices[1].removeHiddenVoxels();
+			int hiddenCount = matrix.removeHiddenVoxels();
 			System.out.println("Hidden voxels : " + hiddenCount + " / " + numberOfVoxels);
 			int voxelReduction =  hiddenCount * 100 / visibleCount;
 			System.out.println("Voxel reduction : " + voxelReduction + "%");
