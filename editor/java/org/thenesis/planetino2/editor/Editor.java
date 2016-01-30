@@ -476,6 +476,10 @@ class EditorScreen implements Screen {
 	public void restoreScreen() {
 		// Do nothing
 	}
+	
+	public void setFullScreen(boolean fullscreen) {
+		// Do nothing
+	}
 
 }
 

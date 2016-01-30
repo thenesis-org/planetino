@@ -1,8 +1,9 @@
 package org.thenesis.planetino2.backend.awt;
 
 import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.Panel;
+import java.awt.DisplayMode;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -26,6 +27,7 @@ public class AWTScreen implements Screen, KeyListener, MouseListener, MouseMotio
 	private int screenHeight = 640;
 	protected BufferedImage screenImage;
 	private Graphics screenGraphics;
+	private boolean fullScreenEnabled = false;
 
 	private InputManager inputManager;
 
@@ -69,6 +71,34 @@ public class AWTScreen implements Screen, KeyListener, MouseListener, MouseMotio
 		frame.setLocationRelativeTo(null); // Center the frame (has to be called after pack)
 		frame.setVisible(true);
 		panel.requestFocusInWindow();
+	}
+	
+	public void setFullScreen(boolean fullscreen) {
+		GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		GraphicsDevice device = env.getDefaultScreenDevice();
+		if (device.isFullScreenSupported()) {
+			if (fullscreen) {
+				DisplayMode[] displayModes = device.getDisplayModes();
+				for (int i = 0; i < displayModes.length; i++) {
+					int bitDepth = displayModes[i].getBitDepth();
+					int width = displayModes[i].getWidth();
+					int height = displayModes[i].getHeight();
+					//int refreshRate = displayModes[i].getRefreshRate();
+					if ((width == screenWidth) && (height == screenHeight) && (bitDepth == 32)) {
+						device.setFullScreenWindow(frame);
+						device.setDisplayMode(displayModes[i]);
+						fullScreenEnabled = true;
+					}
+					//System.out.println("bitDepth=" + bitDepth + " width=" + width + " height=" + height + " refreshRate=" + refreshRate);
+				}
+			} else {
+				if (fullScreenEnabled) {
+					device.setFullScreenWindow(null);
+					fullScreenEnabled = false;
+				}
+				
+			}
+		}
 	}
 
 	public Graphics getGraphics() {

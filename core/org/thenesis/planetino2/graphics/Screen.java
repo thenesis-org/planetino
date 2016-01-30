@@ -89,5 +89,7 @@ public interface Screen {
 	 Restores the screen's display mode.
 	 */
 	public void restoreScreen();
+	
+	public void setFullScreen(boolean fullscreen);
 
 }
