@@ -5,6 +5,10 @@ import org.thenesis.planetino2.sound.SoundManager;
 
 public abstract class Level {
 	
+	public String getIntroSoundName() {
+		return "prepare.wav";
+	}
+	
 	public String getAmbientMusicName() {
 		return "ambient_loop.wav";
 	}

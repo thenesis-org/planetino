@@ -164,10 +164,11 @@ public class DemoEngine extends GameCore3D implements LevelManager {
 		
 		((Player)gameObjectManager.getPlayer()).setBlastModel(blastModel);
 		
-		Music ambientMusic = soundManager.getMusic("ambient_loop.wav");
+		// Start music of the current level
+		Music ambientMusic = soundManager.getMusic(getCurrentLevel().getAmbientMusicName());
 		ambientMusic.setVolume(0.3);
 		ambientMusic.play(true);
-		Music introMusic = soundManager.getMusic("prepare.wav");
+		Music introMusic = soundManager.getMusic(getCurrentLevel().getIntroSoundName());
 		introMusic.play(false);
 		
 		drawFrameRate = true;
