@@ -9,10 +9,12 @@ import org.thenesis.planetino2.math3D.ViewWindow;
 public class ShooterOverlay extends HeadsUpDisplay {
 
 	ShooterPlayer shooterPlayer;
+	ShooterObjectManager gameObjectManager;
 	
-	public ShooterOverlay(ShooterPlayer player) {
+	public ShooterOverlay(ShooterPlayer player, ShooterObjectManager gameObjectManager) {
 		super(player);
 		this.shooterPlayer = player;
+		this.gameObjectManager = gameObjectManager;
 	}
 	
 	@Override
@@ -23,6 +25,8 @@ public class ShooterOverlay extends HeadsUpDisplay {
 		int fontHeight = font.getHeight();
 		int spacing = fontHeight / 5;
 
+		/* Ammo bar */
+		
 		int w = window.getWidth() / 4;
 		int h = window.getHeight() / 60;
 		int x =  window.getWidth() - window.getWidth() / 4 - spacing;
@@ -30,19 +34,32 @@ public class ShooterOverlay extends HeadsUpDisplay {
 		g.setColor(Color.GRAY.getRGB());
 		g.fillRect(x, y, w, h);
 
-		// Draw highlighted part of health bar
+		// Draw highlighted part
 		w = (int) Math.floor((w * shooterPlayer.getAmmo() / shooterPlayer.getMaxAmmo()) + 0.5d);
 		g.setColor(Color.WHITE.getRGB());
 		g.fillRect(x, y, w, h);
 		
-		// Draw health value (number)
+		// Draw ammo value (number)
 		final char[] MAX_SIZE_STRING = new char[] {'M', 'M', 'M'};
 		x = x - font.charsWidth(MAX_SIZE_STRING, 0, MAX_SIZE_STRING.length) + spacing;
 		String str = Integer.toString((int) Math.floor(shooterPlayer.getAmmo() + 0.5d));
 		g.setColor(Color.WHITE.getRGB());
 		g.drawString(str, x, fontHeight);
 		
-		// Draw crosshair
+		/* Enemies */
+		
+		int enemies = gameObjectManager.getAliveEnemyCount();
+		str = "Enemies: " + enemies;
+		w = window.getWidth() / 4;
+		h = window.getHeight() / 60;
+		x = window.getWidth() - spacing;
+		x = x - font.charsWidth(str.toCharArray(), 0, str.length());
+		y = window.getHeight() - fontHeight - spacing;
+		g.setColor(Color.WHITE.getRGB());
+		g.drawString(str, x, y);
+		
+		/* Crosshair */
+		
 		int rectSize = 5;
 		int lineSize = 5;
 		int spaceSize = 4;

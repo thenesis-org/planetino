@@ -58,6 +58,9 @@ import org.thenesis.planetino2.ai.pattern.RunAwayPattern;
 import org.thenesis.planetino2.bsp2D.BSPRenderer;
 import org.thenesis.planetino2.bsp2D.BSPTree;
 import org.thenesis.planetino2.bsp2D.BSPTreeBuilderWithPortals;
+import org.thenesis.planetino2.demo.levels.KillboxLevel;
+import org.thenesis.planetino2.demo.levels.NearCraftLevel;
+import org.thenesis.planetino2.demo.levels.QuakeLevel;
 import org.thenesis.planetino2.engine.GameCore3D;
 import org.thenesis.planetino2.game.Box;
 import org.thenesis.planetino2.game.CollisionDetection;
@@ -91,7 +94,7 @@ import org.thenesis.planetino2.sound.Music;
 import org.thenesis.planetino2.sound.SoundManager;
 import org.thenesis.planetino2.util.Vector;
 
-public class DemoEngine extends GameCore3D {
+public class DemoEngine extends GameCore3D implements LevelManager {
 	
 	private static final float PLAYER_SPEED = .5f;
 	private static final float PLAYER_TURN_SPEED = 0.04f;
@@ -104,6 +107,10 @@ public class DemoEngine extends GameCore3D {
 	public static final String OBJECT_FILENAME_ADRENALINE = "adrenaline.obj";
 	public static final String OBJECT_FILENAME_AMMO_PACK = "ammo_pack.obj";
 	public static final String OBJECT_FILENAME_WEAPON = "GrindCable.obj";
+	
+	public static final int LEVEL_NUMBER = 3;
+	public static int currentLevel;
+	public static Level[] levels;
 	
 	protected ResourceLoader resourceLoader;
 	protected SoundManager soundManager;
@@ -125,6 +132,13 @@ public class DemoEngine extends GameCore3D {
 	public DemoEngine(Screen screen, InputManager inputManager, ResourceLoader resourceLoader) {
 		super(screen, inputManager);
 		this.resourceLoader = resourceLoader;
+		
+		// Create Levels
+		currentLevel = 0;
+		levels = new Level[LEVEL_NUMBER];
+		levels[0] = new QuakeLevel();
+		levels[1] = new KillboxLevel();
+		levels[2] = new NearCraftLevel();
 	}
 	
 	@Override
@@ -197,7 +211,8 @@ public class DemoEngine extends GameCore3D {
 		//loader.setObjectLights(lights, ambientLightIntensity);
 
 		try {
-			bspTree = loader.loadMap("quake-one_bot.map"); //quake-one_bot.map, killbox.map, NearCraft.map
+			String mapName = getCurrentLevel().getMapName();
+			bspTree = loader.loadMap(mapName); //quake-one_bot.map, killbox.map, NearCraft.map
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
@@ -252,7 +267,7 @@ public class DemoEngine extends GameCore3D {
 		drawInstructions = false;
 		MessageQueue queue = MessageQueue.getInstance();
 		addOverlay(queue);
-		shooterOverlay = new ShooterOverlay(player);
+		shooterOverlay = new ShooterOverlay(player, gameObjectManager);
 		addOverlay(shooterOverlay);
 		queue.setDebug(false);
 		//queue.add("Use the mouse/arrow keys to move.");
@@ -478,44 +493,24 @@ public class DemoEngine extends GameCore3D {
 		camera.getLocation().add(0, CAMERA_HEIGHT, 0);
 		
 		// Check if the player has won/lost the match
-		checkGameState();
+		getCurrentLevel().checkGameState(this, gameObjectManager, soundManager);
 		
 	}
 	
-	/**
-	 * Check if the player has won/lost the match and change level if needed
-	 */
-	public void checkGameState() {
-		ShooterPlayer player = (ShooterPlayer)gameObjectManager.getPlayer();
-		if (player.getHealth() <= 0) {
-			try {
-				Music deathSound = soundManager.getMusic("death3_player.wav");
-				deathSound.playAndWait();
-				Thread.sleep(2000);
-				
-				Music lostSound = soundManager.getMusic("youlose.wav");
-				lostSound.playAndWait();
-				Thread.sleep(5000);
-			} catch (InterruptedException e) {
-			}
-			changeLevel();
-		} else if (gameObjectManager.getAliveEnemyCount() == 0) {
-			try {
-				Music winSound = soundManager.getMusic("youwin.wav");
-				winSound.playAndWait();
-				Thread.sleep(500);
-				Music winMusic = soundManager.getMusic("OA07.wav");
-				winMusic.play(false);
-				Thread.sleep(10000);
-			} catch (InterruptedException e) {
-			}
-			changeLevel();
-		}
+	/* Level manager */
+	
+	public Level getCurrentLevel() {
+		return levels[currentLevel];
 	}
 	
 	public void changeLevel() {
 		soundManager.close();
 		removeOverlay(shooterOverlay);
+		
+		currentLevel++;
+		if (currentLevel >= LEVEL_NUMBER) {
+			currentLevel = 0;
+		}
 		init();
 	}
 }
