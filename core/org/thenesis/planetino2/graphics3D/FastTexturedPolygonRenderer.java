@@ -114,7 +114,7 @@ public class FastTexturedPolygonRenderer extends PolygonRenderer {
 		//		}
 
 		//		 initialize buffer
-		if (offscreenImage == null) {
+		if (doubleBufferData == null) {
 			doubleBufferData = new int[viewWindow.getWidth() * viewWindow.getHeight()];
 			//offscreenImage = Image.createImage(viewWindow.getWidth(), viewWindow.getHeight());
 		}
