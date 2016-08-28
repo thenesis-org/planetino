@@ -17,7 +17,7 @@ public class BoxPolygonGroup extends PolygonGroup implements Lightable {
 	private Face[] faces;
 	private static Polygon3D cachedTransformedPolygonForLightning = new Polygon3D();
 	
-	public BoxPolygonGroup(BoxModel boxDef, Vector3D location, float scale, float ambientLightIntensity) {
+	public BoxPolygonGroup(BoxModel boxDef, Vector3D location, float scale, float ambientLightIntensity, boolean isSkybox) {
 		this.boxDef = boxDef;
 		this.ambientLightIntensity = ambientLightIntensity;
 		faces = new Face[BoxModel.FACES];
@@ -29,6 +29,9 @@ public class BoxPolygonGroup extends PolygonGroup implements Lightable {
 			FaceModel model = models[i];
 			if(model != null) {
 				Face face = new Face(model);
+				if (isSkybox) {
+					face.flip();
+				}
 				faces[i] = face;
 				addPolygon(face);
 			}
@@ -38,6 +41,10 @@ public class BoxPolygonGroup extends PolygonGroup implements Lightable {
 		getTransform().getLocation().setTo(location);
 		
 		rebuild();
+	}
+	
+	public BoxPolygonGroup(BoxModel boxDef, Vector3D location, float scale, float ambientLightIntensity) {
+		this(boxDef, location, scale, ambientLightIntensity, false);
 	}
 	
 	public void applyNewBoxDef(BoxModel boxDef) {
@@ -183,8 +190,17 @@ public class BoxPolygonGroup extends PolygonGroup implements Lightable {
 				timeSinceLastFrame = 0;
 			}
 		}
+		
+		public void flip() {
+			int numVertices = getNumVertices();
+			Vector3D[] invertedV = new Vector3D[numVertices];
+			invertedV[0] = getVertex(1);
+			invertedV[1] = getVertex(0);
+			invertedV[2] = getVertex(3);
+			invertedV[3] = getVertex(2);
+			setTo(invertedV);
+		}
 	}
-
 	
 
 }

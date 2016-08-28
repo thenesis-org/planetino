@@ -87,6 +87,14 @@ public class Polygon3D implements Transformable {
 	 the vertices are assumed to be in the same plane.
 	 */
 	public Polygon3D(Vector3D[] vertices) {
+		setTo(vertices);
+	}
+	
+	/**
+	 Creates a new Polygon3D with the specified vertices. All
+	 the vertices are assumed to be in the same plane.
+	 */
+	public void setTo(Vector3D[] vertices) {
 		this.v = vertices;
 		numVertices = vertices.length;
 		calcNormal();
@@ -387,4 +395,5 @@ public class Polygon3D implements Transformable {
 		}
 		return boundingRect;
 	}
+	
 }

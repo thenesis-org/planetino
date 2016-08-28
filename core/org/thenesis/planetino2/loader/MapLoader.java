@@ -486,6 +486,15 @@ public class MapLoader extends ObjectLoader {
             		box.setName(uniqueName);
                 }
             	mapObjects.addElement(box);
+            } else if (command.equals("skybox")) {
+            	//skybox <BoxDef_name> <location_index> <scale> [<rotate_x> <rotate_y> <rotate_z>]
+            	String boxDefName = tokenizer.nextToken();
+            	Vector3D location = getVector(tokenizer.nextToken());
+            	float scale = Float.parseFloat(tokenizer.nextToken());
+            	BoxModel boxDef = (BoxModel) boxDefs.get(boxDefName);
+            	BoxPolygonGroup box = new BoxPolygonGroup(boxDef, location, scale, ambientLightIntensity, true);
+            	//box.getTransform().getLocation().setTo(location);
+            	mapObjects.addElement(box);
             } else if (command.equals("boxBlock")) {
             	//box <boxes_name> <BoxDef_name> <location_index> <scale> [<rotate_x> <rotate_y> <rotate_z>]
             	String uniqueName = tokenizer.nextToken();
