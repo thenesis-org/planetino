@@ -52,13 +52,13 @@ import org.thenesis.planetino2.graphics.Color;
  */
 public final class ShadedTexture extends Texture {
 
-	public static final int NUM_SHADE_LEVELS = 64;
+	public static final int NUM_SHADE_LEVELS = 64; // Try 16 if too much memory used
 	public static final int MAX_LEVEL = NUM_SHADE_LEVELS - 1;
 
-	private static final int PALETTE_SIZE_BITS = 8;
+	private static final int PALETTE_SIZE_BITS = 10;
 	private static final int PALETTE_SIZE = 1 << PALETTE_SIZE_BITS;
 
-	private byte[] buffer;
+	private short[] buffer;
 	private int[] shadeTable;
 	private int defaultShadeLevel;
 	private int widthBits;
@@ -94,9 +94,12 @@ public final class ShadedTexture extends Texture {
 		
 		/* Convert the 32 bits ARGB buffer to a 8 bits buffer */
 		int size = width * height;
-		buffer = new byte[size];
+		System.out.println("Size=" + size);
+		buffer = new short[size];
 		for (int i = 0; i < size; i++) {
-			buffer[i] = Color.convertRBG888To232(rgbBuffer[i]);
+			//buffer[i] = Color.convertRBG888To444(rgbBuffer[i]);
+			buffer[i] = Color.convertRBG888To343(rgbBuffer[i]);
+			//buffer[i] = Color.convertRBG888To232(rgbBuffer[i]);
 			//buffer[i] = (byte) ((r*6/256)*36 + (g*6/256)*6 + (b*6/256));
 		}
 		
@@ -137,17 +140,49 @@ public final class ShadedTexture extends Texture {
 			return (palColor - target) * (level + 1) / NUM_SHADE_LEVELS + target;
 		}
 		
-		private int getRed(int pixel232) {
-			return ((pixel232 >> 5) & 0x3) << 6;
+		/* 2:3:2 */
+		
+//		private int getRed(int pixel232) {
+//			return ((pixel232 >> 5) & 0x3) << 6;
+//		}
+//		
+//		private int getGreen(int pixel232) {
+//			return ((pixel232 >> 2) & 0x7) << 5;
+//		}
+//		
+//		private int getBlue(int pixel232) {
+//			return (pixel232 & 0x3) << 6;
+//		}
+		
+		/* 3:4:3 */
+		
+		private int getRed(int pixel343) {
+			return ((pixel343 >> 7) & 0x7) << 5;
 		}
 		
-		private int getGreen(int pixel232) {
-			return ((pixel232 >> 2) & 0x7) << 5;
+		private int getGreen(int pixel343) {
+			return ((pixel343 >> 3) & 0xF) << 4;
 		}
 		
-		private int getBlue(int pixel232) {
-			return (pixel232 & 0x3) << 6;
+		private int getBlue(int pixel343) {
+			return (pixel343 & 0x7) << 5;
 		}
+
+		/* 4:4:4 */
+	
+//		private int getRed(int pixel444) {
+//			return ((pixel444 >> 8) & 0xF) << 4;
+//		}
+//		
+//		private int getGreen(int pixel444) {
+//			return ((pixel444 >> 4) & 0xF) << 4;
+//		}
+//		
+//		private int getBlue(int pixel444) {
+//			return (pixel444 & 0xF) << 4;
+//		}
+		
+
 
 	/**
 	 Sets the default shade level that is used when getColor()
@@ -179,28 +214,8 @@ public final class ShadedTexture extends Texture {
 	 (x,y) location, using the specified shade level.
 	 */
 	public int getColor(int x, int y, int shadeLevel) {
-
-		//Texture.print(buffer, width, height);
-		
-		return shadeTable[(shadeLevel << PALETTE_SIZE_BITS) | (0xff & buffer[(x & widthMask) | ((y & heightMask) << widthBits)])];
-		
-		//return 0xFFFF0000;
-		
-//		return shadeTable[(shadeLevel << PALETTE_SIZE_BITS) | 22] << 16;
-		
-
-		//		return shadeTable[(shadeLevel << PALETTE_SIZE_BITS)
-		//				| (buffer[(x & widthMask) | ((y & heightMask) << widthBits)])];
-		//System.out.println("[DEBUG] ShadedTexture.getColor(): " + Integer.toHexString(buffer[(x & widthMask) | ((y & heightMask) << widthBits)]));
-		//return Color.convertRBG232To888(buffer[(x & widthMask) | ((y & heightMask) << widthBits)]);
-
-		//		return Color.convertRBG565To888 (shadeTable[(shadeLevel << PALETTE_SIZE_BITS)
-		//	  				| (buffer[(x & widthMask) | ((y & heightMask) << widthBits)])]);
-
-		//return Color.convertRBG565To888 (buffer[(x & widthMask) | ((y & heightMask) << widthBits)]);
-		//return buffer[(x & widthMask) | ((y & heightMask) << widthBits)];
-
-		//return buffer[(x & widthMask) | ((y & heightMask) << widthBits)];
+		//return shadeTable[(shadeLevel << PALETTE_SIZE_BITS) | (0xff & buffer[(x & widthMask) | ((y & heightMask) << widthBits)])];
+		return shadeTable[(shadeLevel << PALETTE_SIZE_BITS) | (0x3FF & buffer[(x & widthMask) | ((y & heightMask) << widthBits)])];
 	}
 
 	/**
@@ -217,11 +232,8 @@ public final class ShadedTexture extends Texture {
 	 used.
 	 */
 	public int getColorCurrRow(int x, int shadeLevel) {
-		return shadeTable[(shadeLevel << PALETTE_SIZE_BITS) | (0xff & buffer[(x & widthMask) | currRow])];
-	}
-
-	public byte[] getRawData() {
-		return buffer;
+		//return shadeTable[(shadeLevel << PALETTE_SIZE_BITS) | (0xff & buffer[(x & widthMask) | currRow])];
+		return shadeTable[(shadeLevel << PALETTE_SIZE_BITS) | (0x3FF & buffer[(x & widthMask) | currRow])];
 	}
 
 	public int getHeightBits() {

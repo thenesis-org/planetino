@@ -944,6 +944,14 @@ public class Color {
 		return (((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3));
 	}
 	
+	public static short convertRBG888To444(int color) {
+		int r = (color >> 16) & 0xFF;
+		int g = (color >> 8) & 0xFF;
+		int b = color & 0xFF;
+
+		return (short)(((r >> 4) << 8) | ((g >> 4) << 4) | (b >> 4));
+	}
+	
 	public static int convertRBG232To888(int color) {
 
 		int r = (color >> 5) & 0x3;
@@ -961,6 +969,15 @@ public class Color {
 		int b = color & 0xFF;
 
 		return (byte)(((r >> 6) << 5) | ((g >> 5) << 2) | (b >> 6));
+	}
+	
+	public static short convertRBG888To343(int color) {
+
+		int r = (color >> 16) & 0xFF;
+		int g = (color >> 8) & 0xFF;
+		int b = color & 0xFF;
+
+		return (short)(((r >> 5) << 7) | ((g >> 4) << 3) | (b >> 5));
 	}
 
 	/**
