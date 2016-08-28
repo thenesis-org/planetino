@@ -194,10 +194,22 @@ public class BoxPolygonGroup extends PolygonGroup implements Lightable {
 		public void flip() {
 			int numVertices = getNumVertices();
 			Vector3D[] invertedV = new Vector3D[numVertices];
-			invertedV[0] = getVertex(1);
-			invertedV[1] = getVertex(0);
-			invertedV[2] = getVertex(3);
-			invertedV[3] = getVertex(2);
+			if (getType() == BoxModel.UP) {
+				invertedV[0] = getVertex(2);
+				invertedV[1] = getVertex(1);
+				invertedV[2] = getVertex(0);
+				invertedV[3] = getVertex(3);
+			} else if (getType() == BoxModel.DOWN) {
+				invertedV[0] = getVertex(0);
+				invertedV[1] = getVertex(3);
+				invertedV[2] = getVertex(2);
+				invertedV[3] = getVertex(1);
+			} else {
+				invertedV[0] = getVertex(1);
+				invertedV[1] = getVertex(0);
+				invertedV[2] = getVertex(3);
+				invertedV[3] = getVertex(2);
+			}
 			setTo(invertedV);
 		}
 	}

@@ -94,7 +94,6 @@ public final class ShadedTexture extends Texture {
 		
 		/* Convert the 32 bits ARGB buffer to a 8 bits buffer */
 		int size = width * height;
-		System.out.println("Size=" + size);
 		buffer = new short[size];
 		for (int i = 0; i < size; i++) {
 			//buffer[i] = Color.convertRBG888To444(rgbBuffer[i]);
