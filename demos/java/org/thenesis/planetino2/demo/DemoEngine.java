@@ -61,6 +61,7 @@ import org.thenesis.planetino2.bsp2D.BSPTreeBuilderWithPortals;
 import org.thenesis.planetino2.demo.levels.KillboxLevel;
 import org.thenesis.planetino2.demo.levels.NearCraftLevel;
 import org.thenesis.planetino2.demo.levels.QuakeLevel;
+import org.thenesis.planetino2.demo.levels.TownOfFuryLevel;
 import org.thenesis.planetino2.engine.GameCore3D;
 import org.thenesis.planetino2.game.Box;
 import org.thenesis.planetino2.game.CollisionDetection;
@@ -108,7 +109,7 @@ public class DemoEngine extends GameCore3D implements LevelManager {
 	public static final String OBJECT_FILENAME_AMMO_PACK = "ammo_pack.obj";
 	public static final String OBJECT_FILENAME_WEAPON = "GrindCable.obj";
 	
-	public static final int LEVEL_NUMBER = 3;
+	public static final int LEVEL_NUMBER = 4;
 	public static int currentLevel;
 	public static Level[] levels;
 	
@@ -134,11 +135,12 @@ public class DemoEngine extends GameCore3D implements LevelManager {
 		this.resourceLoader = resourceLoader;
 		
 		// Create Levels
-		currentLevel = 0;
+		currentLevel = 3;
 		levels = new Level[LEVEL_NUMBER];
 		levels[0] = new QuakeLevel();
 		levels[1] = new KillboxLevel();
 		levels[2] = new NearCraftLevel();
+		levels[3] = new TownOfFuryLevel();
 	}
 	
 	@Override

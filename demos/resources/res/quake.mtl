@@ -91,5 +91,95 @@ map_Kd color_changing_tron_disk-animated.png
 newmtl characters_list
 map_Kd characters_list.png
 
+newmtl sincity_bk
+map_Kd sincity_bk.png
+
+newmtl sincity_dn
+map_Kd sincity_dn.png
+
+newmtl sincity_ft
+map_Kd sincity_ft.png
+
+newmtl sincity_lf
+map_Kd sincity_lf.png
+
+newmtl sincity_rt
+map_Kd sincity_rt.png
+
+newmtl sincity_up
+map_Kd sincity_up.png
+
+newmtl glacier_bk
+map_Kd glacier_bk.png
+
+newmtl glacier_dn
+map_Kd glacier_dn.png
+
+newmtl glacier_ft
+map_Kd glacier_ft.png
+
+newmtl glacier_lf
+map_Kd glacier_lf.png
+
+newmtl glacier_rt
+map_Kd glacier_rt.png
+
+newmtl glacier_up
+map_Kd glacier_up.png
+
+newmtl cloud9_bk
+map_Kd cloud9_bk.png
+
+newmtl cloud9_dn
+map_Kd cloud9_dn.png
+
+newmtl cloud9_ft
+map_Kd cloud9_ft.png
+
+newmtl cloud9_lf
+map_Kd cloud9_lf.png
+
+newmtl cloud9_rt
+map_Kd cloud9_rt.png
+
+newmtl cloud9_up
+map_Kd cloud9_up.png
+
+newmtl pr_bk
+map_Kd pr_bk.png
+
+newmtl pr_dn
+map_Kd pr_dn.png
+
+newmtl pr_ft
+map_Kd pr_ft.png
+
+newmtl pr_lf
+map_Kd pr_lf.png
+
+newmtl pr_rt
+map_Kd pr_rt.png
+
+newmtl pr_up
+map_Kd pr_up.png
+
+newmtl sandcastle_bk
+map_Kd sandcastle_bk.png
+
+newmtl sandcastle_dn
+map_Kd sandcastle_dn.png
+
+newmtl sandcastle_ft
+map_Kd sandcastle_ft.png
+
+newmtl sandcastle_lf
+map_Kd sandcastle_lf.png
+
+newmtl sandcastle_rt
+map_Kd sandcastle_rt.png
+
+newmtl sandcastle_up
+map_Kd sandcastle_up.png
+
 
 

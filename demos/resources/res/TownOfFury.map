@@ -1,0 +1,182 @@
+# Player start location
+v 600 400 -4000
+#v 500.0 -6000.0 1000.0
+#v 7130.0 900.0 -5700.0
+#v 5500.0 200.0 -5600.0
+#player -1 2.5
+player -1 -1.8
+
+###############
+# Lights
+###############
+
+v 400.0 200.0 100.0
+pointlight -1 1.0 300.0
+
+v 700.0 200.0 400.0
+pointlight -1 0.5 1000.0
+
+v 65.0 200.0 385.0
+pointlight -1 1.0 100.0
+
+v 4000.0 -1000 -2000.0
+pointlight -1 1.0 10000.0
+
+###############
+# Rooms
+###############
+
+ambientLightIntensity 0.7
+room big_box
+mtllib quake.mtl
+usemtl black
+floor 0
+#mtllib Droid.mtl
+#usemtl Droid.jpg
+usemtl black
+ceil 300000
+#mtllib drfreak.mtl
+#usemtl characters_list
+usemtl null
+wall -15000.0 -15000.0 -6000.0 6000.0
+wall -15000.0 15000.0 -6000.0 6000.0
+#usemtl null
+wall 15000.0 15000.0 -6000.0 6000.0
+wall 15000.0 -15000.0 -6000.0 6000.0
+
+
+
+###############
+# Skybox
+###############
+
+BoxModel sincity
+usemtl sincity_up
+face up animate stretch 0
+usemtl sincity_dn
+face down animate stretch 0
+usemtl sincity_bk
+face north animate stretch 0
+usemtl sincity_ft
+face south animate stretch 0
+usemtl sincity_lf
+face east animate stretch 0
+usemtl sincity_rt
+face west animate stretch 0
+BoxModel sincity end
+
+BoxModel glacier
+usemtl glacier_up
+face up animate stretch 0
+usemtl glacier_dn
+face down animate stretch 0
+usemtl glacier_bk
+face north animate stretch 0
+usemtl glacier_ft
+face south animate stretch 0
+usemtl glacier_lf
+face east animate stretch 0
+usemtl glacier_rt
+face west animate stretch 0
+BoxModel glacier end
+
+BoxModel cloud9
+usemtl cloud9_up
+face up animate stretch 0
+usemtl cloud9_dn
+face down animate stretch 0
+usemtl cloud9_bk
+face north animate stretch 0
+usemtl cloud9_ft
+face south animate stretch 0
+usemtl cloud9_lf
+face east animate stretch 0
+usemtl cloud9_rt
+face west animate stretch 0
+BoxModel cloud9 end
+
+BoxModel pr
+usemtl pr_up
+face up animate stretch 0
+usemtl pr_dn
+face down animate stretch 0
+usemtl pr_bk
+face north animate stretch 0
+usemtl pr_ft
+face south animate stretch 0
+usemtl pr_lf
+face east animate stretch 0
+usemtl pr_rt
+face west animate stretch 0
+BoxModel pr end
+
+BoxModel sandcastle
+usemtl sandcastle_up
+face up animate stretch 0
+usemtl sandcastle_dn
+face down animate stretch 0
+usemtl sandcastle_bk
+face north animate stretch 0
+usemtl sandcastle_ft
+face south animate stretch 0
+usemtl sandcastle_lf
+face east animate stretch 0
+usemtl sandcastle_rt
+face west animate stretch 0
+BoxModel sandcastle end
+
+v 0 0 0
+skybox sincity -1 100000
+
+#v 0 -10000 0
+#box b glacier -1 1000
+
+###############
+# Objects
+###############
+
+ambientLightIntensity 0.7
+
+v 0 0 -4000
+obj null DemonicEye2.obj -1
+
+v 500.0 0 -1000.0
+#obj chr_rain character-rain.obj -1
+voxelMatrix pyramid TownOfFury.qb Pyramid -1 100
+#obj Lea Lea_body2.obj -1
+
+v 5000.0 100 -2000.0
+#voxelMatrix ponytail NearCraft.qb chr_ponytail3 -1 100
+
+#v 1500.0 -6000.0 -4000.0
+#obj null env_grass1c.obj -1
+
+v 500.0 100 -4000.0
+#voxelMatrix droid teapot.qb -1 50
+#voxelMatrix droid Droid-voxel.qb -1 10
+#voxelMatrix monu9 monu9.qb -1 50
+#voxelMatrix shelf shelf.qb -1 50
+#voxelMatrix cube cube_3_3_blue.qb -1 50
+#obj monu9 monu9.obj -1 0
+#obj teapot teapot.obj -1 0
+#obj droid Droid-voxel.obj -1
+
+v 500.0 200 -5000.0
+#obj terrain terrain.obj -1
+voxelMatrix sniper_terrain TownOfFury.qb SniperTerrain -1 40
+
+v 0.0 100 -8000.0
+#voxelMatrix building1 TownOfFury.qb building -1 50
+
+v 1000 100 -8000.0
+#voxelMatrix house1 NearCraft.qb house -1 50
+
+v 2000 100 -6000.0
+#voxelMatrix house2 NearCraft.qb house -1 50
+
+v 3000 100 -4000.0
+#voxelMatrix house3 NearCraft.qb house -1 50
+
+
+
+
