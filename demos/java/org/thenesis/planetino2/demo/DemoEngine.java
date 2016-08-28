@@ -282,6 +282,15 @@ public class DemoEngine extends GameCore3D implements LevelManager {
 		while (i.hasMoreElements()) {
 			PolygonGroup group = (PolygonGroup) i.nextElement();
 			String filename = group.getFilename();
+			
+			// Current level can set specific behavior for game objects 
+			GameObject levelGameObject = getCurrentLevel().createGameObject(group);
+			if (levelGameObject != null) {
+				gameObjectManager.add(levelGameObject);
+				continue;
+			}
+			
+			// If no specific behavior, set the default one
 			if ("DemonicEye2.obj".equals(filename)) {
 				AIBot bot = new NoisyAIBot(soundManager, group, collisionDetection, scaredBrain, botProjectileModel);
 				gameObjectManager.addEnnemy(bot);
@@ -345,6 +354,9 @@ public class DemoEngine extends GameCore3D implements LevelManager {
 				gameObjectManager.add(new GameObject(group));
 			}
 		}
+		
+		
+		
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package org.thenesis.planetino2.demo;
 
+import org.thenesis.planetino2.game.GameObject;
+import org.thenesis.planetino2.math3D.PolygonGroup;
 import org.thenesis.planetino2.sound.Music;
 import org.thenesis.planetino2.sound.SoundManager;
 
@@ -57,6 +59,11 @@ public abstract class Level {
 			}
 			levelManager.changeLevel();
 		}
+	}
+
+	public GameObject createGameObject(PolygonGroup polygonGroup) {
+		// Do nothing by default
+		return null;
 	}
 
 }

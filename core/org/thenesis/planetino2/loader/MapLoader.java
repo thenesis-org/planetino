@@ -537,6 +537,8 @@ public class MapLoader extends ObjectLoader {
 					for (int j = 0; j < size; j++) {
 						mapObjects.addElement((PolygonGroup) elements.elementAt(j));
 					}
+            	} else {
+            		System.out.println("Warning: Qubicle matrix " + matrixName + " can't be loaded");
             	}
             }
             else {
