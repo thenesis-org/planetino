@@ -43,13 +43,12 @@
  */
 package org.thenesis.planetino2.game;
 
-import org.thenesis.planetino2.util.Iterator;
-import org.thenesis.planetino2.util.Vector;
-
 import org.thenesis.planetino2.math3D.MovingTransform3D;
 import org.thenesis.planetino2.math3D.PolygonGroup;
 import org.thenesis.planetino2.math3D.PolygonGroupBounds;
 import org.thenesis.planetino2.math3D.Vector3D;
+import org.thenesis.planetino2.util.Iterator;
+import org.thenesis.planetino2.util.Vector;
 
 /**
  A GameObject class is a base class for any type of object in a
@@ -102,15 +101,28 @@ public class GameObject {
 
 	/**
 	 Creates a new GameObject represented by the specified
-	 PolygonGroup. The PolygonGroup can be null.
+	 PolygonGroup. The PolygonGroup and the PolygonGroupBounds can be null.
 	 */
-	public GameObject(PolygonGroup polygonGroup) {
+	public GameObject(PolygonGroup polygonGroup, PolygonGroupBounds bounds) {
 		this.polygonGroup = polygonGroup;
-		bounds = new PolygonGroupBounds(polygonGroup);
+		
+		if (bounds == null) {
+			this.bounds = new PolygonGroupBounds(polygonGroup);
+		} else {
+			this.bounds = bounds;
+		}
 		state = STATE_IDLE;
 		
 		touching = new Vector();
-        touchingThisFrame = new Vector();
+		touchingThisFrame = new Vector();
+	}
+	
+	/**
+	 Creates a new GameObject represented by the specified
+	 PolygonGroup. The PolygonGroup can be null.
+	 */
+	public GameObject(PolygonGroup polygonGroup) {
+		this(polygonGroup, null);
 	}
 
 	/**

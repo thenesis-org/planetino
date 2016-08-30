@@ -532,11 +532,14 @@ public class MapLoader extends ObjectLoader {
 						voxelMatrix.setName(uniqueName);
 					}
 					voxelMatrix.setFilename(matrixName);
-					Vector elements = voxelMatrix.getElements();
-					int size = elements.size();
-					for (int j = 0; j < size; j++) {
-						mapObjects.addElement((PolygonGroup) elements.elementAt(j));
-					}
+					mapObjects.addElement(voxelMatrix);
+//					Vector elements = voxelMatrix.getElements();
+//					int size = elements.size();
+//					for (int j = 0; j < size; j++) {
+//						PolygonGroup group = (PolygonGroup) elements.elementAt(j);
+//						group.getTransform().getLocation().add(voxelMatrix.getTransform());
+//						mapObjects.addElement((PolygonGroup) elements.elementAt(j));
+//					}
             	} else {
             		System.out.println("Warning: Qubicle matrix " + matrixName + " can't be loaded");
             	}

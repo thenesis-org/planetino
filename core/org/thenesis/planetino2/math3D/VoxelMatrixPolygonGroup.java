@@ -15,37 +15,40 @@ public class VoxelMatrixPolygonGroup extends PolygonGroup implements Lightable {
 	private Hashtable boxModelMap;
 	private Vector elements;
 	private QBMatrix matrix;
-	private Vector3D location;
 	private float elementScale;
 	private float ambientLightIntensity;
+	private PolygonGroupBounds bounds;
 
 	public VoxelMatrixPolygonGroup(QBMatrix matrix, Vector3D location, float scale, float ambientLightIntensity) {
 		this.matrix = matrix;
-		this.location = location;
 		this.elementScale = scale;
 		this.ambientLightIntensity = ambientLightIntensity;
 		boxModelMap = new Hashtable();
 		elements = new Vector();
+		bounds = new PolygonGroupBounds();
 		matrix.removeHiddenVoxels();
+		getTransform().getLocation().setTo(location);
 		rebuild();
 	}
 
 	public void rebuild() {
 		elements.clear();
 
-		int sizeX = matrix.getSizeX();
-		int sizeY = matrix.getSizeY();
-		int sizeZ = matrix.getSizeZ();
-		int[] voxelMatrixData = matrix.getData();
+		int matrixSizeX = matrix.getSizeX();
+		int matrixSizeY = matrix.getSizeY();
+		int matrixSizeZ = matrix.getSizeZ();
 
 		float edgeSize = elementScale * 2;
-		Vector3D elementLocation = new Vector3D(location);
-		for (int z = 0; z < sizeZ; z++) {
-			elementLocation.z = location.z + z * edgeSize;
-			for (int y = 0; y < sizeY; y++) {
-				elementLocation.y = location.y + y * edgeSize;
-				for (int x = 0; x < sizeX; x++) {
-					elementLocation.x = location.x + x * edgeSize;
+		float midSizeX = matrixSizeX * edgeSize / 2;
+		float midSizeZ = matrixSizeZ * edgeSize / 2;
+		
+		Vector3D elementLocation = new Vector3D(getTransform().getLocation());
+		for (int z = 0; z < matrixSizeZ; z++) {
+			elementLocation.z = z * edgeSize - midSizeZ;
+			for (int y = 0; y < matrixSizeY; y++) {
+				elementLocation.y = y * edgeSize;
+				for (int x = 0; x < matrixSizeX; x++) {
+					elementLocation.x = x * edgeSize - midSizeX;
 					int nativeColor = matrix.getVoxelColor(x, y, z);
 					boolean voxelVisible = matrix.isVoxelVisible(nativeColor);
 					if (voxelVisible) {
@@ -64,6 +67,10 @@ public class VoxelMatrixPolygonGroup extends PolygonGroup implements Lightable {
 				}
 			}
 		}
+		
+		bounds.setBottomHeight(0);
+		bounds.setTopHeight(matrixSizeY * edgeSize);
+		bounds.setRadius((float)Math.sqrt(midSizeX * midSizeX + midSizeZ * midSizeZ));
 	}
 	
 	private static BoxModel createVoxelBoxModel(int color) {
@@ -129,6 +136,10 @@ public class VoxelMatrixPolygonGroup extends PolygonGroup implements Lightable {
 
 	public Vector getElements() {
 		return elements;
+	}
+	
+	public PolygonGroupBounds getBounds() {
+		return bounds;
 	}
 
 	public class Element extends BoxPolygonGroup {

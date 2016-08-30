@@ -44,11 +44,13 @@
 package org.thenesis.planetino2.game;
 
 import java.util.Enumeration;
-import org.thenesis.planetino2.util.Vector;
 
+import org.thenesis.planetino2.util.Vector;
+import org.thenesis.planetino2.demo.ShooterPlayer;
 import org.thenesis.planetino2.graphics.Graphics;
 import org.thenesis.planetino2.math3D.Rectangle;
 import org.thenesis.planetino2.math3D.Vector3D;
+import org.thenesis.planetino2.math3D.VoxelMatrixPolygonGroup;
 
 /**
  The GridGameObjectManager is a GameObjectManager that
@@ -59,10 +61,10 @@ import org.thenesis.planetino2.math3D.Vector3D;
 public class GridGameObjectManager implements GameObjectManager {
 
 	/**
-	 Default grid size of 512. The grid size should be larger
+	 Default grid size was 512 (now 4096). The grid size should be larger
 	 than the largest object's diameter.
 	 */
-	private static final int GRID_SIZE_BITS = 9;
+	private static final int GRID_SIZE_BITS = 12;
 	private static final int GRID_SIZE = 1 << GRID_SIZE_BITS;
 
 	/**
@@ -153,6 +155,9 @@ public class GridGameObjectManager implements GameObjectManager {
 	 Adds a GameObject to this manager.
 	 */
 	public void add(GameObject object) {
+		if (object.getPolygonGroup() instanceof VoxelMatrixPolygonGroup) {
+			//System.out.println("add");
+		}
 		if (object != null) {
 			if (object == player) {
 				// ensure player always moves first
@@ -312,6 +317,10 @@ public class GridGameObjectManager implements GameObjectManager {
 	public boolean checkObjectCollision(GameObject object, Vector3D oldLocation) {
 
 		boolean collision = false;
+		
+//		if (object instanceof ShooterPlayer) {
+//			System.out.println();
+//		}
 
 		// use the object's (x,z) position (ground plane)
 		int x = convertMapXtoGridX((int) object.getX());
@@ -326,7 +335,13 @@ public class GridGameObjectManager implements GameObjectManager {
 				}
 			}
 		}
-
+		
+//		for (Cell cell : grid) {
+//			if (cell != null) {
+//				collision |= collisionDetection.checkObject(object, cell.objects, oldLocation);
+//			}
+//		}
+		
 		return collision;
 	}
 
