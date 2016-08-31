@@ -64,6 +64,7 @@ import org.thenesis.planetino2.demo.levels.QuakeLevel;
 import org.thenesis.planetino2.demo.levels.TownOfFuryLevel;
 import org.thenesis.planetino2.engine.GameCore3D;
 import org.thenesis.planetino2.game.Box;
+import org.thenesis.planetino2.game.BoxMatrix;
 import org.thenesis.planetino2.game.CollisionDetection;
 import org.thenesis.planetino2.game.CollisionDetectionWithSliding;
 import org.thenesis.planetino2.game.GameObject;
@@ -81,6 +82,7 @@ import org.thenesis.planetino2.loader.ObjectLoader;
 import org.thenesis.planetino2.loader.ResourceLoader;
 import org.thenesis.planetino2.math3D.BoxBlockPolygonGroup;
 import org.thenesis.planetino2.math3D.BoxPolygonGroup;
+import org.thenesis.planetino2.math3D.CompositePolygonGroup;
 import org.thenesis.planetino2.math3D.Lightable;
 import org.thenesis.planetino2.math3D.MovingTransform3D;
 import org.thenesis.planetino2.math3D.PointLight3D;
@@ -135,7 +137,7 @@ public class DemoEngine extends GameCore3D implements LevelManager {
 		this.resourceLoader = resourceLoader;
 		
 		// Create Levels
-		currentLevel = 3;
+		currentLevel = 0;
 		levels = new Level[LEVEL_NUMBER];
 		levels[0] = new QuakeLevel();
 		levels[1] = new KillboxLevel();
@@ -339,13 +341,8 @@ public class DemoEngine extends GameCore3D implements LevelManager {
 				gameObjectManager.add(new Poster(group));
 			} else if (group instanceof BoxPolygonGroup) {
 				gameObjectManager.add(new Box(group));
-			} else if (group instanceof BoxBlockPolygonGroup) {
-				BoxBlockPolygonGroup block = (BoxBlockPolygonGroup) group;
-				Vector elements = block.getElements();
-				int size = elements.size();
-				for (int j = 0; j < size; j++) {
-					gameObjectManager.add(new Box((PolygonGroup) elements.elementAt(j)));
-				}
+			} else if (group instanceof CompositePolygonGroup) {
+				gameObjectManager.add(new BoxMatrix((CompositePolygonGroup)group));
 			} else if (group instanceof TriggerPolygonGroup) {
 				TriggerPolygonGroup triggerGroup = (TriggerPolygonGroup) group;
 				gameObjectManager.add(new Trigger(triggerGroup));

@@ -295,6 +295,9 @@ public class PolygonGroup implements Transformable {
 		return "Object " + name + " (" + filename + ")";
 	}
 	
+	public PolygonGroupBounds getBounds() {
+		return new PolygonGroupBounds(this);
+	}
 	
 
 }

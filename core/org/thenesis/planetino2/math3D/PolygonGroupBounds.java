@@ -56,15 +56,14 @@ public class PolygonGroupBounds {
 	/**
 	 Creates a new PolygonGroupBounds with no bounds.
 	 */
-	public PolygonGroupBounds() {
-
+	PolygonGroupBounds() {
 	}
 
 	/**
 	 Creates a new PolygonGroupBounds with the bounds of
 	 the specified PolygonGroup.
 	 */
-	public PolygonGroupBounds(PolygonGroup group) {
+	PolygonGroupBounds(PolygonGroup group) {
 		setToBounds(group);
 	}
 

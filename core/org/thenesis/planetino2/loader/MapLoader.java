@@ -509,11 +509,12 @@ public class MapLoader extends ObjectLoader {
             	if (!uniqueName.equals("null")) {
             		block.setName(uniqueName);
                 }
-            	Vector elements = block.getElements();
-				int size = elements.size();
-				for (int j = 0; j < size; j++) {
-					mapObjects.addElement((PolygonGroup)elements.elementAt(j));
-				}
+            	mapObjects.addElement(block);
+//            	Vector elements = block.getElements();
+//				int size = elements.size();
+//				for (int j = 0; j < size; j++) {
+//					mapObjects.addElement((PolygonGroup)elements.elementAt(j));
+//				}
             } else if (command.equals("voxelMatrix")) {
             	//box <boxes_name> <BoxDef_name> <location_index> <scale> [<rotate_x> <rotate_y> <rotate_z>]
             	String uniqueName = tokenizer.nextToken();

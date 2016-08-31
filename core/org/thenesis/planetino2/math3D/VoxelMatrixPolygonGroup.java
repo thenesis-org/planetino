@@ -8,9 +8,9 @@ import org.thenesis.planetino2.loader.QBMatrix;
 import org.thenesis.planetino2.loader.ObjectLoader.Material;
 import org.thenesis.planetino2.util.Vector;
 
-public class VoxelMatrixPolygonGroup extends PolygonGroup implements Lightable {
+public class VoxelMatrixPolygonGroup extends PolygonGroup implements Lightable, CompositePolygonGroup {
 
-	public static final String BOX_BLOCK_FILENAME = "voxelMatrix_internal.obj";
+	//public static final String BOX_BLOCK_FILENAME = "voxelMatrix_internal.obj";
 
 	private Hashtable boxModelMap;
 	private Vector elements;
@@ -42,7 +42,7 @@ public class VoxelMatrixPolygonGroup extends PolygonGroup implements Lightable {
 		float midSizeX = matrixSizeX * edgeSize / 2;
 		float midSizeZ = matrixSizeZ * edgeSize / 2;
 		
-		Vector3D elementLocation = new Vector3D(getTransform().getLocation());
+		Vector3D elementLocation = new Vector3D();
 		for (int z = 0; z < matrixSizeZ; z++) {
 			elementLocation.z = z * edgeSize - midSizeZ;
 			for (int y = 0; y < matrixSizeY; y++) {
@@ -138,6 +138,7 @@ public class VoxelMatrixPolygonGroup extends PolygonGroup implements Lightable {
 		return elements;
 	}
 	
+	@Override
 	public PolygonGroupBounds getBounds() {
 		return bounds;
 	}
@@ -166,7 +167,7 @@ public class VoxelMatrixPolygonGroup extends PolygonGroup implements Lightable {
 
 	@Override
 	public String toString() {
-		return "BoxBlock " + getName();
+		return "VoxelMatrix " + getName();
 	}
 
 }

@@ -47,11 +47,10 @@ import org.thenesis.planetino2.bsp2D.BSPLine;
 import org.thenesis.planetino2.bsp2D.BSPPolygon;
 import org.thenesis.planetino2.bsp2D.BSPTree;
 import org.thenesis.planetino2.bsp2D.Point2D;
-import org.thenesis.planetino2.math3D.MovingTransform3D;
+import org.thenesis.planetino2.math3D.CompositePolygonGroup;
 import org.thenesis.planetino2.math3D.PolygonGroup;
 import org.thenesis.planetino2.math3D.PolygonGroupBounds;
 import org.thenesis.planetino2.math3D.Vector3D;
-import org.thenesis.planetino2.math3D.VoxelMatrixPolygonGroup;
 import org.thenesis.planetino2.util.MoreMath;
 import org.thenesis.planetino2.util.Vector;
 
@@ -408,15 +407,15 @@ public class CollisionDetection {
 		float distSq = dx * dx + dz * dz;
 		float minDistSq = minDist * minDist;
 		if (distSq < minDistSq) {
-			if (objectB instanceof BoxMatrix) {
-				VoxelMatrixPolygonGroup voxelMatrixGroup = ((VoxelMatrixPolygonGroup) objectB.getPolygonGroup());
-				Vector elements = ((VoxelMatrixPolygonGroup) objectB.getPolygonGroup()).getElements();
+			if (objectB.getPolygonGroup() instanceof CompositePolygonGroup) {
+				CompositePolygonGroup compositeGroup = ((CompositePolygonGroup) objectB.getPolygonGroup());
+				Vector elements = compositeGroup.getElements();
 				boolean collision = false;
 				int size = elements.size();
 				// FIXME Avoid GameObject creation and don't do exhaustive collision tests (one can guess)
 				for (int j = 0; j < size; j++) {
 					PolygonGroup group = (PolygonGroup)((PolygonGroup) elements.elementAt(j)).clone();
-					group.getTransform().getLocation().add(voxelMatrixGroup.getTransform());
+					group.getTransform().getLocation().add(objectB.getPolygonGroup().getTransform());
 					GameObject collisionObject = new GameObject(group);
 					collision |= checkObject(objectA, collisionObject, oldLocation);
 				}

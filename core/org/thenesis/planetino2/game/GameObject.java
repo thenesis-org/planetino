@@ -107,7 +107,7 @@ public class GameObject {
 		this.polygonGroup = polygonGroup;
 		
 		if (bounds == null) {
-			this.bounds = new PolygonGroupBounds(polygonGroup);
+			this.bounds = polygonGroup.getBounds();
 		} else {
 			this.bounds = bounds;
 		}

@@ -1,15 +1,13 @@
 package org.thenesis.planetino2.game;
 
-import org.thenesis.planetino2.math3D.VoxelMatrixPolygonGroup;
+import org.thenesis.planetino2.math3D.CompositePolygonGroup;
+import org.thenesis.planetino2.math3D.PolygonGroup;
 import org.thenesis.planetino2.sound.Music;
-import org.thenesis.planetino2.util.Vector;
 
 public class BoxMatrix extends GameObject implements NoisyObject {
-	
-	private Vector compositeGameObjects;
 
-	public BoxMatrix(VoxelMatrixPolygonGroup polygonGroup) {
-		super(polygonGroup, polygonGroup.getBounds());
+	public BoxMatrix(CompositePolygonGroup polygonGroup) {
+		super((PolygonGroup)polygonGroup);
 	}
 	
 //	//@Override
