@@ -431,6 +431,33 @@ public class CollisionDetection {
 		}
 		return false;
 	}
+	
+	public static boolean areInCollision(GameObject objectA, GameObject objectB) {
+		PolygonGroupBounds boundsA = objectA.getBounds();
+		PolygonGroupBounds boundsB = objectB.getBounds();
+
+		// first, check y axis collision (assume height is pos)
+		float Ay1 = objectA.getY() + boundsA.getBottomHeight();
+		float Ay2 = objectA.getY() + boundsA.getTopHeight();
+		float By1 = objectB.getY() + boundsB.getBottomHeight();
+		float By2 = objectB.getY() + boundsB.getTopHeight();
+		if (By2 < Ay1 || By1 > Ay2) {
+			return false;
+		}
+
+		// next, check 2D, x/z plane collision (circular base)
+		float dx = objectA.getX() - objectB.getX();
+		float dz = objectA.getZ() - objectB.getZ();
+		float minDist = boundsA.getRadius() + boundsB.getRadius();
+		float distSq = dx * dx + dz * dz;
+		float minDistSq = minDist * minDist;
+		if (distSq < minDistSq) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 
 	/**
 	 Handles an object collision. Object A is the moving
