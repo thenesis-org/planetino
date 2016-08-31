@@ -13,6 +13,7 @@ public class BoxPolygonGroup extends PolygonGroup implements Lightable {
 	private BoxModel boxDef;
 	private float scale;
 	private float ambientLightIntensity;
+	private boolean isSkybox;
 	
 	private Face[] faces;
 	private static Polygon3D cachedTransformedPolygonForLightning = new Polygon3D();
@@ -20,6 +21,7 @@ public class BoxPolygonGroup extends PolygonGroup implements Lightable {
 	public BoxPolygonGroup(BoxModel boxDef, Vector3D location, float scale, float ambientLightIntensity, boolean isSkybox) {
 		this.boxDef = boxDef;
 		this.ambientLightIntensity = ambientLightIntensity;
+		this.isSkybox = isSkybox;
 		faces = new Face[BoxModel.FACES];
 		setFilename(BOX_FILENAME);
 		
@@ -118,6 +120,10 @@ public class BoxPolygonGroup extends PolygonGroup implements Lightable {
 		return "Box " + getName();
 	}
 	
+	public boolean isSkybox() {
+		return isSkybox;
+	}
+
 	public class Face extends FaceModel {
 		
 		private float framesPerSecond;

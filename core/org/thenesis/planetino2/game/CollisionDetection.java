@@ -47,6 +47,7 @@ import org.thenesis.planetino2.bsp2D.BSPLine;
 import org.thenesis.planetino2.bsp2D.BSPPolygon;
 import org.thenesis.planetino2.bsp2D.BSPTree;
 import org.thenesis.planetino2.bsp2D.Point2D;
+import org.thenesis.planetino2.math3D.BoxPolygonGroup;
 import org.thenesis.planetino2.math3D.CompositePolygonGroup;
 import org.thenesis.planetino2.math3D.PolygonGroup;
 import org.thenesis.planetino2.math3D.PolygonGroupBounds;
@@ -420,6 +421,10 @@ public class CollisionDetection {
 					collision |= checkObject(objectA, collisionObject, oldLocation);
 				}
 				return collision;
+			} 
+			// FIXME Avoid collision detection for skyboxes. Move outside game object list ? 
+			else if ((objectB.getPolygonGroup() instanceof BoxPolygonGroup) && ((BoxPolygonGroup)objectB.getPolygonGroup()).isSkybox()) {
+				return false;
 			} else {
 				return handleObjectCollision(objectA, objectB, distSq, minDistSq, oldLocation);
 			}
