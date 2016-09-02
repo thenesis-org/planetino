@@ -299,5 +299,50 @@ public class PolygonGroup implements Transformable {
 		return new PolygonGroupBounds(this);
 	}
 	
+//	/* not used yet */
+//	public void rescale(float sx, float sy, float sz) {
+//		
+//		float minX = Float.POSITIVE_INFINITY;
+//		float maxX = Float.NEGATIVE_INFINITY;
+//		float minY = Float.POSITIVE_INFINITY;
+//		float maxY = Float.NEGATIVE_INFINITY;
+//		float minZ = Float.POSITIVE_INFINITY;
+//		float maxZ = Float.NEGATIVE_INFINITY;
+//		
+//		// Get the center of the object
+//		resetIterator();
+//		while(hasNext()) {
+//			Polygon3D p = nextPolygon();
+//			for (int i = 0; i < p.getNumVertices(); i++) {
+//				Vector3D v = p.getVertex(i);
+//				minX = Math.min(minX, v.x);
+//				minY = Math.min(minY, v.y);
+//				minZ = Math.min(minZ, v.z);
+//				maxX = Math.max(maxX, v.x);
+//				maxY = Math.max(maxY, v.y);
+//				maxZ = Math.max(maxZ, v.z);
+//			}
+//		}
+//		float centerX = minX + (maxX - minX) / 2; 
+//		float centerY = minY + (maxY - minY) / 2;
+//		float centerZ = minZ + (maxZ - minZ) / 2;
+//		
+//		// Rescale
+//		resetIterator();
+//		while(hasNext()) {
+//			Polygon3D p = nextPolygon();
+//			for (int i = 0; i < p.getNumVertices(); i++) {
+//				Vector3D v = p.getVertex(i);
+//				v.x = (v.x - centerX) * sx + centerX;
+//				v.y = (v.y - centerY) * sy + centerY;
+//				v.z = (v.z - centerZ) * sz + centerZ;
+//			}
+//		}
+//		
+//		// Clean the internal state
+//		resetIterator();
+//		
+//	}
+	
 
 }
