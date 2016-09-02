@@ -148,7 +148,7 @@ public class Editor implements KeyListener, MouseListener, MouseMotionListener {
 		inputManager.mapToKey(EditorEngine.zoom, KeyEvent.VK_S);
 
 		engine = new EditorEngine(screen, inputManager, Toolkit.getInstance().getResourceLoader());
-		engine.loadMap("quake-one_bot.map");
+		engine.loadMap("TownOfFury.map"); //quake-one_bot.map
 		engine.init();
 		engine.tick(DEFAULT_ELAPSED_TIME);
 		//		Thread engineThread = new Thread(engine);
@@ -176,7 +176,7 @@ public class Editor implements KeyListener, MouseListener, MouseMotionListener {
 			@Override
 			public boolean accept(File f) {
 				String extension = getExtension(f);
-				if (extension.equals("map")) {
+				if ((extension != null) && extension.equals("map")) {
 					return true;
 				}
 				return false;
