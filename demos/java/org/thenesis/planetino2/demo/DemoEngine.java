@@ -142,7 +142,7 @@ public class DemoEngine extends GameCore3D implements LevelManager, ShooterEngin
 		this.resourceLoader = resourceLoader;
 		
 		// Create Levels
-		currentLevel = 0;
+		currentLevel = 1;
 		levels = new Level[LEVEL_NUMBER];
 		levels[0] = new QuakeLevel(this);
 		levels[1] = new KillboxLevel(this);

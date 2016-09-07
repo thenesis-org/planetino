@@ -85,9 +85,9 @@ public class Projectile extends GameObject {
         velocity.setTo(direction);
         velocity.multiply(SPEED);
         transform.setVelocity(velocity);
-        //transform.setAngleVelocityX(ROT_SPEED);
+        transform.setAngleVelocityX(ROT_SPEED);
         transform.setAngleVelocityY(ROT_SPEED);
-        transform.setAngleVelocityZ(ROT_SPEED);
+        transform.setAngleVelocityZ(ROT_SPEED * 2);
         setState(STATE_ACTIVE);
     }
 

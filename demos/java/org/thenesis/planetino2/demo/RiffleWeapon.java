@@ -15,7 +15,7 @@ public class RiffleWeapon extends Weapon {
 
 	public RiffleWeapon(ObjectLoader loader) throws IOException {
 		super(loader);
-		blastModel = loader.loadObject("blast.obj3d");
+		blastModel = loader.loadObject("spiked_ball.obj");
 	}
 	
 	public int getAmmo() {
