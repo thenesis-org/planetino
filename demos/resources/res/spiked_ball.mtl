@@ -1,0 +1,11 @@
+# Material file for spiked_ball.obj
+
+newmtl None
+	Ns 0
+	d 1
+	illum 2
+	Kd 1.0 1.0 1.0
+	Ks 0.8 0.8 0.8
+	Ka 0.0 0.0 0.0
+	map_Kd ammo_pack.png
+
