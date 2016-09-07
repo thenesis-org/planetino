@@ -155,9 +155,7 @@ public class ShooterPlayer extends Player {
 		        //transform.setAngleVelocityX(.008f);
 		        //transform.setAngleVelocityY(.005f);
 		        //transform.setAngleVelocityZ(ROT_SPEED);
-		        objectAttachedToGravityGun.setFlying(false);
-		        objectAttachedToGravityGun.setJumping(true);
-		        objectAttachedToGravityGun = null;
+		        detachObjectFromGravityGun();
 		        gravityCatchSound.stop();
 		        gravityThrowSound.play();
 			} else {
@@ -275,7 +273,15 @@ public class ShooterPlayer extends Player {
         gravityCatchSound.play(true);
         
 	}
-
+	
+	public void detachObjectFromGravityGun() {
+		if (objectAttachedToGravityGun != null) {
+			objectAttachedToGravityGun.setFlying(false);
+			objectAttachedToGravityGun.setJumping(true);
+			objectAttachedToGravityGun = null;
+		}
+	}
+	
 	public void setWeapon(int weaponType) {
 		if (weaponType == Weapon.WEAPON_RIFFLE && (!riffleItemCatched)) {
 			return;
@@ -286,6 +292,9 @@ public class ShooterPlayer extends Player {
 	public void setWeapon(Weapon weapon) {
 		if (this.weapon == weapon) {
 			return;
+		}
+		if ((this.weapon != null) && (this.weapon.getType() == Weapon.WEAPON_GRAVITY_GUN)) {
+			detachObjectFromGravityGun();
 		}
 		this.weapon = weapon;
 		weaponChangeSound.rewind();

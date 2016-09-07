@@ -336,14 +336,14 @@ public class Editor implements KeyListener, MouseListener, MouseMotionListener {
 		//System.out.println("[DEBUG] AWTBackend.mousePressed()");
 		//listener.mousePressed(e.getX(), e.getY(), e.getModifiers());
 		panel3D.requestFocusInWindow();
-		inputManager.pointerPressed(e.getX(), e.getY());
+		inputManager.pointerPressed(e.getX(), e.getY(), convertMouseButtonCode(e));
 		updateUI();
 	}
 
 	public void mouseReleased(MouseEvent e) {
 		//System.out.println("[DEBUG] AWTBackend.mouseReleased()");
 		//listener.mouseReleased(e.getX(), e.getY(), e.getModifiers());
-		inputManager.pointerReleased();
+		inputManager.pointerReleased(convertMouseButtonCode(e));
 		updateUI();
 	}
 
@@ -353,6 +353,20 @@ public class Editor implements KeyListener, MouseListener, MouseMotionListener {
 		
 		//inputManager.pointerDragged(e.getX(), e.getY());
 		//updateUI();
+	}
+	
+	private int convertMouseButtonCode(MouseEvent e) {
+		int awtButton = e.getButton();
+		switch(awtButton) {
+		case MouseEvent.BUTTON1:
+			return InputManager.MOUSE_BUTTON_1;
+		case MouseEvent.BUTTON2:
+			return InputManager.MOUSE_BUTTON_2;
+		case MouseEvent.BUTTON3:
+			return InputManager.MOUSE_BUTTON_3;
+		default:
+			throw new IllegalStateException();
+		}
 	}
 
 	public void updateUI() {

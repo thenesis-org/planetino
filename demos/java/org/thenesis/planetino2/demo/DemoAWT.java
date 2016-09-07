@@ -88,6 +88,10 @@ public class DemoAWT  {
 		inputManager.mapToMouse(DemoEngine.fire, InputManager.MOUSE_BUTTON_1);
 		inputManager.mapToKey(DemoEngine.jump, KeyEvent.VK_SPACE);
 		inputManager.mapToKey(DemoEngine.zoom, KeyEvent.VK_S);
+		inputManager.mapToKey(DemoEngine.chooseGravityWeapon, KeyEvent.VK_1);
+		inputManager.mapToKey(DemoEngine.chooseGravityWeapon, KeyEvent.VK_G);
+		inputManager.mapToKey(DemoEngine.chooseRiffleWeapon, KeyEvent.VK_2);
+		inputManager.mapToMouse(DemoEngine.detachObjectFromGravityWeapon, InputManager.MOUSE_BUTTON_3);
 		
 		inputManager.setRelativeMouseMode(true);
 		inputManager.showCursor(false);

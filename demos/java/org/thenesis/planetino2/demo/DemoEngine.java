@@ -125,6 +125,7 @@ public class DemoEngine extends GameCore3D implements LevelManager, ShooterEngin
 	
 	public static GameAction chooseRiffleWeapon = new GameAction("riffle", GameAction.DETECT_INITAL_PRESS_ONLY);
 	public static GameAction chooseGravityWeapon = new GameAction("gravityGun", GameAction.DETECT_INITAL_PRESS_ONLY);
+	public static GameAction detachObjectFromGravityWeapon = new GameAction("detach object from gravityGun", GameAction.DETECT_INITAL_PRESS_ONLY);
 	
 	private Brain averageBrain;
 	private Brain aggressiveBrain;
@@ -467,6 +468,9 @@ public class DemoEngine extends GameCore3D implements LevelManager, ShooterEngin
 	    }
 		if (chooseGravityWeapon.isPressed()) {
 			player.setWeapon(Weapon.WEAPON_GRAVITY_GUN);
+	    }
+		if (detachObjectFromGravityWeapon.isPressed()) {
+			player.detachObjectFromGravityGun();
 	    }
 		if (zoom.isPressed()) {
 	        viewWindow.setAngle(ANGLE_ZOOM);

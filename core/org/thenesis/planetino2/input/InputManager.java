@@ -293,13 +293,15 @@ public abstract class InputManager {
 		}
 	}
 
-	private GameAction getMouseButtonAction() {
+	private GameAction getMouseButtonAction(int button) {
+		
+		return mouseActions[button];
 
-		if (mouseActions[MOUSE_BUTTON_1] != null) {
-			return mouseActions[MOUSE_BUTTON_1];
-		} else {
-			return null;
-		}
+//		if (mouseActions[MOUSE_BUTTON_1] != null) {
+//			return mouseActions[MOUSE_BUTTON_1];
+//		} else {
+//			return null;
+//		}
 
 		//        int mouseCode = getMouseButtonCode(e);
 		//        if (mouseCode != -1) {
@@ -328,19 +330,19 @@ public abstract class InputManager {
 	}
 
 	// from the MouseListener interface
-	public void pointerPressed(int x, int y) {
+	public void pointerPressed(int x, int y, int button) {
 		mouseLocation.x = x;
 		mouseLocation.y = y;
 
-		GameAction gameAction = getMouseButtonAction();
+		GameAction gameAction = getMouseButtonAction(button);
 		if (gameAction != null) {
 			gameAction.press();
 		}
 	}
 
 	// from the MouseListener interface
-	public void pointerReleased() {
-		GameAction gameAction = getMouseButtonAction();
+	public void pointerReleased(int button) {
+		GameAction gameAction = getMouseButtonAction(button);
 		if (gameAction != null) {
 			gameAction.release();
 		}

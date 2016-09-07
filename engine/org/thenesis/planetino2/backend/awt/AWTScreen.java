@@ -156,13 +156,13 @@ public class AWTScreen implements Screen, KeyListener, MouseListener, MouseMotio
 	public void mousePressed(MouseEvent e) {
 		//System.out.println("[DEBUG] AWTBackend.mousePressed()");
 		//listener.mousePressed(e.getX(), e.getY(), e.getModifiers());
-		inputManager.pointerPressed(e.getX(), e.getY());
+		inputManager.pointerPressed(e.getX(), e.getY(), convertMouseButtonCode(e));
 	}
 
 	public void mouseReleased(MouseEvent e) {
 		//System.out.println("[DEBUG] AWTBackend.mouseReleased()");
 		//listener.mouseReleased(e.getX(), e.getY(), e.getModifiers());
-		inputManager.pointerReleased();
+		inputManager.pointerReleased(convertMouseButtonCode(e));
 	}
 
 	public void mouseMoved(MouseEvent e) {
@@ -175,4 +175,18 @@ public class AWTScreen implements Screen, KeyListener, MouseListener, MouseMotio
 	//		listener.windowClosed();
 	//	}
 
+	private int convertMouseButtonCode(MouseEvent e) {
+		int awtButton = e.getButton();
+		switch(awtButton) {
+		case MouseEvent.BUTTON1:
+			return InputManager.MOUSE_BUTTON_1;
+		case MouseEvent.BUTTON2:
+			return InputManager.MOUSE_BUTTON_2;
+		case MouseEvent.BUTTON3:
+			return InputManager.MOUSE_BUTTON_3;
+		default:
+			throw new IllegalStateException();
+		}
+	}
+	
 }
