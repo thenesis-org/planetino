@@ -16,17 +16,14 @@ import org.thenesis.planetino2.sound.SoundManager;
 
 public class ShooterPlayer extends Player {
 	
-	private static int WEAPON_RIFFLE = 0;
-	private static int WEAPON_GRAVITY_GUN = 1;
-	
 	private static final float DEFAULT_MAX_ADRENALINE = 100.0F;
-	private static final int DEFAULT_MAX_AMMO = 50;
 	
-	private int weapon = WEAPON_RIFFLE;
+	private Weapon weapon;
 	private float adrenaline = DEFAULT_MAX_ADRENALINE;
-	private int ammo = 0;
 	
 	private SoundManager soundManager;
+	private WeaponManager weaponManager;
+	
 	private boolean adrenalineMode = false;
 	private boolean zoomViewMode = false;
 	private int lifeCount = 3;
@@ -47,9 +44,10 @@ public class ShooterPlayer extends Player {
 	
 	private CatchableGameObject objectAttachedToGravityGun;
 
-	public ShooterPlayer(SoundManager soundManager) {
+	public ShooterPlayer(SoundManager soundManager, WeaponManager weaponManager) {
 		super();
 		this.soundManager = soundManager;
+		this.weaponManager = weaponManager;
 
 		jumpSound = soundManager.getSound("jump1.wav");
 		itemCatchSound = soundManager.getMusic("power_up2.wav");
@@ -61,14 +59,6 @@ public class ShooterPlayer extends Player {
 		gravityCatchSound = soundManager.getMusic("gravity_catch-X08MMA-loop.wav");
 		painSound = soundManager.getSound("pain25_2.wav");
 		elevatorSound = soundManager.getMusic("antigravity_elevator.wav");
-	}
-
-	public int getAmmo() {
-		return this.ammo;
-	}
-
-	public int getMaxAmmo() {
-		return DEFAULT_MAX_AMMO;
 	}
 
 	public boolean isAdrenalineMode() {
@@ -133,22 +123,26 @@ public class ShooterPlayer extends Player {
 	@Override
 	public void fireProjectile() {
 		
+		if (weapon == null) {
+			return;
+		}
+		
 		float x = -getTransform().getSinAngleY();
 		float z = -getTransform().getCosAngleY();
 		float cosX = getTransform().getCosAngleX();
 		float sinX = getTransform().getSinAngleX();
 		
-		if (weapon == WEAPON_RIFFLE) {
-			if (this.ammo <= 0) {
+		if (weapon.getType() == Weapon.WEAPON_RIFFLE) {
+			if (weapon.getAmmo() <= 0) {
 				return;
 			}
-			this.ammo -= 1;
-			Projectile blast = new Projectile((PolygonGroup) this.blastModel.clone(), new Vector3D(cosX * x, sinX, cosX * z), null, 40, 60);
+			weapon.addAmmo(-1);
+			Projectile blast = new Projectile((PolygonGroup) weapon.getBlastModel().clone(), new Vector3D(cosX * x, sinX, cosX * z), null, 40, 60);
 			float dist = getBounds().getRadius() + blast.getBounds().getRadius();
 			blast.getLocation().setTo(getX() + x * dist, getY() + BULLET_HEIGHT, getZ() + z * dist);
 			fireSound.play();
 			addSpawn(blast);
-		} else if (weapon == WEAPON_GRAVITY_GUN) {
+		} else if (weapon.getType() == Weapon.WEAPON_GRAVITY_GUN) {
 			if (objectAttachedToGravityGun != null) {
 				MovingTransform3D transform = objectAttachedToGravityGun.getTransform();
 		        Vector3D velocity = transform.getVelocity();
@@ -168,7 +162,7 @@ public class ShooterPlayer extends Player {
 			} else {
 				//TriggerPolygonGroup trigger = new TriggerPolygonGroup(null, new Vector3D(), 50, 50);
 				//GravityGunProjectile blast = new GravityGunProjectile(trigger, this, new Vector3D(cosX * x, sinX, cosX * z));
-				GravityGunProjectile blast = new GravityGunProjectile((PolygonGroup) this.blastModel.clone(), this, new Vector3D(cosX * x, sinX, cosX * z));
+				GravityGunProjectile blast = new GravityGunProjectile((PolygonGroup) weapon.getBlastModel().clone(), this, new Vector3D(cosX * x, sinX, cosX * z));
 				float dist = getBounds().getRadius() + blast.getBounds().getRadius();
 				blast.getLocation().setTo(getX() + x * dist, getY() + BULLET_HEIGHT, getZ() + z * dist);
 				gravityFireSound.play();
@@ -184,6 +178,9 @@ public class ShooterPlayer extends Player {
 		super.notifyObjectCollision(obj);
 		String filename = obj.getPolygonGroup().getFilename();
 		if (filename.equalsIgnoreCase(DemoEngine.OBJECT_FILENAME_HEALTH_PACK)) {
+			if (health >= maxHealth) {
+				return;
+			}
 			if (!itemCatchSound.isPlaying()) {
 				itemCatchSound.rewind();
 			}
@@ -195,15 +192,21 @@ public class ShooterPlayer extends Player {
 			capAdrenalineAdd(50.0F);
 			setState(obj, STATE_DESTROYED);
 		} else if (filename.equalsIgnoreCase(DemoEngine.OBJECT_FILENAME_AMMO_PACK)) {
+			if (weapon == null) {
+				return;
+			}
 			if (!ammoCatchSound.isPlaying()) {
 				ammoCatchSound.rewind();
 			}
 			ammoCatchSound.play(false);
-			this.ammo += 50;
+			weapon.capAmmoAdd(50);
 			setState(obj, STATE_DESTROYED);
 		} else if (filename.equalsIgnoreCase(DemoEngine.OBJECT_FILENAME_WEAPON)) {
 			weaponChangeSound.play(false);
-			ammo = DEFAULT_MAX_AMMO;
+			if (weapon == null) {
+				weapon = weaponManager.getWeapon(Weapon.WEAPON_RIFFLE);
+			}
+			weapon.setMaxAmmo();
 			setState(obj, STATE_DESTROYED);
 		}
 	}
@@ -273,7 +276,16 @@ public class ShooterPlayer extends Player {
         gravityCatchSound.play(true);
         
 	}
-	
-	
 
+	public void setWeapon(int weaponType) {
+		setWeapon(weaponManager.getWeapon(weaponType));
+	}
+	
+	public void setWeapon(Weapon weapon) {
+		this.weapon = weapon;
+	}
+
+	public Weapon getWeapon() {
+		return weapon;
+	}
 }

@@ -77,6 +77,7 @@ import org.thenesis.planetino2.game.Trigger;
 import org.thenesis.planetino2.graphics.Color;
 import org.thenesis.planetino2.graphics.Graphics;
 import org.thenesis.planetino2.graphics.Screen;
+import org.thenesis.planetino2.input.GameAction;
 import org.thenesis.planetino2.input.InputManager;
 import org.thenesis.planetino2.loader.MapLoader;
 import org.thenesis.planetino2.loader.ObjectLoader;
@@ -119,8 +120,12 @@ public class DemoEngine extends GameCore3D implements LevelManager, ShooterEngin
 	protected SoundManager soundManager;
 
 	protected ShooterObjectManager gameObjectManager;
-	protected PolygonGroup blastModel;
 	protected PolygonGroup botProjectileModel;
+	
+	protected WeaponManager weaponManager;
+	
+	public static GameAction chooseRiffleWeapon = new GameAction("riffle", GameAction.DETECT_INITAL_PRESS_ONLY);
+	public static GameAction chooseGravityWeapon = new GameAction("gravityGun", GameAction.DETECT_INITAL_PRESS_ONLY);
 	
 	private Brain averageBrain;
 	private Brain aggressiveBrain;
@@ -148,25 +153,24 @@ public class DemoEngine extends GameCore3D implements LevelManager, ShooterEngin
 	@Override
 	public void init() {
 		
-		// set up the local lights for the model.
+		// Set up the local lights for the model.
 		float ambientLightIntensity = .8f;
 		Vector lights = new Vector();
 		lights.addElement(new PointLight3D(-100, 100, 100, .5f, -1));
 		lights.addElement(new PointLight3D(100, 100, 0, .5f, -1));
 
-		// load the object model
+		// Load weapons and projectiles
 		ObjectLoader loader = new ObjectLoader(resourceLoader);
 		loader.setLights(lights, ambientLightIntensity);
 		try {
-			blastModel = loader.loadObject("blast.obj3d"); //loader.loadObject("elipsoid.obj");
+			weaponManager = new WeaponManager(loader);
+			weaponManager.load();
 			botProjectileModel = loader.loadObject("botprojectile.obj3d");
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
 
 		super.init();
-		
-		((Player)gameObjectManager.getPlayer()).setBlastModel(blastModel);
 		
 		getCurrentLevel().initialize();
 		
@@ -219,7 +223,7 @@ public class DemoEngine extends GameCore3D implements LevelManager, ShooterEngin
 
 		collisionDetection = new CollisionDetectionWithSliding(bspTree);
 		gameObjectManager = new ShooterObjectManager(bspTree.calcBounds(), collisionDetection);
-		gameObjectManager.addPlayer(new ShooterPlayer(soundManager));
+		gameObjectManager.addPlayer(new ShooterPlayer(soundManager, weaponManager));
 		
 		((BSPRenderer) polygonRenderer).setGameObjectManager(gameObjectManager);
 
@@ -459,6 +463,12 @@ public class DemoEngine extends GameCore3D implements LevelManager, ShooterEngin
 		if (fire.isPressed()) {
 	        player.fireProjectile();
 	    }
+		if (chooseRiffleWeapon.isPressed()) {
+			player.setWeapon(Weapon.WEAPON_RIFFLE);
+	    }
+		if (chooseGravityWeapon.isPressed()) {
+			player.setWeapon(Weapon.WEAPON_GRAVITY_GUN);
+	    }
 		if (zoom.isPressed()) {
 	        viewWindow.setAngle(ANGLE_ZOOM);
 	    } else {
@@ -542,4 +552,5 @@ public class DemoEngine extends GameCore3D implements LevelManager, ShooterEngin
 	public LevelManager getLevelManager() {
 		return this;
 	}
+	
 }
