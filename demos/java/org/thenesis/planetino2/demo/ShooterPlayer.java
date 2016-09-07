@@ -18,6 +18,8 @@ public class ShooterPlayer extends Player {
 	private static final float DEFAULT_MAX_ADRENALINE = 100.0F;
 	
 	private Weapon weapon;
+	private boolean riffleItemCatched = false;
+	
 	private float adrenaline = DEFAULT_MAX_ADRENALINE;
 	
 	private SoundManager soundManager;
@@ -201,10 +203,8 @@ public class ShooterPlayer extends Player {
 			weapon.capAmmoAdd(50);
 			setState(obj, STATE_DESTROYED);
 		} else if (filename.equalsIgnoreCase(DemoEngine.OBJECT_FILENAME_WEAPON)) {
-			weaponChangeSound.play(false);
-			if (weapon == null) {
-				weapon = weaponManager.getWeapon(Weapon.WEAPON_RIFFLE);
-			}
+			riffleItemCatched = true;
+			setWeapon(Weapon.WEAPON_RIFFLE);
 			weapon.setMaxAmmo();
 			setState(obj, STATE_DESTROYED);
 		}
@@ -277,11 +277,19 @@ public class ShooterPlayer extends Player {
 	}
 
 	public void setWeapon(int weaponType) {
+		if (weaponType == Weapon.WEAPON_RIFFLE && (!riffleItemCatched)) {
+			return;
+		}
 		setWeapon(weaponManager.getWeapon(weaponType));
 	}
 	
 	public void setWeapon(Weapon weapon) {
+		if (this.weapon == weapon) {
+			return;
+		}
 		this.weapon = weapon;
+		weaponChangeSound.rewind();
+		weaponChangeSound.play(false);
 	}
 
 	public Weapon getWeapon() {
