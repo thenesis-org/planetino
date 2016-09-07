@@ -260,6 +260,11 @@ public class ShooterPlayer extends Player {
 //			notifyObjectCollision(object);
 //			return;
 //		}
+		// One can't attach another object
+		if (objectAttachedToGravityGun != null) {
+			return;
+		}
+
 		objectAttachedToGravityGun = object;
 		objectAttachedToGravityGun.setFlying(true);
 		MovingTransform3D transform = objectAttachedToGravityGun.getTransform();
