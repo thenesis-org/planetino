@@ -1,6 +1,7 @@
 package org.thenesis.planetino2.demo.levels;
 
 import org.thenesis.planetino2.demo.Level;
+import org.thenesis.planetino2.demo.ShooterEngine;
 import org.thenesis.planetino2.demo.ShooterPlayer;
 import org.thenesis.planetino2.game.CollisionDetection;
 import org.thenesis.planetino2.game.GameObject;
@@ -12,11 +13,19 @@ import org.thenesis.planetino2.util.Vector;
 
 public class TownOfFuryLevel extends Level {
 
+	public TownOfFuryLevel(ShooterEngine engine) {
+		super(engine);
+	}
+
 	public VoxelMatrixPolygonGroup sniperTerrain;
 	public Vector sniperTerrainGameObjects = new Vector();
 
 	public String getAmbientMusicName() {
-		return "TownOfFury.wav";
+		return "TownOfFury-Tension.wav";
+	}
+	
+	public String getIntroSoundName() {
+		return "TownOfFury-Intro.wav";
 	}
 
 	public String getMapName() {

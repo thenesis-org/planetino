@@ -65,6 +65,7 @@ import org.thenesis.planetino2.demo.levels.TownOfFuryLevel;
 import org.thenesis.planetino2.engine.GameCore3D;
 import org.thenesis.planetino2.game.Box;
 import org.thenesis.planetino2.game.BoxMatrix;
+import org.thenesis.planetino2.game.CatchableGameObject;
 import org.thenesis.planetino2.game.CollisionDetection;
 import org.thenesis.planetino2.game.CollisionDetectionWithSliding;
 import org.thenesis.planetino2.game.GameObject;
@@ -80,7 +81,6 @@ import org.thenesis.planetino2.input.InputManager;
 import org.thenesis.planetino2.loader.MapLoader;
 import org.thenesis.planetino2.loader.ObjectLoader;
 import org.thenesis.planetino2.loader.ResourceLoader;
-import org.thenesis.planetino2.math3D.BoxBlockPolygonGroup;
 import org.thenesis.planetino2.math3D.BoxPolygonGroup;
 import org.thenesis.planetino2.math3D.CompositePolygonGroup;
 import org.thenesis.planetino2.math3D.Lightable;
@@ -97,7 +97,7 @@ import org.thenesis.planetino2.sound.Music;
 import org.thenesis.planetino2.sound.SoundManager;
 import org.thenesis.planetino2.util.Vector;
 
-public class DemoEngine extends GameCore3D implements LevelManager {
+public class DemoEngine extends GameCore3D implements LevelManager, ShooterEngine {
 	
 	private static final float PLAYER_SPEED = .5f;
 	private static final float PLAYER_TURN_SPEED = 0.04f;
@@ -139,10 +139,10 @@ public class DemoEngine extends GameCore3D implements LevelManager {
 		// Create Levels
 		currentLevel = 0;
 		levels = new Level[LEVEL_NUMBER];
-		levels[0] = new QuakeLevel();
-		levels[1] = new KillboxLevel();
-		levels[2] = new NearCraftLevel();
-		levels[3] = new TownOfFuryLevel();
+		levels[0] = new QuakeLevel(this);
+		levels[1] = new KillboxLevel(this);
+		levels[2] = new NearCraftLevel(this);
+		levels[3] = new TownOfFuryLevel(this);
 	}
 	
 	@Override
@@ -158,7 +158,7 @@ public class DemoEngine extends GameCore3D implements LevelManager {
 		ObjectLoader loader = new ObjectLoader(resourceLoader);
 		loader.setLights(lights, ambientLightIntensity);
 		try {
-			blastModel = loader.loadObject("blast.obj3d");
+			blastModel = loader.loadObject("blast.obj3d"); //loader.loadObject("elipsoid.obj");
 			botProjectileModel = loader.loadObject("botprojectile.obj3d");
 		} catch (IOException ex) {
 			ex.printStackTrace();
@@ -168,12 +168,7 @@ public class DemoEngine extends GameCore3D implements LevelManager {
 		
 		((Player)gameObjectManager.getPlayer()).setBlastModel(blastModel);
 		
-		// Start music of the current level
-		Music ambientMusic = soundManager.getMusic(getCurrentLevel().getAmbientMusicName());
-		ambientMusic.setVolume(0.3);
-		ambientMusic.play(true);
-		Music introMusic = soundManager.getMusic(getCurrentLevel().getIntroSoundName());
-		introMusic.play(false);
+		getCurrentLevel().initialize();
 		
 		drawFrameRate = true;
 
@@ -348,7 +343,7 @@ public class DemoEngine extends GameCore3D implements LevelManager {
 				gameObjectManager.add(new Trigger(triggerGroup));
 			} else {
 				// static object
-				gameObjectManager.add(new GameObject(group));
+				gameObjectManager.add(new CatchableGameObject(group));
 			}
 		}
 		
@@ -505,7 +500,7 @@ public class DemoEngine extends GameCore3D implements LevelManager {
 		camera.getLocation().add(0, CAMERA_HEIGHT, 0);
 		
 		// Check if the player has won/lost the match
-		getCurrentLevel().checkGameState(this, gameObjectManager, soundManager);
+		getCurrentLevel().checkGameState();
 		
 	}
 	
@@ -524,5 +519,27 @@ public class DemoEngine extends GameCore3D implements LevelManager {
 			currentLevel = 0;
 		}
 		init();
+	}
+	
+	/* Shooter engine interface */
+
+	public SoundManager getSoundManager() {
+		return soundManager;
+	}
+	
+	public ShooterObjectManager getGameObjectManager() {
+		return gameObjectManager;
+	}
+
+	public BSPTree getBspTree() {
+		return bspTree;
+	}
+
+	public CollisionDetection getCollisionDetection() {
+		return collisionDetection;
+	}
+
+	public LevelManager getLevelManager() {
+		return this;
 	}
 }

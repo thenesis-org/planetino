@@ -7,12 +7,31 @@ import org.thenesis.planetino2.sound.SoundManager;
 
 public abstract class Level {
 	
+	protected ShooterEngine engine;
+	
+	protected Level(ShooterEngine engine) {
+		this.engine = engine;
+	}
+	
+	public void initialize() {
+		// Start music of the current level
+		Music ambientMusic = engine.getSoundManager().getMusic(getAmbientMusicName());
+		ambientMusic.setVolume(getAmbientMusicLevel());
+		ambientMusic.play(true);
+		Music introMusic = engine.getSoundManager().getMusic(getIntroSoundName());
+		introMusic.play(false);
+	}
+	
 	public String getIntroSoundName() {
 		return "prepare.wav";
 	}
 	
 	public String getAmbientMusicName() {
 		return "ambient_loop.wav";
+	}
+	
+	public float getAmbientMusicLevel() {
+		return 0.3f;
 	}
 	
 	public String getDeathSoundName() {
@@ -33,7 +52,12 @@ public abstract class Level {
 	
 	public abstract String getMapName();
 	
-	public void checkGameState(LevelManager levelManager, ShooterObjectManager gameObjectManager, SoundManager soundManager) {
+	public void checkGameState() {
+		
+		LevelManager levelManager = engine.getLevelManager();
+		ShooterObjectManager gameObjectManager = engine.getGameObjectManager();
+		SoundManager soundManager = engine.getSoundManager();
+		
 		ShooterPlayer player = (ShooterPlayer)gameObjectManager.getPlayer();
 		if (player.getHealth() <= 0) {
 			try {
