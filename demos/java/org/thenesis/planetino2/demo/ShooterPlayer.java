@@ -156,8 +156,7 @@ public class ShooterPlayer extends Player {
 		        //transform.setAngleVelocityY(.005f);
 		        //transform.setAngleVelocityZ(ROT_SPEED);
 		        detachObjectFromGravityGun();
-		        gravityCatchSound.stop();
-		        gravityThrowSound.play();
+			    gravityThrowSound.play();
 			} else {
 				//TriggerPolygonGroup trigger = new TriggerPolygonGroup(null, new Vector3D(), 50, 50);
 				//GravityGunProjectile blast = new GravityGunProjectile(trigger, this, new Vector3D(cosX * x, sinX, cosX * z));
@@ -279,6 +278,7 @@ public class ShooterPlayer extends Player {
 			objectAttachedToGravityGun.setFlying(false);
 			objectAttachedToGravityGun.setJumping(true);
 			objectAttachedToGravityGun = null;
+			gravityCatchSound.stop();
 		}
 	}
 	
