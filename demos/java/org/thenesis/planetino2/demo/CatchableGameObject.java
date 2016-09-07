@@ -1,5 +1,7 @@
-package org.thenesis.planetino2.game;
+package org.thenesis.planetino2.demo;
 
+import org.thenesis.planetino2.ai.AIBot;
+import org.thenesis.planetino2.game.GameObject;
 import org.thenesis.planetino2.math3D.PolygonGroup;
 import org.thenesis.planetino2.math3D.Vector3D;
 
@@ -43,7 +45,23 @@ public class CatchableGameObject extends GameObject {
 	@Override
 	public void notifyObjectCollision(GameObject otherObject) {
 		super.notifyObjectCollision(otherObject);
+		
 		reduceVelocity = true;
+		
+		// On impact, opponents are killed
+		if (otherObject instanceof AIBot) {
+			AIBot bot = (AIBot)otherObject;
+			
+//			// Move a bit (FIXME: doesn't work)
+//			Vector3D velocity = new Vector3D(getTransform().getVelocity());
+//			velocity.divide(2);
+//			velocity.y = 0;
+//			bot.getTransform().addVelocity(velocity);
+			
+			// Opponents are killed
+			bot.addHealth(-bot.getMaxHealth());
+		}
+		
 	}
 
 	@Override

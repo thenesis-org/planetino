@@ -65,7 +65,6 @@ import org.thenesis.planetino2.demo.levels.TownOfFuryLevel;
 import org.thenesis.planetino2.engine.GameCore3D;
 import org.thenesis.planetino2.game.Box;
 import org.thenesis.planetino2.game.BoxMatrix;
-import org.thenesis.planetino2.game.CatchableGameObject;
 import org.thenesis.planetino2.game.CollisionDetection;
 import org.thenesis.planetino2.game.CollisionDetectionWithSliding;
 import org.thenesis.planetino2.game.GameObject;

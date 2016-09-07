@@ -18,7 +18,6 @@
 
 package org.thenesis.planetino2.demo;
 
-import org.thenesis.planetino2.game.CatchableGameObject;
 import org.thenesis.planetino2.game.GameObject;
 import org.thenesis.planetino2.math3D.MovingTransform3D;
 import org.thenesis.planetino2.math3D.PolygonGroup;

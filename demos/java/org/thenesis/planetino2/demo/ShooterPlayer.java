@@ -1,7 +1,6 @@
 package org.thenesis.planetino2.demo;
 
 import org.thenesis.planetino2.ai.Projectile;
-import org.thenesis.planetino2.game.CatchableGameObject;
 import org.thenesis.planetino2.game.GameObject;
 import org.thenesis.planetino2.game.Physics;
 import org.thenesis.planetino2.game.Player;
