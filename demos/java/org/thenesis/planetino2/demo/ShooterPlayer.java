@@ -1,21 +1,31 @@
 package org.thenesis.planetino2.demo;
 
 import org.thenesis.planetino2.ai.Projectile;
+import org.thenesis.planetino2.game.CatchableGameObject;
 import org.thenesis.planetino2.game.GameObject;
 import org.thenesis.planetino2.game.Physics;
 import org.thenesis.planetino2.game.Player;
 import org.thenesis.planetino2.game.Trigger;
+import org.thenesis.planetino2.math3D.MovingTransform3D;
 import org.thenesis.planetino2.math3D.PolygonGroup;
+import org.thenesis.planetino2.math3D.TriggerPolygonGroup;
 import org.thenesis.planetino2.math3D.Vector3D;
 import org.thenesis.planetino2.sound.Music;
 import org.thenesis.planetino2.sound.Sound;
 import org.thenesis.planetino2.sound.SoundManager;
 
 public class ShooterPlayer extends Player {
+	
+	private static int WEAPON_RIFFLE = 0;
+	private static int WEAPON_GRAVITY_GUN = 1;
+	
 	private static final float DEFAULT_MAX_ADRENALINE = 100.0F;
 	private static final int DEFAULT_MAX_AMMO = 50;
-	private int ammo = 0;
+	
+	private int weapon = WEAPON_RIFFLE;
 	private float adrenaline = DEFAULT_MAX_ADRENALINE;
+	private int ammo = 0;
+	
 	private SoundManager soundManager;
 	private boolean adrenalineMode = false;
 	private boolean zoomViewMode = false;
@@ -28,9 +38,14 @@ public class ShooterPlayer extends Player {
 	private Music weaponChangeSound;
 	private Music ammoCatchSound;
 	private Sound fireSound;
+	private Sound gravityFireSound;
+	private Sound gravityThrowSound;
+	private Music gravityCatchSound;
 	private Sound jumpSound;
 	private Sound painSound;
 	private Music elevatorSound;
+	
+	private CatchableGameObject objectAttachedToGravityGun;
 
 	public ShooterPlayer(SoundManager soundManager) {
 		super();
@@ -41,6 +56,9 @@ public class ShooterPlayer extends Player {
 		ammoCatchSound = soundManager.getMusic("change.wav");
 		weaponChangeSound = soundManager.getMusic("weaponpickup.wav");
 		fireSound = soundManager.getSound("hook_fire.wav");
+		gravityFireSound = soundManager.getSound("gravity_catch-X08MMA-small.wav");
+		gravityThrowSound = soundManager.getSound("gravity_throw-X03SFLGSM.wav");
+		gravityCatchSound = soundManager.getMusic("gravity_catch-X08MMA-loop.wav");
 		painSound = soundManager.getSound("pain25_2.wav");
 		elevatorSound = soundManager.getMusic("antigravity_elevator.wav");
 	}
@@ -114,26 +132,50 @@ public class ShooterPlayer extends Player {
 
 	@Override
 	public void fireProjectile() {
-		if (this.ammo <= 0) {
-			return;
-		}
-		this.ammo -= 1;
-
+		
 		float x = -getTransform().getSinAngleY();
 		float z = -getTransform().getCosAngleY();
 		float cosX = getTransform().getCosAngleX();
 		float sinX = getTransform().getSinAngleX();
-
-		Projectile blast = new Projectile((PolygonGroup) this.blastModel.clone(), new Vector3D(cosX * x, sinX, cosX * z), null, 40, 60);
-		//blast.setFromPlayer(true);
-		float dist = getBounds().getRadius() + blast.getBounds().getRadius();
-
-		blast.getLocation().setTo(getX() + x * dist, getY() + BULLET_HEIGHT, getZ() + z * dist);
-
-		addSpawn(blast);
-
-		fireSound.play();
-
+		
+		if (weapon == WEAPON_RIFFLE) {
+			if (this.ammo <= 0) {
+				return;
+			}
+			this.ammo -= 1;
+			Projectile blast = new Projectile((PolygonGroup) this.blastModel.clone(), new Vector3D(cosX * x, sinX, cosX * z), null, 40, 60);
+			float dist = getBounds().getRadius() + blast.getBounds().getRadius();
+			blast.getLocation().setTo(getX() + x * dist, getY() + BULLET_HEIGHT, getZ() + z * dist);
+			fireSound.play();
+			addSpawn(blast);
+		} else if (weapon == WEAPON_GRAVITY_GUN) {
+			if (objectAttachedToGravityGun != null) {
+				MovingTransform3D transform = objectAttachedToGravityGun.getTransform();
+		        Vector3D velocity = transform.getVelocity();
+		        velocity.setTo(cosX * x, sinX, cosX * z);
+		        float launchSpeed = 2.0f;
+		        velocity.multiply(launchSpeed);
+		        transform.setVelocity(velocity);
+		        //objectAttachedToGravityGun.getTransform().setVelocity(velocity);
+		        //transform.setAngleVelocityX(.008f);
+		        //transform.setAngleVelocityY(.005f);
+		        //transform.setAngleVelocityZ(ROT_SPEED);
+		        objectAttachedToGravityGun.setFlying(false);
+		        objectAttachedToGravityGun.setJumping(true);
+		        objectAttachedToGravityGun = null;
+		        gravityCatchSound.stop();
+		        gravityThrowSound.play();
+			} else {
+				//TriggerPolygonGroup trigger = new TriggerPolygonGroup(null, new Vector3D(), 50, 50);
+				//GravityGunProjectile blast = new GravityGunProjectile(trigger, this, new Vector3D(cosX * x, sinX, cosX * z));
+				GravityGunProjectile blast = new GravityGunProjectile((PolygonGroup) this.blastModel.clone(), this, new Vector3D(cosX * x, sinX, cosX * z));
+				float dist = getBounds().getRadius() + blast.getBounds().getRadius();
+				blast.getLocation().setTo(getX() + x * dist, getY() + BULLET_HEIGHT, getZ() + z * dist);
+				gravityFireSound.play();
+				addSpawn(blast);
+			}
+		}
+		
 		makeNoise(500L);
 	}
 
@@ -187,6 +229,14 @@ public class ShooterPlayer extends Player {
 		if(isInElevator) {
 			Physics.getInstance().scootUp(this, elapsedTime);
 		}
+		
+		if (objectAttachedToGravityGun != null) {
+			float dist = getBounds().getRadius() + 2 * objectAttachedToGravityGun.getBounds().getRadius();
+			float x = -getTransform().getSinAngleY();
+			float z = -getTransform().getCosAngleY();
+			float sinX = getTransform().getSinAngleX();
+			objectAttachedToGravityGun.getLocation().setTo(getX() + x * dist, getY() + BULLET_HEIGHT + dist * sinX, getZ() + z * dist);
+		}
 	}
 
 	@Override
@@ -205,6 +255,24 @@ public class ShooterPlayer extends Player {
 			painSound.play();
 		}
     }
+	
+	public void attachToGravityGun(CatchableGameObject object) {
+//		if (object instanceof RespawnableItem) {
+//			notifyObjectCollision(object);
+//			return;
+//		}
+		objectAttachedToGravityGun = object;
+		objectAttachedToGravityGun.setFlying(true);
+		MovingTransform3D transform = objectAttachedToGravityGun.getTransform();
+        Vector3D velocity = transform.getVelocity();
+        velocity.setTo(0, 0, 0);
+        transform.setVelocity(velocity);
+        
+        gravityFireSound.stop();
+        gravityCatchSound.rewind();
+        gravityCatchSound.play(true);
+        
+	}
 	
 	
 

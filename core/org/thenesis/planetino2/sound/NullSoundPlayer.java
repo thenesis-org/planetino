@@ -27,6 +27,10 @@ public class NullSoundPlayer implements SoundPlayer {
 		public void play(double volume, double pan) {
 			// Do nothing
 		}
+		
+		public void stop() {
+			// Do nothing
+		}
 
 	}
 

@@ -35,6 +35,10 @@ public class SoundPlayerSE implements SoundPlayer {
 		public void play(double volume, double pan) {
 			nativeSound.play(volume, pan);
 		}
+		
+		public void stop() {
+			nativeSound.stop();
+		}
 
 	}
 
