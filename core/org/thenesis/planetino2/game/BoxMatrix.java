@@ -1,5 +1,6 @@
 package org.thenesis.planetino2.game;
 
+import org.thenesis.planetino2.math3D.BoxBlockPolygonGroup;
 import org.thenesis.planetino2.math3D.CompositePolygonGroup;
 import org.thenesis.planetino2.math3D.PolygonGroup;
 import org.thenesis.planetino2.sound.Music;
@@ -11,11 +12,13 @@ public class BoxMatrix extends GameObject implements NoisyObject {
 	}
 	
 //	//@Override
-//	public void update(GameObject player, long elapsedTime) {
-//		super.update(player, elapsedTime);
-//		BoxPolygonGroup posterPeer = (BoxPolygonGroup)getPolygonGroup();
-//		posterPeer.updateImage(elapsedTime);
-//	}
+	public void update(GameObject player, long elapsedTime) {
+		super.update(player, elapsedTime);
+		if (getPolygonGroup() instanceof BoxBlockPolygonGroup) {
+			BoxBlockPolygonGroup posterPeer = (BoxBlockPolygonGroup)getPolygonGroup();
+			posterPeer.updateImage(elapsedTime);
+		}
+	}
 
 	//@Override
 	public double getMaxSoundLevel() {

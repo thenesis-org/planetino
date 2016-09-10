@@ -75,6 +75,14 @@ public class BoxBlockPolygonGroup extends PolygonGroup implements Lightable, Com
 		return elements;
 	}
 	
+	public void updateImage(long elapsedTime) {
+		int size = elements.size();
+		for (int i = 0; i < size; i++) {
+			Element e = (Element) elements.elementAt(i);
+			e.updateImage(elapsedTime);
+		}
+	}
+	
 	@Override
 	public PolygonGroupBounds getBounds() {
 		return bounds;
