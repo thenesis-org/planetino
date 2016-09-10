@@ -29,9 +29,9 @@ import org.thenesis.planetino2.math3D.Vector3D;
  */
 public class GravityGunProjectile extends GameObject {
 
-	private static final long DIE_TIME = 2000;
-	private static final float SPEED = 1.5f;
-	private static final float ROT_SPEED = .008f;
+	private static final long DIE_TIME = 3000;
+	private static final float SPEED = 3f;
+	//private static final float ROT_SPEED = .008f;
 
 	private MovingTransform3D transform;
 	private long aliveTime;

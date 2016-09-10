@@ -39,10 +39,12 @@ public class ShooterPlayer extends Player {
 	private Sound gravityFireSound;
 	private Sound gravityThrowSound;
 	private Music gravityCatchSound;
+	private Sound teleportationSound;
 	private Sound jumpSound;
 	private Sound painSound;
 	private Music elevatorSound;
 	
+	private GravityGunProjectile currentBlast;
 	private CatchableGameObject objectAttachedToGravityGun;
 
 	public ShooterPlayer(SoundManager soundManager, WeaponManager weaponManager) {
@@ -58,6 +60,7 @@ public class ShooterPlayer extends Player {
 		gravityFireSound = soundManager.getSound("gravity_catch-X08MMA-small.wav");
 		gravityThrowSound = soundManager.getSound("gravity_throw-X03SFLGSM.wav");
 		gravityCatchSound = soundManager.getMusic("gravity_catch-X08MMA-loop.wav");
+		teleportationSound = soundManager.getSound("telein.wav");
 		painSound = soundManager.getSound("pain25_2.wav");
 		elevatorSound = soundManager.getMusic("antigravity_elevator.wav");
 	}
@@ -160,11 +163,11 @@ public class ShooterPlayer extends Player {
 			} else {
 				//TriggerPolygonGroup trigger = new TriggerPolygonGroup(null, new Vector3D(), 50, 50);
 				//GravityGunProjectile blast = new GravityGunProjectile(trigger, this, new Vector3D(cosX * x, sinX, cosX * z));
-				GravityGunProjectile blast = new GravityGunProjectile((PolygonGroup) weapon.getBlastModel().clone(), this, new Vector3D(cosX * x, sinX, cosX * z));
-				float dist = getBounds().getRadius() + blast.getBounds().getRadius();
-				blast.getLocation().setTo(getX() + x * dist, getY() + BULLET_HEIGHT, getZ() + z * dist);
+				currentBlast = new GravityGunProjectile((PolygonGroup) weapon.getBlastModel().clone(), this, new Vector3D(cosX * x, sinX, cosX * z));
+				float dist = getBounds().getRadius() + currentBlast.getBounds().getRadius();
+				currentBlast.getLocation().setTo(getX() + x * dist, getY() + BULLET_HEIGHT, getZ() + z * dist);
 				gravityFireSound.play();
-				addSpawn(blast);
+				addSpawn(currentBlast);
 			}
 		}
 		
@@ -287,6 +290,17 @@ public class ShooterPlayer extends Player {
 		}
 	}
 	
+	public void teleport() {
+		if ((objectAttachedToGravityGun == null) && (currentBlast != null) && (!currentBlast.isDestroyed())) {
+			getLocation().setTo(currentBlast.getLocation());
+			Vector3D blastVelocity = currentBlast.getTransform().getVelocity();
+			getTransform().addVelocity(new Vector3D(blastVelocity.x, 0, blastVelocity.z)); // new Vector3D(0f, -0.01f, 0f)
+			currentBlast.notifyObjectCollision(this);
+			gravityFireSound.stop();
+			teleportationSound.play();
+		}
+	}
+	
 	public void setWeapon(int weaponType) {
 		if (weaponType == Weapon.WEAPON_RIFFLE && (!riffleItemCatched)) {
 			return;
@@ -309,4 +323,5 @@ public class ShooterPlayer extends Player {
 	public Weapon getWeapon() {
 		return weapon;
 	}
+
 }
