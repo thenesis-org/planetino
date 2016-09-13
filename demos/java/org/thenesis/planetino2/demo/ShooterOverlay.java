@@ -29,15 +29,19 @@ public class ShooterOverlay extends HeadsUpDisplay {
 		
 		// Change the crosshair color over the time 
 		colorChangeTime += elapsedTime;
-		if (colorChangeTime > 600) {
-			if(currentColor1 == COLOR1) {
-				currentColor1 = COLOR2;
-				currentColor2 = COLOR1;
-			} else {
-				currentColor1 = COLOR1;
-				currentColor2 = COLOR2;
+		if (shooterPlayer.isCurrentGravityGunProjectileAlive()) {
+			currentColor1 = currentColor2 = Color.WHITE.getRGB();
+		} else {
+			if (colorChangeTime > 600) {
+				if (currentColor1 == COLOR1) {
+					currentColor1 = COLOR2;
+					currentColor2 = COLOR1;
+				} else {
+					currentColor1 = COLOR1;
+					currentColor2 = COLOR2;
+				}
+				colorChangeTime = 0;
 			}
-			colorChangeTime = 0;
 		}
 	}
 	

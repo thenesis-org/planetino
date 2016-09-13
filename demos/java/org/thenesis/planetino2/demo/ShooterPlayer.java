@@ -161,8 +161,10 @@ public class ShooterPlayer extends Player {
 		        detachObjectFromGravityGun();
 			    gravityThrowSound.play();
 			} else {
-				//TriggerPolygonGroup trigger = new TriggerPolygonGroup(null, new Vector3D(), 50, 50);
-				//GravityGunProjectile blast = new GravityGunProjectile(trigger, this, new Vector3D(cosX * x, sinX, cosX * z));
+				// Do not throw a new projectile if another one is already alive
+				if (isCurrentGravityGunProjectileAlive()) {
+					return;
+				}
 				currentBlast = new GravityGunProjectile((PolygonGroup) weapon.getBlastModel().clone(), this, new Vector3D(cosX * x, sinX, cosX * z));
 				float dist = getBounds().getRadius() + currentBlast.getBounds().getRadius();
 				currentBlast.getLocation().setTo(getX() + x * dist, getY() + BULLET_HEIGHT, getZ() + z * dist);
@@ -298,6 +300,14 @@ public class ShooterPlayer extends Player {
 			currentBlast.notifyObjectCollision(this);
 			gravityFireSound.stop();
 			teleportationSound.play();
+		}
+	}
+	
+	public boolean isCurrentGravityGunProjectileAlive() {
+		if (currentBlast != null && (!currentBlast.isDestroyed())) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 	
