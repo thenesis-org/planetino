@@ -64,6 +64,7 @@ public class AWTScreen implements Screen, KeyListener, MouseListener, MouseMotio
 	
 	public void show() {
 		frame = new JFrame();
+		frame.setUndecorated(true);
 		//frame.addWindowListener(this);
 		frame.add(panel);
 		frame.setResizable(false);
