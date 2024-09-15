@@ -8,7 +8,7 @@ Planetino was initially developed as a side project of [MIDPath](http://midpath.
 
 Old project site: https://code.google.com/p/planetino/
 
-###Features
+### Features
 
   * Physics
   * Easy map creation
@@ -16,7 +16,7 @@ Old project site: https://code.google.com/p/planetino/
   * A.I
   * Pure Java renderer 
  
-###Planned
+### Planned
  * HTML5 (GWT) backend
  * CodenameOne backend (Android, iOS and Windows Phone support)
 
