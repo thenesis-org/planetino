@@ -97,7 +97,7 @@ import org.thenesis.planetino2.sound.Music;
 import org.thenesis.planetino2.sound.SoundManager;
 import org.thenesis.planetino2.util.Vector;
 
-public class DemoEngine extends GameCore3D implements LevelManager, ShooterEngine {
+public class FPSEngine extends GameCore3D implements LevelManager, ShooterEngine {
 	
 	private static final float PLAYER_SPEED = .5f;
 	private static final float PLAYER_TURN_SPEED = 0.04f;
@@ -138,7 +138,7 @@ public class DemoEngine extends GameCore3D implements LevelManager, ShooterEngin
 	
 	private ShooterOverlay shooterOverlay;
 
-	public DemoEngine(Screen screen, InputManager inputManager, ResourceLoader resourceLoader) {
+	public FPSEngine(Screen screen, InputManager inputManager, ResourceLoader resourceLoader) {
 		super(screen, inputManager);
 		this.resourceLoader = resourceLoader;
 		

@@ -180,7 +180,7 @@ public class ShooterPlayer extends Player {
 	public void notifyObjectCollision(GameObject obj) {
 		super.notifyObjectCollision(obj);
 		String filename = obj.getPolygonGroup().getFilename();
-		if (filename.equalsIgnoreCase(DemoEngine.OBJECT_FILENAME_HEALTH_PACK)) {
+		if (filename.equalsIgnoreCase(FPSEngine.OBJECT_FILENAME_HEALTH_PACK)) {
 			if (health >= maxHealth) {
 				return;
 			}
@@ -190,11 +190,11 @@ public class ShooterPlayer extends Player {
 			itemCatchSound.play(false);
 			capHealthAdd(50.0F);
 			setState(obj, STATE_DESTROYED);
-		} else if (filename.equalsIgnoreCase(DemoEngine.OBJECT_FILENAME_ADRENALINE)) {
+		} else if (filename.equalsIgnoreCase(FPSEngine.OBJECT_FILENAME_ADRENALINE)) {
 			itemCatchSound.play(false);
 			capAdrenalineAdd(50.0F);
 			setState(obj, STATE_DESTROYED);
-		} else if (filename.equalsIgnoreCase(DemoEngine.OBJECT_FILENAME_AMMO_PACK)) {
+		} else if (filename.equalsIgnoreCase(FPSEngine.OBJECT_FILENAME_AMMO_PACK)) {
 			if (weapon == null) {
 				return;
 			}
@@ -204,7 +204,7 @@ public class ShooterPlayer extends Player {
 			ammoCatchSound.play(false);
 			weapon.capAmmoAdd(50);
 			setState(obj, STATE_DESTROYED);
-		} else if (filename.equalsIgnoreCase(DemoEngine.OBJECT_FILENAME_WEAPON)) {
+		} else if (filename.equalsIgnoreCase(FPSEngine.OBJECT_FILENAME_WEAPON)) {
 			riffleItemCatched = true;
 			setWeapon(Weapon.WEAPON_RIFFLE);
 			weapon.setMaxAmmo();

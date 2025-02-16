@@ -53,7 +53,7 @@ import javax.swing.SwingWorker;
 import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.graphics.Toolkit;
 import org.thenesis.planetino2.input.InputManager;
-import org.thenesis.planetino2.shooter.DemoEngine;
+import org.thenesis.planetino2.shooter.FPSEngine;
 
 public class ShooterAWT  {
 	
@@ -71,29 +71,29 @@ public class ShooterAWT  {
 		screen.setFullScreen(false);
 		
 		InputManager inputManager = Toolkit.getInstance().getInputManager();
-		inputManager.mapToKey(DemoEngine.exit, KeyEvent.VK_ESCAPE);
-		inputManager.mapToKey(DemoEngine.goForward, KeyEvent.VK_R);
-		inputManager.mapToKey(DemoEngine.goForward, KeyEvent.VK_UP);
-		inputManager.mapToKey(DemoEngine.goBackward, KeyEvent.VK_A);
-		inputManager.mapToKey(DemoEngine.goBackward, KeyEvent.VK_DOWN);
-		inputManager.mapToKey(DemoEngine.goLeft, KeyEvent.VK_Z);
-		inputManager.mapToKey(DemoEngine.goLeft, KeyEvent.VK_LEFT);
-		inputManager.mapToKey(DemoEngine.goRight, KeyEvent.VK_E);
-		inputManager.mapToKey(DemoEngine.goRight, KeyEvent.VK_RIGHT);
-		inputManager.mapToKey(DemoEngine.goUp, KeyEvent.VK_PAGE_UP);
-		inputManager.mapToKey(DemoEngine.goDown, KeyEvent.VK_PAGE_DOWN);
-		inputManager.mapToMouse(DemoEngine.turnLeft, InputManager.MOUSE_MOVE_LEFT);
-		inputManager.mapToMouse(DemoEngine.turnRight, InputManager.MOUSE_MOVE_RIGHT);
-		inputManager.mapToMouse(DemoEngine.tiltUp, InputManager.MOUSE_MOVE_DOWN);
-		inputManager.mapToMouse(DemoEngine.tiltDown, InputManager.MOUSE_MOVE_UP);
-		inputManager.mapToMouse(DemoEngine.fire, InputManager.MOUSE_BUTTON_1);
-		inputManager.mapToKey(DemoEngine.jump, KeyEvent.VK_SPACE);
-		inputManager.mapToKey(DemoEngine.zoom, KeyEvent.VK_S);
-		inputManager.mapToKey(DemoEngine.chooseGravityWeapon, KeyEvent.VK_1);
-		inputManager.mapToKey(DemoEngine.chooseGravityWeapon, KeyEvent.VK_G);
-		inputManager.mapToKey(DemoEngine.chooseRiffleWeapon, KeyEvent.VK_2);
-		inputManager.mapToKey(DemoEngine.detachObjectFromGravityWeapon, KeyEvent.VK_D);
-		inputManager.mapToMouse(DemoEngine.teleportPlayer, InputManager.MOUSE_BUTTON_3);
+		inputManager.mapToKey(FPSEngine.exit, KeyEvent.VK_ESCAPE);
+		inputManager.mapToKey(FPSEngine.goForward, KeyEvent.VK_R);
+		inputManager.mapToKey(FPSEngine.goForward, KeyEvent.VK_UP);
+		inputManager.mapToKey(FPSEngine.goBackward, KeyEvent.VK_A);
+		inputManager.mapToKey(FPSEngine.goBackward, KeyEvent.VK_DOWN);
+		inputManager.mapToKey(FPSEngine.goLeft, KeyEvent.VK_Z);
+		inputManager.mapToKey(FPSEngine.goLeft, KeyEvent.VK_LEFT);
+		inputManager.mapToKey(FPSEngine.goRight, KeyEvent.VK_E);
+		inputManager.mapToKey(FPSEngine.goRight, KeyEvent.VK_RIGHT);
+		inputManager.mapToKey(FPSEngine.goUp, KeyEvent.VK_PAGE_UP);
+		inputManager.mapToKey(FPSEngine.goDown, KeyEvent.VK_PAGE_DOWN);
+		inputManager.mapToMouse(FPSEngine.turnLeft, InputManager.MOUSE_MOVE_LEFT);
+		inputManager.mapToMouse(FPSEngine.turnRight, InputManager.MOUSE_MOVE_RIGHT);
+		inputManager.mapToMouse(FPSEngine.tiltUp, InputManager.MOUSE_MOVE_DOWN);
+		inputManager.mapToMouse(FPSEngine.tiltDown, InputManager.MOUSE_MOVE_UP);
+		inputManager.mapToMouse(FPSEngine.fire, InputManager.MOUSE_BUTTON_1);
+		inputManager.mapToKey(FPSEngine.jump, KeyEvent.VK_SPACE);
+		inputManager.mapToKey(FPSEngine.zoom, KeyEvent.VK_S);
+		inputManager.mapToKey(FPSEngine.chooseGravityWeapon, KeyEvent.VK_1);
+		inputManager.mapToKey(FPSEngine.chooseGravityWeapon, KeyEvent.VK_G);
+		inputManager.mapToKey(FPSEngine.chooseRiffleWeapon, KeyEvent.VK_2);
+		inputManager.mapToKey(FPSEngine.detachObjectFromGravityWeapon, KeyEvent.VK_D);
+		inputManager.mapToMouse(FPSEngine.teleportPlayer, InputManager.MOUSE_BUTTON_3);
 		
 		//inputManager.setRelativeMouseMode(true);
 		inputManager.showCursor(true);
@@ -101,7 +101,7 @@ public class ShooterAWT  {
 		/* Do all tasks in the Swing EDT to avoid thread issues */
 		//Thread engineThread = new Thread(engine);
 		//engineThread.start();
-		DemoEngine engine = new DemoEngine(screen, inputManager, Toolkit.getInstance().getResourceLoader());
+		FPSEngine engine = new FPSEngine(screen, inputManager, Toolkit.getInstance().getResourceLoader());
 		engine.init();
 		Worker worker = new Worker(engine);
 		try {
@@ -121,11 +121,11 @@ public class ShooterAWT  {
 	
 	private class Worker implements Runnable {
 		 
-		 private DemoEngine engine;
+		 private FPSEngine engine;
 		 long startTime;
 		 long currTime;
 		 
-		 Worker(DemoEngine engine) {
+		 Worker(FPSEngine engine) {
 			 this.engine = engine;
 			 startTime = System.currentTimeMillis();
 			 currTime = startTime;
