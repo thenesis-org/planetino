@@ -196,6 +196,7 @@ public class FastTexturedPolygonRenderer extends PolygonRenderer {
 
 	}
 
+	/*
 	//================================================
 	// FASTEST METHOD: no texture (for comparison)
 	//================================================
@@ -265,6 +266,7 @@ public class FastTexturedPolygonRenderer extends PolygonRenderer {
 			}
 		}
 	}
+	*/
 
 	//================================================
 	// METHOD 4: reduce the number of divides

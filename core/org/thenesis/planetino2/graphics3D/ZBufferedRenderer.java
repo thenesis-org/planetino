@@ -219,9 +219,9 @@ public class ZBufferedRenderer extends ShadedSurfacePolygonRenderer implements G
 					int endOffset = offset + INTERP_SIZE;
 					while (offset < endOffset) {
 						if (zBuffer.checkDepth(offset, (short) (depth >> SCALE_BITS))) {
-//							doubleBufferData[offset] = buffer[((tx >> SCALE_BITS) & widthMask)
-//									+ (((ty >> SCALE_BITS) & heightMask) << widthBits)];
-							doubleBufferData[offset] = texture.getColor(tx >> SCALE_BITS, ty >> SCALE_BITS);
+							doubleBufferData[offset] = buffer[((tx >> SCALE_BITS) & widthMask)
+									+ (((ty >> SCALE_BITS) & heightMask) << widthBits)];
+							//doubleBufferData[offset] = texture.getColor(tx >> SCALE_BITS, ty >> SCALE_BITS);
 							//doubleBufferData[offset] = Color.convertRBG565To888(texture.getColor(tx >> SCALE_BITS, ty >> SCALE_BITS));
 							//doubleBufferData[offset] = 0xFFFFFF00;
 						}
