@@ -51,9 +51,7 @@ import javax.imageio.ImageIO;
 
 import org.thenesis.planetino2.backend.awt.AWTImage;
 import org.thenesis.planetino2.backend.awt.AWTToolkit;
-import org.thenesis.planetino2.engine.GameCore3D;
-import org.thenesis.planetino2.engine.shooter3D.Blast;
-import org.thenesis.planetino2.engine.shooter3D.Bot;
+import org.thenesis.planetino2.game.GameCore3D;
 import org.thenesis.planetino2.game.GameObject;
 import org.thenesis.planetino2.game.GameObjectManager;
 import org.thenesis.planetino2.game.GameObjectRenderer;
@@ -77,23 +75,25 @@ import org.thenesis.planetino2.math3D.TexturedPolygon3D;
 import org.thenesis.planetino2.math3D.Transform3D;
 import org.thenesis.planetino2.math3D.Vector3D;
 import org.thenesis.planetino2.math3D.ViewWindow;
+import org.thenesis.planetino2.shooter.Blast;
+import org.thenesis.planetino2.shooter.Bot;
 import org.thenesis.planetino2.util.Vector;
 
 /*
  * (23:37:53) Guillaume: Pour faire des collines y'a un algo simple ?
- (23:38:37) Mathieu: tu crées une damier de n x n
- (23:39:04) Mathieu: ensuite pour chaque sommet tu mets une valeur aléatoire
+ (23:38:37) Mathieu: tu crï¿½es une damier de n x n
+ (23:39:04) Mathieu: ensuite pour chaque sommet tu mets une valeur alï¿½atoire
  (23:39:29) Mathieu: ensuite tu lisses en moyennant avec les sommets adjacents
  (23:39:47) Guillaume: du style sin(x) * (1 + random(0.5d)) ?
  (23:40:01) Guillaume: du style sin( x ) * (1 + random(0.5d)) ?
- (23:40:11) Mathieu: tu peux mettre des valeurs complètement aléatoire entre -128 et 127
+ (23:40:11) Mathieu: tu peux mettre des valeurs complï¿½tement alï¿½atoire entre -128 et 127
  (23:40:42) Mathieu: ensuite tu lisses chaque sommet en moyennant avec les sommets environnant
  (23:40:55) Mathieu: tu peux moyenner plusieurs fois pour lisser plus fort
  (23:41:16) Mathieu: le mieux c'set de le faire dans un logiciel de dessin
  (23:41:30) Mathieu: et de charger l'image au format niveau de gris
  (23:41:38) Mathieu: avec gimp il y en a pour quelques minutes
  (23:42:40) Guillaume: ok je vois.
- (23:42:55) Guillaume: je vais essayer ça
+ (23:42:55) Guillaume: je vais essayer ï¿½a
  (23:42:57) Guillaume: merci !
  (23:43:14) Mathieu: tu prends une image 16x16 ou 32x32 par exemple
  *

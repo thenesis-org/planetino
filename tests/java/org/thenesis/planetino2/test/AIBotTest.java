@@ -54,8 +54,6 @@ import org.thenesis.planetino2.ai.pattern.AttackPatternStrafe;
 import org.thenesis.planetino2.ai.pattern.DodgePatternRandom;
 import org.thenesis.planetino2.ai.pattern.DodgePatternZigZag;
 import org.thenesis.planetino2.ai.pattern.RunAwayPattern;
-import org.thenesis.planetino2.engine.shooter3D.Bot;
-import org.thenesis.planetino2.engine.shooter3D.HeadsUpDisplay;
 import org.thenesis.planetino2.game.GameObject;
 import org.thenesis.planetino2.game.MessageQueue;
 import org.thenesis.planetino2.game.Player;
@@ -64,6 +62,8 @@ import org.thenesis.planetino2.input.InputManager;
 import org.thenesis.planetino2.loader.ResourceLoader;
 import org.thenesis.planetino2.math3D.PolygonGroup;
 import org.thenesis.planetino2.path.AStarSearchWithBSP;
+import org.thenesis.planetino2.shooter.Bot;
+import org.thenesis.planetino2.shooter.HeadsUpDisplay;
 
 public class AIBotTest extends PathFindingTest {
 

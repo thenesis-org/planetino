@@ -47,7 +47,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.thenesis.planetino2.bsp2D.BSPRenderer;
-import org.thenesis.planetino2.engine.GameCore3D;
+import org.thenesis.planetino2.game.GameCore3D;
 import org.thenesis.planetino2.game.GameObjectManager;
 import org.thenesis.planetino2.game.Player;
 import org.thenesis.planetino2.graphics.Screen;

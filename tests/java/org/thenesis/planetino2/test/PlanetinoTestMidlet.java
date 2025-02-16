@@ -46,7 +46,7 @@ package org.thenesis.planetino2.test;
 import java.awt.event.KeyEvent;
 
 import org.thenesis.planetino2.backend.awt.AWTToolkit;
-import org.thenesis.planetino2.engine.GameCore3D;
+import org.thenesis.planetino2.game.GameCore3D;
 import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.graphics.Toolkit;
 import org.thenesis.planetino2.input.InputManager;
@@ -80,7 +80,7 @@ public class PlanetinoTestMidlet  {
 		inputManager.mapToKey(ShooterCore.jump, KeyEvent.VK_SPACE);
 		
 		inputManager.setRelativeMouseMode(true);
-		inputManager.showCursor(false);
+		inputManager.showCursor(true);
 		
 		//TestEngine engine = new TestEngine(screen, inputManager);
 		//Simple3DTest2 engine = new Simple3DTest2(screen, inputManager);

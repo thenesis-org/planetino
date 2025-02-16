@@ -46,11 +46,11 @@ package org.thenesis.planetino2.game;
 import java.util.Enumeration;
 
 import org.thenesis.planetino2.util.Vector;
-import org.thenesis.planetino2.demo.ShooterPlayer;
 import org.thenesis.planetino2.graphics.Graphics;
 import org.thenesis.planetino2.math3D.Rectangle;
 import org.thenesis.planetino2.math3D.Vector3D;
 import org.thenesis.planetino2.math3D.VoxelMatrixPolygonGroup;
+import org.thenesis.planetino2.shooter.ShooterPlayer;
 
 /**
  The GridGameObjectManager is a GameObjectManager that

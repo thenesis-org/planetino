@@ -45,7 +45,7 @@ package org.thenesis.planetino2.test;
 
 import java.io.IOException;
 
-import org.thenesis.planetino2.engine.GameCore3D;
+import org.thenesis.planetino2.game.GameCore3D;
 import org.thenesis.planetino2.graphics.Image;
 import org.thenesis.planetino2.graphics.Screen;
 import org.thenesis.planetino2.graphics.Toolkit;

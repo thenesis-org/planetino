@@ -41,71 +41,73 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.thenesis.planetino2.test;
+package org.thenesis.planetino2.shooter;
 
-import java.util.Enumeration;
-
-import org.thenesis.planetino2.util.Vector;
-import org.thenesis.planetino2.ai.EvolutionBot;
-import org.thenesis.planetino2.ai.EvolutionGenePool;
 import org.thenesis.planetino2.game.GameObject;
-import org.thenesis.planetino2.game.MessageQueue;
-import org.thenesis.planetino2.game.Player;
-import org.thenesis.planetino2.graphics.Screen;
-import org.thenesis.planetino2.input.InputManager;
-import org.thenesis.planetino2.loader.ResourceLoader;
+import org.thenesis.planetino2.math3D.MovingTransform3D;
 import org.thenesis.planetino2.math3D.PolygonGroup;
-import org.thenesis.planetino2.shooter.HeadsUpDisplay;
+import org.thenesis.planetino2.math3D.Vector3D;
 
-public class EvolutionTest extends PathFindingTest {
+/**
+    The Bot game object is a small static bot with a turret
+    that turns to face the player.
+*/
+public class Bot extends GameObject {
 
-	private EvolutionGenePool genePool;
+    private static final float TURN_SPEED = .0005f;
+    private static final long DECISION_TIME = 2000;
 
-	//    public static void main(String[] args) {
-	//        new EvolutionTest(args, "../res/sample3.map").run();
-	//    }
-	//
-	//    public EvolutionTest(String[] args, String defaultMap) {
-	//        super(args, defaultMap);
-	//    }
+    protected MovingTransform3D mainTransform;
+    protected MovingTransform3D turretTransform;
+    protected long timeUntilDecision;
+    protected Vector3D lastPlayerLocation;
 
-	public EvolutionTest(Screen screen, InputManager inputManager, ResourceLoader resourceLoader) {
-		super(screen, inputManager, resourceLoader, "sample3.map");
-	}
+    public Bot(PolygonGroup polygonGroup) {
+        super(polygonGroup);
+        mainTransform = polygonGroup.getTransform();
+        PolygonGroup turret = polygonGroup.getGroup("turret");
+        if (turret != null) {
+            turretTransform = turret.getTransform();
+        }
+        else {
+            System.out.println("No turret defined!");
+        }
+        lastPlayerLocation = new Vector3D();
+    }
 
-	public void stop() {
-		super.stop();
+    public void notifyVisible(boolean visible) {
+        if (!isDestroyed()) {
+            if (visible) {
+                setState(STATE_ACTIVE);
+            }
+            else {
+                setState(STATE_IDLE);
+            }
+        }
+    }
 
-		// print information about the "brains" in the gene pool.
-		System.out.println(genePool);
-	}
+    public void update(GameObject player, long elapsedTime) {
+        if (turretTransform == null || isIdle()) {
+            return;
+        }
 
-	protected void createGameObjects(Vector mapObjects) {
-
-		drawInstructions = false;
-		MessageQueue queue = MessageQueue.getInstance();
-		addOverlay(queue);
-		addOverlay(new HeadsUpDisplay((Player) gameObjectManager.getPlayer()));
-		queue.setDebug(false);
-		queue.add("Use the mouse/arrow keys to move.");
-		queue.add("Press Esc to exit.");
-
-		genePool = new EvolutionGenePool(bspTree);
-
-		Enumeration i = mapObjects.elements();
-		while (i.hasMoreElements()) {
-			PolygonGroup group = (PolygonGroup) i.nextElement();
-			String filename = group.getFilename();
-			if (filename != null && filename.endsWith("bot.obj3d")) {
-
-				EvolutionBot bot = new EvolutionBot(group, collisionDetection, genePool, botProjectileModel);
-				bot.setRegenerating(true);
-				gameObjectManager.add(bot);
-			} else {
-				// static object
-				gameObjectManager.add(new GameObject(group));
-			}
-		}
-	}
-
+        Vector3D playerLocation = player.getLocation();
+        if (playerLocation.equals(lastPlayerLocation)) {
+            timeUntilDecision = DECISION_TIME;
+        }
+        else {
+            timeUntilDecision-=elapsedTime;
+            if (timeUntilDecision <= 0 ||
+                !turretTransform.isTurningY())
+            {
+                float x = player.getX() - getX();
+                float z = player.getZ() - getZ();
+                turretTransform.turnYTo(x, z,
+                    -mainTransform.getAngleY(), TURN_SPEED);
+                lastPlayerLocation.setTo(playerLocation);
+                timeUntilDecision = DECISION_TIME;
+            }
+        }
+        super.update(player, elapsedTime);
+    }
 }

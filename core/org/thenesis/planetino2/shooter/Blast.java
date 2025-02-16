@@ -41,71 +41,82 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.thenesis.planetino2.test;
+package org.thenesis.planetino2.shooter;
 
-import java.util.Enumeration;
-
-import org.thenesis.planetino2.util.Vector;
-import org.thenesis.planetino2.ai.EvolutionBot;
-import org.thenesis.planetino2.ai.EvolutionGenePool;
 import org.thenesis.planetino2.game.GameObject;
-import org.thenesis.planetino2.game.MessageQueue;
-import org.thenesis.planetino2.game.Player;
-import org.thenesis.planetino2.graphics.Screen;
-import org.thenesis.planetino2.input.InputManager;
-import org.thenesis.planetino2.loader.ResourceLoader;
+import org.thenesis.planetino2.math3D.MovingTransform3D;
 import org.thenesis.planetino2.math3D.PolygonGroup;
-import org.thenesis.planetino2.shooter.HeadsUpDisplay;
+import org.thenesis.planetino2.math3D.Vector3D;
 
-public class EvolutionTest extends PathFindingTest {
+/**
+    The Blast GameObject is a projectile, designed to travel
+    in a straight line for five seconds, then die. Blasts
+    destroy Bots instantly.
+*/
+public class Blast extends GameObject {
 
-	private EvolutionGenePool genePool;
+    private static final long DIE_TIME = 5000;
+    private static final float SPEED = 1.5f;
+    private static final float ROT_SPEED = .008f;
 
-	//    public static void main(String[] args) {
-	//        new EvolutionTest(args, "../res/sample3.map").run();
-	//    }
-	//
-	//    public EvolutionTest(String[] args, String defaultMap) {
-	//        super(args, defaultMap);
-	//    }
+    private MovingTransform3D transform;
+    private long aliveTime;
 
-	public EvolutionTest(Screen screen, InputManager inputManager, ResourceLoader resourceLoader) {
-		super(screen, inputManager, resourceLoader, "sample3.map");
-	}
+    /**
+        Create a new Blast with the specified PolygonGroup
+        and normalized vector direction.
+    */
+    public Blast(PolygonGroup polygonGroup, Vector3D direction) {
+        super(polygonGroup);
+        transform = polygonGroup.getTransform();
+        Vector3D velocity = transform.getVelocity();
+        velocity.setTo(direction);
+        velocity.multiply(SPEED);
+        transform.setVelocity(velocity);
+        //transform.setAngleVelocityX(ROT_SPEED);
+        transform.setAngleVelocityY(ROT_SPEED);
+        transform.setAngleVelocityZ(ROT_SPEED);
+        setState(STATE_ACTIVE);
+    }
 
-	public void stop() {
-		super.stop();
 
-		// print information about the "brains" in the gene pool.
-		System.out.println(genePool);
-	}
+    public void update(GameObject player, long elapsedTime) {
+        aliveTime+=elapsedTime;
+        if (aliveTime >= DIE_TIME) {
+            setState(STATE_DESTROYED);
+        }
+        else {
+            super.update(player, elapsedTime);
+        }
+    }
 
-	protected void createGameObjects(Vector mapObjects) {
 
-		drawInstructions = false;
-		MessageQueue queue = MessageQueue.getInstance();
-		addOverlay(queue);
-		addOverlay(new HeadsUpDisplay((Player) gameObjectManager.getPlayer()));
-		queue.setDebug(false);
-		queue.add("Use the mouse/arrow keys to move.");
-		queue.add("Press Esc to exit.");
+    public boolean isFlying() {
+        return true;
+    }
 
-		genePool = new EvolutionGenePool(bspTree);
 
-		Enumeration i = mapObjects.elements();
-		while (i.hasMoreElements()) {
-			PolygonGroup group = (PolygonGroup) i.nextElement();
-			String filename = group.getFilename();
-			if (filename != null && filename.endsWith("bot.obj3d")) {
+    public void notifyObjectCollision(GameObject object) {
+        // destroy bots and itself
+        if (object instanceof Bot) {
+            setState(object, STATE_DESTROYED);
+            setState(STATE_DESTROYED);
+        }
+    }
 
-				EvolutionBot bot = new EvolutionBot(group, collisionDetection, genePool, botProjectileModel);
-				bot.setRegenerating(true);
-				gameObjectManager.add(bot);
-			} else {
-				// static object
-				gameObjectManager.add(new GameObject(group));
-			}
-		}
-	}
 
+    public void notifyWallCollision() {
+        // stop the projectile from moving
+        transform.getVelocity().setTo(0,0,0);
+    }
+
+
+    public void notifyFloorCollision() {
+        notifyWallCollision();
+    }
+
+
+    public void notifyCeilingCollision() {
+        notifyWallCollision();
+    }
 }

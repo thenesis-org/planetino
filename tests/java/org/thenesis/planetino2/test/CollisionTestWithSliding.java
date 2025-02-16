@@ -48,7 +48,6 @@ import java.util.Enumeration;
 
 import org.thenesis.planetino2.bsp2D.BSPRenderer;
 import org.thenesis.planetino2.bsp2D.BSPTree;
-import org.thenesis.planetino2.engine.shooter3D.Bot;
 import org.thenesis.planetino2.game.CollisionDetection;
 import org.thenesis.planetino2.game.CollisionDetectionWithSliding;
 import org.thenesis.planetino2.game.GameObject;
@@ -64,6 +63,7 @@ import org.thenesis.planetino2.loader.ResourceLoader;
 import org.thenesis.planetino2.math3D.PointLight3D;
 import org.thenesis.planetino2.math3D.PolygonGroup;
 import org.thenesis.planetino2.math3D.Transform3D;
+import org.thenesis.planetino2.shooter.Bot;
 import org.thenesis.planetino2.util.Vector;
 
 public class CollisionTestWithSliding extends ShooterCore {
