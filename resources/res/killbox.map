@@ -155,6 +155,10 @@ box box3 box_model_floating -1 100
 #v -3000.0 -3000.0 -3200.0
 #box box4 box_model_tron -1 1000
 
+# Test for the new boxBlock based on a stretched box
+#v 5520 50 0
+#boxBlock2 block_bridge box_model_floating -1 170 170 6800
+
 v 5700 50 0
 boxBlock block_bridge box_model_floating -1 170 1 1 40
 

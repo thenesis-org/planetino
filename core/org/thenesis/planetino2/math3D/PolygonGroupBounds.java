@@ -44,35 +44,48 @@
 package org.thenesis.planetino2.math3D;
 
 /**
- The PolygonGroupBounds represents a cylinder bounds around a
- PolygonGroup that can be used for collision detection.
+ * The PolygonGroupBounds represents both a cylindrical bounds (via a bounding sphere) and an AABB (axis-aligned bounding box) on the XZ plane around a PolygonGroup, which can be
+ * used for collision detection.
+ * 
+ * A flag is maintained (cylindricalCollision) indicating whether the collision detection is likely to be more effective using a cylinder (bounding sphere) or an AABB.
  */
 public class PolygonGroupBounds {
 
 	private float topHeight;
 	private float bottomHeight;
-	private float radius;
+	private float radius; // bounding sphere radius
+
+	// AABB bounds on the XZ plane
+	private float minX, maxX;
+	private float minZ, maxZ;
+
+	// Flag indiquant si la collision est mieux détectée avec un cylindre (true) ou une AABB (false)
+	private boolean cylindricalCollision;
 
 	/**
-	 Creates a new PolygonGroupBounds with no bounds.
+	 * Crée un PolygonGroupBounds vide.
 	 */
-	PolygonGroupBounds() {
+	public PolygonGroupBounds() {
 	}
 
 	/**
-	 Creates a new PolygonGroupBounds with the bounds of
-	 the specified PolygonGroup.
+	 * Crée un PolygonGroupBounds en calculant les bornes pour le groupe.
 	 */
-	PolygonGroupBounds(PolygonGroup group) {
+	public PolygonGroupBounds(PolygonGroup group) {
 		setToBounds(group);
 	}
 
 	/**
-	 Sets this to the bounds of the specified PolygonGroup.
+	 * Calcule et stocke les bornes du PolygonGroup, à la fois pour le bounding sphere et l'AABB sur le plan XZ. Ensuite, en fonction de la largeur et de la profondeur, détermine
+	 * si la collision sera mieux détectée avec un cylindre (bounding sphere) ou avec une AABB.
 	 */
 	public void setToBounds(PolygonGroup group) {
-		topHeight = Float.MIN_VALUE;
+		topHeight = -Float.MAX_VALUE;
 		bottomHeight = Float.MAX_VALUE;
+		minX = Float.MAX_VALUE;
+		maxX = -Float.MAX_VALUE;
+		minZ = Float.MAX_VALUE;
+		maxZ = -Float.MAX_VALUE;
 		radius = 0;
 
 		group.resetIterator();
@@ -82,20 +95,46 @@ public class PolygonGroupBounds {
 				Vector3D v = poly.getVertex(i);
 				topHeight = Math.max(topHeight, v.y);
 				bottomHeight = Math.min(bottomHeight, v.y);
-				// compute radius squared
+				minX = Math.min(minX, v.x);
+				maxX = Math.max(maxX, v.x);
+				minZ = Math.min(minZ, v.z);
+				maxZ = Math.max(maxZ, v.z);
+				// Calcul pour le bounding sphere : maximum de v.x² + v.z²
 				radius = Math.max(radius, v.x * v.x + v.z * v.z);
 			}
 		}
 
 		if (radius == 0) {
-			// empty polygon group!
+			// Aucun sommet n'est présent
 			topHeight = 0;
 			bottomHeight = 0;
 		} else {
 			radius = (float) Math.sqrt(radius);
 		}
+
+		// Calcul de la largeur et de la profondeur pour l'AABB dans le plan XZ
+		float width = getWidth();
+		float depth = getDepth();
+		if (width <= 0 || depth <= 0) {
+			cylindricalCollision = true;
+		} else {
+			// Si le rapport entre la dimension la plus grande et la plus petite est proche de 1,
+			// la forme est presque circulaire et le cylindre est adapté.
+			float ratio = Math.max(width, depth) / Math.min(width, depth);
+			cylindricalCollision = (ratio <= 1.2f);
+		}
 	}
 
+	// Accesseurs pour le bounding sphere
+	public float getRadius() {
+		return radius;
+	}
+
+	public void setRadius(float radius) {
+		this.radius = radius;
+	}
+
+	// Accesseurs pour la hauteur
 	public float getTopHeight() {
 		return topHeight;
 	}
@@ -112,12 +151,36 @@ public class PolygonGroupBounds {
 		this.bottomHeight = bottomHeight;
 	}
 
-	public float getRadius() {
-		return radius;
+	// Accesseurs pour l'AABB sur le plan XZ
+	public float getMinX() {
+		return minX;
 	}
 
-	public void setRadius(float radius) {
-		this.radius = radius;
+	public float getMaxX() {
+		return maxX;
 	}
 
+	public float getMinZ() {
+		return minZ;
+	}
+
+	public float getMaxZ() {
+		return maxZ;
+	}
+
+	// Méthodes utilitaires pour obtenir la largeur et la profondeur
+	public float getWidth() {
+		return maxX - minX;
+	}
+
+	public float getDepth() {
+		return maxZ - minZ;
+	}
+
+	/**
+	 * Renvoie true si la détection de collision est probablement meilleure en utilisant un cylindre (bounding sphere) plutôt qu'une AABB.
+	 */
+	public boolean useCylinderCollision() {
+		return cylindricalCollision;
+	}
 }

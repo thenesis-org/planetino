@@ -515,6 +515,27 @@ public class MapLoader extends ObjectLoader {
 //				for (int j = 0; j < size; j++) {
 //					mapObjects.addElement((PolygonGroup)elements.elementAt(j));
 //				}
+            // Test for the new boxBlock based on a stretched box
+            } else if (command.equals("boxBlock2")) {
+            	//box <boxes_name> <BoxDef_name> <location_index> <scale> [<rotate_x> <rotate_y> <rotate_z>]
+            	String uniqueName = tokenizer.nextToken();
+            	String boxDefName = tokenizer.nextToken();
+            	Vector3D location = getVector(tokenizer.nextToken());
+            	float scaleX = Float.parseFloat(tokenizer.nextToken());
+            	float scaleY = Float.parseFloat(tokenizer.nextToken());
+            	float scaleZ = Float.parseFloat(tokenizer.nextToken());
+            	BoxModel boxDef = (BoxModel) boxDefs.get(boxDefName);
+            	BoxPolygonGroup box = new BoxPolygonGroup(boxDef, location, scaleX, scaleY, scaleZ, ambientLightIntensity, false);
+            	//box.getTransform().getLocation().setTo(location);
+            	if (!uniqueName.equals("null")) {
+            		box.setName(uniqueName);
+                }
+            	mapObjects.addElement(box);
+//            	Vector elements = block.getElements();
+//				int size = elements.size();
+//				for (int j = 0; j < size; j++) {
+//					mapObjects.addElement((PolygonGroup)elements.elementAt(j));
+//				}
             } else if (command.equals("voxelMatrix")) {
             	//box <boxes_name> <BoxDef_name> <location_index> <scale> [<rotate_x> <rotate_y> <rotate_z>]
             	String uniqueName = tokenizer.nextToken();
