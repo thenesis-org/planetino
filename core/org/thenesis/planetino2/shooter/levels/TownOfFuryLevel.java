@@ -116,7 +116,7 @@ class SniperTerrain extends GameObject {
 		// Force the attached object to follow the platform
 		if (attachedObject != null) {
 			// First check if the attached object is still on the platform
-			if ((!attachedObject.isJumping()) && (!CollisionDetection.areInCollision(this, attachedObject))) {
+			if ((!attachedObject.isJumping()) && (!CollisionDetection.checkCylinderCollision(this, attachedObject))) {
 				attachedObject = null;
 			} else {
 				currentLocation = new Vector3D(getTransform().getLocation());

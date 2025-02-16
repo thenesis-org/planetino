@@ -193,16 +193,6 @@ public class CollisionDetectionWithSliding extends CollisionDetection {
 	 */
 	protected boolean handleObjectCollision(GameObject objectA, GameObject objectB, float distSq, float minDistSq,
 			Vector3D oldLocation) {
-		objectA.notifyObjectCollision(objectB);
-
-		// if objectB has no polygons, it's a trigger area
-        if (objectB.getPolygonGroup().isEmpty()) {
-            return false;
-        }
-		
-		if (objectA.isFlying()) {
-			return true;
-		}
 
 		/* TODO: stepSize should depend of the velocity and the last objectA location.
 		   Currently if the velocity is too high, objectA could overlap objectB with a distance greater than topHeiht/6.

@@ -95,8 +95,8 @@ public class ShooterAWT  {
 		inputManager.mapToKey(FPSEngine.detachObjectFromGravityWeapon, KeyEvent.VK_D);
 		inputManager.mapToMouse(FPSEngine.teleportPlayer, InputManager.MOUSE_BUTTON_3);
 		
-		//inputManager.setRelativeMouseMode(true);
-		inputManager.showCursor(true);
+		inputManager.setRelativeMouseMode(true);
+		inputManager.showCursor(false);
 		
 		/* Do all tasks in the Swing EDT to avoid thread issues */
 		//Thread engineThread = new Thread(engine);

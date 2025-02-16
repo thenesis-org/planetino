@@ -72,6 +72,10 @@ public class Player extends JumpingGameObject {
         PolygonGroupBounds playerBounds = getBounds();
         playerBounds.setTopHeight(DEFAULT_PLAYER_HEIGHT);
         playerBounds.setRadius(DEFAULT_PLAYER_RADIUS);
+        playerBounds.setMinX(-DEFAULT_PLAYER_RADIUS);
+        playerBounds.setMaxX(DEFAULT_PLAYER_RADIUS);
+        playerBounds.setMinZ(-DEFAULT_PLAYER_RADIUS);
+        playerBounds.setMaxZ(DEFAULT_PLAYER_RADIUS);
 
         // set up health
         maxHealth = DEFAULT_MAX_HEALTH;

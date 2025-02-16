@@ -173,13 +173,13 @@ v 512 256 1600
 pointlight -1 .5 500
 
 v 950 32 1302
-obj null cube.obj3d -1 
+obj null cube.obj -1 
 v 950 32 1350
-obj null cube.obj3d -1 
+obj null cube.obj -1 
 v 900 32 1308
-obj null cube.obj3d -1 .5
+obj null cube.obj -1 .5
 v 951 64 1303 
-obj null cube.obj3d -1 .2
+obj null cube.obj -1 .2
 
 v 100 32 1500
 obj aggressivebot1 aggressivebot.obj3d -1 
@@ -205,7 +205,7 @@ wall -800 1280
 wall -700 1550
 
 v -750 0 1300
-obj null cube.obj3d -1 .2
+obj null cube.obj -1 .2
 
 room westHall2 
 usemtl texture_H
@@ -318,13 +318,13 @@ wall 2600 1350
 v 2950 200 1225
 pointlight -1 1 500
 v 3050 64 1000
-obj null cube.obj3d -1 
+obj null cube.obj -1 
 v 3050 64 1050
-obj null cube.obj3d -1 
+obj null cube.obj -1 
 v 3100 64 1055
-obj null cube.obj3d -1 .5
+obj null cube.obj -1 .5
 v 3050 96 1000.5 
-obj null cube.obj3d -1 .2
+obj null cube.obj -1 .2
 
 # steps
 ambientLightIntensity .2

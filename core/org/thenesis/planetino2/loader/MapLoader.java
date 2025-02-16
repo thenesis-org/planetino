@@ -495,6 +495,7 @@ public class MapLoader extends ObjectLoader {
             	BoxPolygonGroup box = new BoxPolygonGroup(boxDef, location, scale, ambientLightIntensity, true);
             	//box.getTransform().getLocation().setTo(location);
             	mapObjects.addElement(box);
+            // Old way to do a stretched box by using a block of boxes
             } else if (command.equals("boxBlock")) {
             	//box <boxes_name> <BoxDef_name> <location_index> <scale> [<rotate_x> <rotate_y> <rotate_z>]
             	String uniqueName = tokenizer.nextToken();
@@ -515,8 +516,7 @@ public class MapLoader extends ObjectLoader {
 //				for (int j = 0; j < size; j++) {
 //					mapObjects.addElement((PolygonGroup)elements.elementAt(j));
 //				}
-            // Test for the new boxBlock based on a stretched box
-            } else if (command.equals("boxBlock2")) {
+            } else if (command.equals("stretchedBox")) {
             	//box <boxes_name> <BoxDef_name> <location_index> <scale> [<rotate_x> <rotate_y> <rotate_z>]
             	String uniqueName = tokenizer.nextToken();
             	String boxDefName = tokenizer.nextToken();

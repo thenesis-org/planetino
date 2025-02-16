@@ -167,6 +167,22 @@ public class PolygonGroupBounds {
 	public float getMaxZ() {
 		return maxZ;
 	}
+	
+	public void setMinX(float minX) {
+		this.minX = minX;	
+	}
+	
+	public void setMaxX(float maxX) {
+		this.maxX = maxX;
+	}
+	
+	public void setMinZ(float minZ) {
+		this.minZ = minZ;
+	}
+
+	public void setMaxZ(float maxZ) {
+        this.maxZ = maxZ;
+    }
 
 	// Méthodes utilitaires pour obtenir la largeur et la profondeur
 	public float getWidth() {
@@ -183,4 +199,9 @@ public class PolygonGroupBounds {
 	public boolean useCylinderCollision() {
 		return cylindricalCollision;
 	}
+	
+	public String toString() {
+        return "PolygonGroupBounds (topHeight=" + topHeight + ", bottomHeight=" + bottomHeight + ", radius=" + radius + ")";
+    }
+	
 }

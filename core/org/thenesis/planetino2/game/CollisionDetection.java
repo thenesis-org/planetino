@@ -142,7 +142,6 @@ public class CollisionDetection {
 	 for the floor and ceiling values.
 	 */
 	protected void checkFloorAndCeiling(GameObject object, long elapsedTime) {
-		boolean collision = false;
 
 		float floorHeight = object.getFloorHeight();
 		float ceilHeight = object.getCeilHeight();
@@ -387,11 +386,16 @@ public class CollisionDetection {
 		// don't collide with self
 		if (objectA == objectB) {
 			return false;
+		} 
+		// FIXME Avoid collision detection for skyboxes. Move outside game object list ? 
+		if ((objectB.getPolygonGroup() instanceof BoxPolygonGroup) && ((BoxPolygonGroup)objectB.getPolygonGroup()).isSkybox()) {
+			return false;
 		}
 
 		PolygonGroupBounds boundsA = objectA.getBounds();
 		PolygonGroupBounds boundsB = objectB.getBounds();
 
+		// Check if there is a cylinder collision
 		// first, check y axis collision (assume height is pos)
 		float Ay1 = objectA.getY() + boundsA.getBottomHeight();
 		float Ay2 = objectA.getY() + boundsA.getTopHeight();
@@ -400,14 +404,15 @@ public class CollisionDetection {
 		if (By2 < Ay1 || By1 > Ay2) {
 			return false;
 		}
-
 		// next, check 2D, x/z plane collision (circular base)
 		float dx = objectA.getX() - objectB.getX();
 		float dz = objectA.getZ() - objectB.getZ();
 		float minDist = boundsA.getRadius() + boundsB.getRadius();
 		float distSq = dx * dx + dz * dz;
 		float minDistSq = minDist * minDist;
-		if (distSq < minDistSq) {
+		boolean cylinderCollision = distSq < minDistSq;
+		
+		if (cylinderCollision) {
 			if (objectB.getPolygonGroup() instanceof CompositePolygonGroup) {
 				CompositePolygonGroup compositeGroup = ((CompositePolygonGroup) objectB.getPolygonGroup());
 				Vector elements = compositeGroup.getElements();
@@ -421,18 +426,64 @@ public class CollisionDetection {
 					collision |= checkObject(objectA, collisionObject, oldLocation);
 				}
 				return collision;
-			} 
-			// FIXME Avoid collision detection for skyboxes. Move outside game object list ? 
-			else if ((objectB.getPolygonGroup() instanceof BoxPolygonGroup) && ((BoxPolygonGroup)objectB.getPolygonGroup()).isSkybox()) {
-				return false;
-			} else {
-				return handleObjectCollision(objectA, objectB, distSq, minDistSq, oldLocation);
+			} else {		
+				if (objectB.getPolygonGroup().isEmpty()) {
+					objectA.notifyObjectCollision(objectB);
+		            return false;
+		        }
+				if (objectA.isFlying()) {
+					objectA.notifyObjectCollision(objectB);
+					return true;
+				}
+				
+				// Do a more precise collision detection
+				boolean collision = checkAABBCollision(objectA, objectB);
+				if (collision) {
+					objectA.notifyObjectCollision(objectB);
+					return handleObjectCollision(objectA, objectB, distSq, minDistSq, oldLocation);
+				}
 			}
 		}
 		return false;
 	}
 	
-	public static boolean areInCollision(GameObject objectA, GameObject objectB) {
+	
+	public static boolean checkAABBCollision(GameObject objectA, GameObject objectB) {	
+	    PolygonGroupBounds boundsA = objectA.getBounds();
+	    PolygonGroupBounds boundsB = objectB.getBounds();
+
+	    // Check for vertical (Y-axis) overlap
+	    float aBottom = objectA.getY() + boundsA.getBottomHeight();
+	    float aTop = objectA.getY() + boundsA.getTopHeight();
+	    float bBottom = objectB.getY() + boundsB.getBottomHeight();
+	    float bTop = objectB.getY() + boundsB.getTopHeight();
+
+	    if (aTop < bBottom || bTop < aBottom) {
+	        return false;
+	    }
+
+	    // Compute global AABB on the XZ plane for objectA
+	    float aMinX = objectA.getX() + boundsA.getMinX();
+	    float aMaxX = objectA.getX() + boundsA.getMaxX();
+	    float aMinZ = objectA.getZ() + boundsA.getMinZ();
+	    float aMaxZ = objectA.getZ() + boundsA.getMaxZ();
+
+	    // Compute global AABB on the XZ plane for objectB
+	    float bMinX = objectB.getX() + boundsB.getMinX();
+	    float bMaxX = objectB.getX() + boundsB.getMaxX();
+	    float bMinZ = objectB.getZ() + boundsB.getMinZ();
+	    float bMaxZ = objectB.getZ() + boundsB.getMaxZ();
+
+	    // Check for overlap on the X axis
+	    boolean overlapX = (aMinX <= bMaxX && aMaxX >= bMinX);
+	    // Check for overlap on the Z axis
+	    boolean overlapZ = (aMinZ <= bMaxZ && aMaxZ >= bMinZ);
+
+	    return overlapX && overlapZ;
+	}
+
+	
+	public static boolean checkCylinderCollision(GameObject objectA, GameObject objectB) {
 		PolygonGroupBounds boundsA = objectA.getBounds();
 		PolygonGroupBounds boundsB = objectB.getBounds();
 
@@ -466,7 +517,6 @@ public class CollisionDetection {
 	 */
 	protected boolean handleObjectCollision(GameObject objectA, GameObject objectB, float distSq, float minDistSq,
 			Vector3D oldLocation) {
-		objectA.notifyObjectCollision(objectB);
 		return true;
 	}
 
